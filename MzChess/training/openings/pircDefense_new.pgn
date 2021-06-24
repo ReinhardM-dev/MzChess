@@ -1,0 +1,92 @@
+[Event "?"]
+[Site "ECO Tables"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Niklas Fiekas/White"]
+[Black "Niklas Fiekas/Black"]
+[Result "*"]
+
+
+1. e4 { Openings starting with  e4 d6 }
+1... d6
+2. d4 { B00 : Pirc Defense }
+( 2. f4
+  2... d5 { B00 : Rat Defense: Harmonist }
+  3. exd5
+  3... Nf6 )
+( 2. h4 )
+( 2. g4 )
+2... Nf6 { B00 : Pirc Defense }
+( 2... f5 )
+( 2... Nd7 )
+3. Nc3 { B00 : Pirc Defense }
+( 3. f3 )
+( 3. Nf3 )
+3... e5 { B07 : Pirc Defense }
+( 3... Nbd7
+  4. f4
+  ( 4. Nf3
+    4... e5
+    5. Bc4
+    5... Be7
+    6. dxe5
+    6... dxe5
+    7. Bxf7+   )
+  ( 4. g4   )
+  4... e5 { B07 : Lion Defense: Anti-Philidor }
+  5. Nf3 { B07 : Lion Defense: Anti-Philidor, Lion's Cave }
+  5... exd4
+  6. Qxd4
+  6... c6
+  7. Bc4
+  7... d5 )
+( 3... g6
+  4. f4 { B07 : Pirc Defense }
+  ( 4. Nf3
+    4... Bg7 { B08 : Pirc Defense: Classical Variation }
+    5. Be2 { B08 : Pirc Defense: Classical Variation }
+    ( 5. h3     )
+    5... O-O { B08 : Pirc Defense: Classical Variation, Quiet System }
+    6. O-O
+    6... Nc6
+    ( 6... c6     )
+    ( 6... Bg4     )   )
+  ( 4. Be3
+    4... c6
+    5. Qd2
+    ( 5. h3     )
+    5... Bg4 { B07 : Pirc Defense: 150 Attack }   )
+  ( 4. Be2
+    4... Bg7 { B07 : Pirc Defense: Classical Variation }
+    5. h4
+    ( 5. g4     )   )
+  ( 4. Bg5   )
+  ( 4. Bc4   )
+  ( 4. g3   )
+  4... Bg7 { B09 : Pirc Defense: Austrian Attack }
+  5. Nf3
+  ( 5. Bc4   )
+  5... O-O
+  ( 5... c5   )
+  6. e5 { B09 : Pirc Defense: Austrian Attack }
+  ( 6. Be3   )
+  ( 6. Bd3   )
+  6... Nfd7 { B09 : Pirc Defense: Austrian Attack, Unzicker Attack }
+  7. h4 )
+( 3... c6
+  4. Be2 { B07 : Czech Defense }
+  4... Nbd7
+  5. Nf3
+  5... e5
+  6. O-O
+  6... Be7 )
+4. Nf3
+4... Nbd7
+5. Bc4
+5... Be7
+6. O-O
+6... O-O
+7. Qe2
+7... c6
+8. a4
+8... exd4

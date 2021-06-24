@@ -1,0 +1,216 @@
+[Event "?"]
+[Site "ECO Tables"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Niklas Fiekas/White"]
+[Black "Niklas Fiekas/Black"]
+[Result "*"]
+
+{ Openings starting with  e4 e6 } 1. e4 e6 { C00 : French Defense } 2. d4
+{ C00 : French Defense: Normal Variation } ( 2. Nc3
+{ C00 : French Defense: Queen's Knight } 2... d5 3. d4 ( 3. f4
+{ C00 : French Defense: Pelikan Variation } ) 3... Nf6 4. Bg5 Bb4 5. e5 h6 6.
+Bd2 Bxc3 7. bxc3 Ne4 8. Qg4 Kf8 9. Bc1
+{ C12 : French Defense: MacCutcheon Variation, Duras Variation } ) ( 2. d3
+{ C00 : French Defense: King's Indian Attack } 2... d5 ( 2... f5
+{ C00 : French Defense: Franco-Hiva Gambit } ) 3. Nd2 Nf6 4. Ngf3 c5 ( 4... Nc6
+5. Be2 { C00 : French Defense: Reversed Philidor Formation } ) 5. g3 Nc6 6. Bg2
+Be7 7. O-O O-O 8. Re1 { A08 : King's Indian Attack: Sicilian Variation } ) ( 2.
+Nf3 { C00 : French Defense: Knight Variation } 2... d5 ( 2... f5
+{ C00 : French Defense: Franco-Hiva Gambit } ) 3. e5 ( 3. Nc3
+{ C00 : French Defense: Two Knights Variation } ) 3... c5 4. b4
+{ C00 : French Defense: Wing Gambit } ) ( 2. c4
+{ C00 : French Defense: Steiner Variation } 2... d5 3. cxd5 exd5 4. Qb3
+{ C00 : French Defense: Orthoschnapp Gambit } ) ( 2. f4
+{ C00 : French Defense: La Bourdonnais Variation } 2... d5 3. Nf3 dxe4
+{ C00 : French Defense: La Bourdonnais Variation, Reuter Gambit } ) ( 2. b3
+{ C00 : French Defense: Horwitz Attack } 2... d5 3. Bb2
+{ C00 : French Defense: Horwitz Attack, Papa-Ticulat Gambit } ) ( 2. b4
+{ C00 : French Defense: Banzai-Leong Gambit } 2... Bxb4 3. e5
+{ C00 : French Defense: Banzai-Leong Gambit, Pinova Gambit } ) ( 2. Qe2
+{ C00 : French Defense: Chigorin Variation } ) ( 2. e5
+{ C00 : French Defense: Steinitz Attack } ) ( 2. g3
+{ C00 : French Defense: RÃ©ti-Spielmann Attack } ) ( 2. Bb5
+{ C00 : French Defense: Bird Invitation } ) 2... d5 { C00 : French Defense } (
+2... a6 { C00 : St. George Defense } 3. Nf3 ( 3. c4
+{ C00 : St. George Defense: New St. George, Three Pawn Attack } 3... b5
+{ C00 : St. George Defense: New St. George, Sanky-George Gambit } 4. cxb5 axb5
+{ C00 : St. George Defense: St. George Gambit } ) 3... b5 4. Bd3 c5 5. c3 Bb7
+6. O-O Nf6 { C00 : St. George Defense: New St. George, Traditional Line } ) (
+2... c5 { C00 : Queen's Pawn Game: Franco-Sicilian Defense } 3. Nf3 ( 3. d5
+{ A43 : Benoni Defense: French Benoni } ) 3... a6
+{ C00 : Sicilian Defense: Drazic Variation } ) ( 2... f5 3. exf5 Nf6
+{ C00 : French Defense: Franco-Hiva Gambit Accepted } ) ( 2... b5
+{ C00 : French Defense: Baeuerle Gambit } ) ( 2... Nf6
+{ C00 : French Defense: Mediterranean Defense } ) 3. Nc3
+{ C10 : French Defense: Paulsen Variation } ( 3. Nd2
+{ C03 : French Defense: Tarrasch Variation } 3... c5
+{ C07 : French Defense: Tarrasch Variation, Open System } ( 3... Nf6
+{ C05 : French Defense: Tarrasch Variation, Closed Variation } 4. e5 Nfd7 5.
+Bd3 ( 5. f4 { C05 : French Defense: Tarrasch Variation, Pawn Center Variation }
+) 5... c5 6. c3 Nc6
+{ C05 : French Defense: Tarrasch Variation, Closed Variation } ( 6... b6
+{ C05 : French Defense: Tarrasch Variation, Botvinnik Variation } ) 7. Ne2 cxd4
+8. cxd4
+{ C06 : French Defense: Tarrasch Variation, Closed Variation, Main Line } 8...
+Nb6 { C06 : French Defense: Tarrasch Variation, Leningrad Variation } ) ( 3...
+dxe4 4. Nxe4 Nd7 5. Nf3 Ngf6 6. Nxf6+ Nxf6 7. c3
+{ C10 : French Defense: Rubinstein Variation, Kasparov Attack } ) ( 3... Nc6
+{ C03 : French Defense: Tarrasch Variation, Guimard Defense } 4. c3 ( 4. Ngf3
+Nf6 { C04 : French Defense: Tarrasch Variation, Guimard Defense, Main Line } )
+4... dxe4 5. Nxe4 e5
+{ C03 : French Defense: Guimard Variation, Thunderbunny Variation } ) ( 3... f5
+{ C03 : French Defense: Tarrasch Variation, Haberditz Variation } ) ( 3... a6
+{ C03 : French Defense: Tarrasch Variation, Modern System } ) ( 3... Be7
+{ C03 : French Defense: Tarrasch Variation, Morozevich Variation } ) 4. exd5 (
+4. Ngf3
+{ C07 : French Defense: Tarrasch Variation, Open System, Euwe-Keres Line } ) (
+4. c3 { C07 : French Defense: Tarrasch Variation, Open System, SÃ¼chting Line }
+) 4... Qxd5 { C07 : French Defense: Tarrasch Variation, Chistyakov Defense } (
+4... exd5 { C08 : French Defense: Tarrasch Variation, Open System } 5. Ngf3 c4
+{ C08 : French Defense: Tarrasch Variation, Open System, Advance Line } ( 5...
+Nc6 { C09 : French Defense: Tarrasch Variation, Open System, Main Line } ) ) (
+4... Nf6
+{ C07 : French Defense: Tarrasch Variation, Open System, Shaposhnikov Gambit }
+) 5. Ngf3 cxd4 6. Bc4 Qd6 ( 6... Qd8
+{ C07 : French Defense: Tarrasch Variation, Eliskases Variation } ) 7. O-O Nf6
+8. Nb3 Nc6 9. Nbxd4 Nxd4 10. Nxd4 a6
+{ C07 : French Defense: Tarrasch Variation, Chistyakov Defense, Modern Line } )
+( 3. e5 { C02 : French Defense: Advance Variation } 3... c5
+{ C02 : French Defense: Advance Variation } ( 3... Bd7
+{ C02 : French Defense: Advance Variation, Extended Bishop Swap } ) 4. c3
+{ C02 : French Defense: Advance Variation } ( 4. Qg4
+{ C02 : French Defense: Advance Variation, Nimzowitsch Attack } 4... cxd4 5.
+Nf3 { C02 : French Defense: Advance Variation, Nimzowitsch Gambit } ) ( 4. Nf3
+{ C02 : French Defense: Advance Variation, Nimzowitsch System } 4... cxd4 5.
+Bd3 { C02 : French Defense: Advance Variation, Ruisdonk Gambit } ) ( 4. b4
+{ C02 : French Defense: Advance Variation, Frenkel Gambit } ) ( 4. dxc5
+{ C02 : French Defense: Advance Variation, Steinitz Variation } ) 4... Nc6
+{ C02 : French Defense: Advance Variation } ( 4... Qb6 5. Nf3 Bd7
+{ C02 : French Defense: Advance Variation, Wade Variation } ) 5. Nf3
+{ C02 : French Defense: Advance Variation, Paulsen Attack } 5... Qb6 ( 5... Bd7
+{ C02 : French Defense: Advance Variation, Euwe Variation } ) 6. a3
+{ C02 : French Defense: Advance Variation, Main Line } ( 6. Bd3
+{ C02 : French Defense: Advance Variation, Milner-Barry Gambit } ) 6... Nh6
+{ C02 : French Defense: Advance Variation, Lputian Variation } ) ( 3. exd5
+{ C01 : French Defense: Exchange Variation } 3... exd5 4. Nc3 ( 4. c4
+{ C01 : French Defense: Exchange Variation, Monte Carlo Variation } ) 4... Nf6
+5. Bg5 Nc6 { C01 : French Defense: Exchange Variation, Bogoljubov Variation } )
+( 3. Qe2 e5 4. f4 exf4 { C00 : French Defense: Hoffmann Gambit } ) ( 3. Nf3
+{ C00 : French Defense: Perseus Gambit } 3... dxe4 4. Ne5
+{ C00 : French Defense: Carlson Gambit } ) ( 3. Be3
+{ C00 : French Defense: Alapin Gambit } ) ( 3. Nh3
+{ C00 : French Defense: Morphy Gambit } ) ( 3. Bd3
+{ C00 : French Defense: Schlechter Variation } ) 3... Nf6
+{ C11 : French Defense: Classical Variation } ( 3... Bb4
+{ C15 : French Defense: Winawer Variation } 4. e5
+{ C16 : French Defense: Winawer Variation, Advance Variation } ( 4. Ne2
+{ C15 : French Defense: Winawer Variation, Alekhine-MarÃ³czy Gambit } 4... dxe4
+( 4... Nf6 5. Bg5 { C15 : French Defense: MacCutcheon Variation, Wolf Gambit }
+) 5. a3 Be7 ( 5... Bxc3+
+{ C15 : French Defense: Winawer Variation, Alekhine Gambit Accepted } 6. Nxc3
+Nc6 { C15 : French Defense: Winawer Variation, Alekhine Gambit, Kan Variation }
+) 6. Nxe4 Nf6 7. N2g3 O-O 8. Be2 Nc6
+{ C15 : French Defense: Winawer Variation, Alekhine Gambit, Alatortsev Variation }
+) ( 4. Bd2 { C15 : French Defense: Winawer Variation, Fingerslip Variation }
+4... dxe4 ( 4... Ne7 5. Nb1
+{ C15 : French Defense: Winawer Variation, Fingerslip Variation, Schwarz's Line }
+) 5. Qg4 Nf6 ( 5... Qxd4
+{ C15 : French Defense: Winawer Variation, Fingerslip Variation, Kunin Double Gambit }
+) 6. Qxg7 Rg8 7. Qh6
+{ C15 : French Defense: Winawer Variation, Fingerslip Variation, Main Line } )
+( 4. exd5
+{ C15 : French Defense: Winawer Variation, Delayed Exchange Variation } 4...
+exd5 5. Bd3 Ne7 6. Qh5
+{ C15 : French Defense: Winawer Variation, Exchange Variation, Canal Attack } )
+( 4. Bd3 c5 5. exd5 Qxd5 6. Bd2
+{ C15 : French Defense: Winawer Variation, Kondratiyev Variation } ) ( 4. a3
+{ C15 : French Defense: Winawer Variation, Winckelmann-Riemer Gambit } ) 4...
+c5 { C17 : French Defense: Winawer Variation, Advance Variation } ( 4... Qd7
+{ C16 : French Defense: Winawer Variation, Petrosian Variation } ) 5. a3
+{ C17 : French Defense: Winawer Variation, Advance Variation } ( 5. Bd2
+{ C17 : French Defense: Winawer Variation, Bogoljubov Variation } 5... Ne7 6.
+f4
+{ C17 : French Defense: Winawer Variation, Bogoljubov Variation, Icelandic Defense }
+) ( 5. Qg4
+{ C17 : French Defense: Winawer Variation, Advance Variation, Moscow Variation }
+) 5... Bxc3+ ( 5... cxd4 6. axb4 dxc3
+{ C17 : French Defense: Winawer Variation, MarÃ³czy-Wallis Variation } 7. Nf3
+{ C17 : French Defense: Winawer Variation, Advance Variation } ) ( 5... Ba5
+{ C17 : French Defense: Winawer Variation, Retreat Variation } 6. b4 cxd4
+{ C17 : French Defense: Winawer Variation, Retreat Variation, Armenian Line } )
+6. bxc3 { C18 : French Defense: Winawer Variation, Advance Variation } 6... Ne7
+{ C19 : French Defense: Winawer Variation, Advance Variation } ( 6... Qc7
+{ C18 : French Defense: Winawer Variation, Classical Variation } ) 7. Qg4
+{ C19 : French Defense: Winawer Variation, Poisoned Pawn Variation } ( 7. a4
+{ C19 : French Defense: Winawer Variation, Advance Variation } ) ( 7. Nf3
+{ C19 : French Defense: Winawer Variation, Positional Variation } ) 7... Qc7 8.
+Qxg7 Rg8 9. Qxh7 cxd4 10. Ne2
+{ C19 : French Defense: Winawer Variation, Poisoned Pawn Variation, Main Line }
+( 10. Kd1
+{ C19 : French Defense: Winawer Variation, Poisoned Pawn Variation, Paoli Variation }
+) ) ( 3... dxe4 { C10 : French Defense: Rubinstein Variation } 4. Nxe4 Nd7
+{ C10 : French Defense: Rubinstein Variation, Blackburne Defense } ( 4... Bd7
+5. Nf3 Bc6 { C10 : French Defense: Rubinstein Variation, Fort Knox Variation }
+) ( 4... e5 { C10 : French Defense: Rubinstein Variation, Ellis Gambit } ) (
+4... Qd5 { C10 : French Defense: Rubinstein Variation, Maric Variation } ) 5.
+Nf3 Ngf6 6. Nxf6+ Nxf6 7. Ne5
+{ C10 : French Defense: Rubinstein Variation, Capablanca Line } ) ( 3... Nc6 4.
+exd5 { C10 : French Defense: Classical Variation, Svenonius Variation } ) 4.
+Bg5 { C11 : French Defense: Burn Variation } ( 4. e5
+{ C11 : French Defense: Classical Variation, Steinitz Variation } 4... Nfd7 5.
+f4 ( 5. Qg4 { C11 : French Defense: Steinitz Variation, Gledhill Attack } )
+5... c5 6. dxc5 ( 6. Nf3 { C11 : French Defense: Steinitz Variation } 6... Nc6
+7. Be3 { C11 : French Defense: Steinitz Variation, Boleslavsky Variation } )
+6... Nc6 { C11 : French Defense: Steinitz Variation } ( 6... Bxc5 7. Qg4
+{ C11 : French Defense: Steinitz Variation, Bradford Attack Variation } ) 7. a3
+Bxc5 8. Qg4 O-O 9. Nf3 f6
+{ C11 : French Defense: Steinitz Variation, Brodsky-Jones Variation } ) ( 4.
+exd5 { C11 : French Defense: Classical Variation, Delayed Exchange Variation }
+4... exd5 5. Bg5
+{ C01 : French Defense: Exchange Variation, Svenonius Variation } ) ( 4. Bd3
+{ C11 : French Defense: Classical Variation, Swiss Variation } ) ( 4. Be3
+{ C11 : French Defense: Henneberger Variation } ) 4... Be7
+{ C13 : French Defense: Classical Variation, Normal Variation } ( 4... Bb4
+{ C12 : French Defense: MacCutcheon Variation } 5. e5
+{ C12 : French Defense: MacCutcheon Variation, Advance Variation } ( 5. exd5
+{ C12 : French Defense: MacCutcheon Variation, Exchange Variation } 5... Qxd5
+6. Bxf6 gxf6 7. Qd2 Qa5
+{ C12 : French Defense: MacCutcheon Variation, Bogoljubov Variation } ) 5... h6
+6. Bd2 ( 6. Bh4
+{ C12 : French Defense: MacCutcheon Variation, Bernstein Variation } ) ( 6.
+exf6 { C12 : French Defense: MacCutcheon Variation, Chigorin Variation } ) ( 6.
+Bc1
+{ C12 : French Defense: MacCutcheon Variation, Dr. Olland (Dutch) Variation } )
+( 6. Be3 { C12 : French Defense: MacCutcheon Variation, Janowski Variation } )
+6... Bxc3 { C12 : French Defense: MacCutcheon Variation, Lasker Variation } (
+6... Nfd7 { C12 : French Defense: MacCutcheon Variation, Tartakower Variation }
+) 7. bxc3 Ne4 8. Qg4 g6
+{ C12 : French Defense: MacCutcheon Variation, Lasker Variation } ) ( 4... dxe4
+5. Nxe4 Be7 6. Bxf6 Bxf6 ( 6... gxf6
+{ C11 : French Defense: Classical Variation, Burn Variation, Morozevich Line }
+) 7. Nf3 O-O
+{ C11 : French Defense: Classical Variation, Burn Variation, Main Line } ) 5.
+e5 ( 5. Bxf6 { C13 : French Defense: Classical Variation, Richter Attack } 5...
+Bxf6 6. e5 Be7 7. Qg4
+{ C13 : French Defense: Classical Variation, Richter Attack } ) 5... Nfd7 (
+5... Ng8
+{ C13 : French Defense: Classical Variation, Vistaneckis (Nimzowitsch) Variation }
+6. Be3 b6 { C13 : French Defense: Classical Variation, Frankfurt Variation } )
+( 5... Ne4 { C13 : French Defense: Classical Variation, Tartakower Variation }
+) 6. Bxe7 ( 6. h4 { C13 : French Defense: Alekhine-Chatard Attack } 6... Bxg5 (
+6... c5 { C13 : French Defense: Alekhine-Chatard Attack, Breyer Variation } ) (
+6... a6 { C13 : French Defense: Alekhine-Chatard Attack, MarÃ³czy Variation } )
+( 6... O-O
+{ C13 : French Defense: Alekhine-Chatard Attack, Spielmann Variation } ) ( 6...
+f6 { C13 : French Defense: Alekhine-Chatard Attack, Teichmann Variation } ) 7.
+hxg5 Qxg5
+{ C13 : French Defense: Alekhine-Chatard Attack, Albin-Chatard Gambit } ) 6...
+Qxe7 { C14 : French Defense: Classical Variation } 7. f4
+{ C14 : French Defense: Classical Variation, Steinitz Variation } ( 7. Nb5
+{ C14 : French Defense: Classical Variation, Alapin Variation } ) ( 7. Qg4
+{ C14 : French Defense: Classical Variation, Pollock Variation } ) ( 7. Qd2
+{ C14 : French Defense: Classical Variation, Rubinstein Variation } ) ( 7. Bd3
+{ C14 : French Defense: Classical Variation, Tarrasch Variation } ) 7... O-O 8.
+Nf3 c5 9. Qd2 Nc6 10. O-O-O c4
+{ C14 : French Defense: Classical Variation, Stahlberg Variation } *

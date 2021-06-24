@@ -1,0 +1,8 @@
+python, see https://www.python.org/
+PyQt5, see https://www.riverbankcomputing.com/software/pyqt/
+python-chess by Niklas Fiekas, see https://github.com/niklasf/python-chess
+eco files by Niklas Fiekas, see https://github.com/niklasf/eco
+content of training/matein from ScidVsPC, see http://scidvspc.sourceforge.net
+content of training/tactics from scid, see http://scid.sourceforge.net
+chess pieces by Colin M.L. Burnett, see https://en.wikipedia.org/wiki/User:Cburnett
+leipfont.ttf by Armando Hernandez Marroquin, see https://www.chessvariants.com/who/ArmandoMarroquin

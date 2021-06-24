@@ -1,0 +1,1069 @@
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/2k5/8/8/5NB1/4K3/8 w - - 0 1"]
+
+
+	   1.	Nd4+  	Kb7   
+
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/2k5/8/8/8/4KR2/8 w - - 0 1"]
+
+
+	   1.	Kd3   	Kb5   
+
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/2k5/8/8/4N3/4KB2/8 w - - 0 1"]
+
+
+	   1.	Kd3   	Kb7   
+	   2.	Kc4   	Kc6   
+
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/2k5/8/8/8/4KQ2/8 w - - 0 1"]
+
+
+	   1.	Kd3   	Kb5   
+	   2.	Qd4   	Kc6   
+	   3.	Kc4   	Kb7   
+	   4.	Qd6   	Ka7   
+	   5.	Kb5   	Kb7   
+	   6.	Qd7+  	Ka8   
+	   7.	Kb6   	Kb8   
+	   8.	Qd8#  
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/2k5/8/8/8/R3K3/R7 w - - 0 1"]
+
+
+	   1.	Ra5   	Kb6   
+	   2.	Kd3   	Kc6   
+	   3.	Rg1   	Kb6   
+	   4.	Rh5   	Kc7   
+	   5.	Rg6   	Kb8   
+	   6.	Rh7   	Ka8   
+	   7.	Rg8#  
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/8/8/8/1P5k/8/7K w - - 0 1"]
+
+
+	   1.	b4    	Kg3   
+	   2.	b5    	Kf2   
+
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/3k4/8/8/3PK3/8/8 w - - 0 1"]
+
+
+	   1.	Kd4   	Kc6   
+	   2.	Ke5   	Kd7   
+	   3.	Kd5   	Kc7   
+	   4.	Ke6   	Kd8   
+	   5.	d4    	Ke8   
+	   6.	d5    	Kd8   
+	   7.	Kd6   	Ke8   
+	   8.	Kc7   	Kf7   
+	   9.	d6    	Ke6   
+	  10.	d7    	Kd5   
+
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "1k6/8/1K6/1P6/8/8/8/8 w - - 0 1"]
+
+
+	   1.	Ka6   	Ka8   
+	   2.	b6    	Kb8   
+	   3.	b7    	Kc7   
+	   4.	Ka7   	Kc6   
+	   5.	b8=Q  	Kc5   
+
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "7k/7P/6P1/8/8/6K1/8/8 w - - 0 1"]
+
+
+	   1.	Kf4   	Kg7   
+	   2.	Kg5   	Kh8   
+
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "6k1/8/5KP1/6P1/8/8/8/8 w - - 0 1"]
+
+
+	   1.	g7    	Kh7   
+	   2.	g8=Q+ 	Kxg8  
+	   3.	Kg6   	Kf8   
+	   4.	Kh7   	Ke7   
+
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/2K1p1k1/4P3/8/8/8/8 w - - 0 1"]
+
+
+	   1.	Kd7   	Kf7   
+	   2.	Kd6   	Kf8   
+	   3.	Kxe6  	Ke8   
+	   4.	Kf6   	Kf8   
+	   5.	e6    	Ke8   
+	   6.	e7    	Kd7   
+	   7.	Kf7   	Kc6   
+	   8.	e8=Q+ 	Kc5   
+
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/p4K2/P7/8/8/8/1k6/8 w - - 0 1"]
+
+
+	   1.	Ke6   	Kb3   
+	   2.	Kd5   	Kb4   
+	   3.	Kc6   	Ka5   
+	   4.	Kb7   	Kb5   
+	   5.	Kxa7  	Kc6   
+	   6.	Kb8   	Kb6   
+
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/1p6/8/8/6P1/k1K5/8 w - - 0 1"]
+
+
+	   1.	Kc3   	Ka3   
+	   2.	Kc4   	Ka4   
+	   3.	g4    	b5+   
+	   4.	Kd3   	Kb4   
+	   5.	g5    	Ka3   
+	   6.	g6    	Kb3   
+	   7.	g7    	Ka3   
+
+*
+
+[Event "endings"]
+[Site "problem solved"]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/5k2/8/p7/8/1PK5/8 w - - 0 1"]
+
+
+	   1.	Kd3   	a3    
+	   2.	bxa3  	Ke5   
+	   3.	Kc4   	Kd6   
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/2p4k/2P4P/7K/8/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/5k2/p7/P3KP2/8/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/2k5/p1P5/P1K5/8/8/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/1kp5/8/K1PP4/8/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/6p1/8/5P2/5P2/5K2/8/6k1 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "4K3/8/2p5/8/P2k4/8/P7/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "6k1/7p/7K/7P/8/8/6P1/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/6pp/8/2kp4/8/8/P2K2PP/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/7p/p7/1pPk4/1P6/P7/3K4/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "4k3/8/8/8/4p3/3pK3/P6P/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "6k1/1p5p/p7/P7/8/8/6PP/6K1 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/1p6/1P6/2K3p1/4k1P1/8/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/3ppp2/8/3PPP2/8/8/8/K1k5 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/7k/4K2p/6p1/6P1/7P/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "2K5/8/5p2/3k2p1/P5P1/8/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "4K3/8/8/1p5p/1P5P/8/8/4k3 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "k7/P7/1P6/4p3/4Pp2/5K2/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/3pp2p/8/1kPP4/5P2/8/1K6/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/2pp2pp/8/2PP1P2/1p5k/8/PP4p1/6K1 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "7k/8/5PpK/Pp1P2pp/3P4/8/5p2/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "7k/8/5PpK/Pp1P2pp/3P4/8/5p2/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/1K6/8/8/3pk3/8/8/R7 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "1R6/8/8/7p/6k1/8/8/K7 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "3K4/3P2k1/8/8/8/8/2r5/5R2 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "K7/P5R1/2k5/8/8/8/2r5/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "4r3/8/7k/8/8/4P3/4K3/6R1 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "3KQ3/8/8/8/8/8/4p3/5k2 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/KQ6/8/8/8/8/p7/k7 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/8/4K3/8/8/3Q1p2/6k1 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "1k6/1r6/2K5/Q7/8/8/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/3PK3/3Q4/8/6k1/8/8/5q2 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/3KP1q1/8/8/8/4Q3/k7/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "K7/1P6/k1q5/8/8/1Q6/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/k5KP/6Q1/8/3q4/8/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/5p1k/2pQ2p1/2P2q2/1P5p/5P1P/6PK/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/7q/2K2p2/4p3/2k1P2p/8/3P4/7Q w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "4k3/8/8/7P/8/4K2B/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/k7/8/1pK5/p4B2/P7/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "2KB4/1P6/2k5/8/8/8/7b/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/5b2/p2k4/1p1p1p1p/1P1K1P1P/2P1PB2/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "2k5/p7/Pp1p1b2/1P1P1p2/2P2P1p/3K3P/5B2/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "1B6/8/7P/4p3/3b3k/8/8/2K5 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/1kB2b2/1P6/4P3/5K2/8/8/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/1bB5/8/5k2/8/4K3/1P3P2/8 w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/Pn6/8/8/6kp/8/6KB w - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "K7/8/k7/8/7p/8/6N1/8 b - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/8/8/pN6/8/2K5/k7 b - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/KP1n4/2k5/8/5N2/8/8/8 b - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "5n2/8/3K4/2N2k1P/8/6P1/8/8 b - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/8/1PK5/3N4/8/5kb1/8 b - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/2k4b/P7/8/8/2N2PKp/8 b - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "6k1/5R2/6K1/8/8/8/8/6b1 b - - 0 1"]
+
+
+
+*
+
+[Event "endings"]
+[Site ""]
+[Date "????.??.??"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+[SetUp "1"]
+[PlyCount "0"]
+[FEN "8/8/8/1k1K4/8/2R5/3n4/8 b - - 0 1"]
+
+
+
+*
+

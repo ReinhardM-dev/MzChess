@@ -1,0 +1,52 @@
+[Event "?"]
+[Site "ECO Tables"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Niklas Fiekas/White"]
+[Black "Niklas Fiekas/Black"]
+[Result "*"]
+
+{ Openings starting with  e4 d6 } 1. e4 d6 { B00 : Pirc Defense } 2. d4
+{ B00 : Pirc Defense } ( 2. f4 { B00 : Rat Defense: Harmonist } 2... d5 3. exd5
+Nf6 { B00 : Rat Defense: Fuller Gambit } ) ( 2. h4
+{ B00 : Rat Defense: Petruccioli Attack } ) ( 2. g4
+{ B00 : Rat Defense: Spike Attack } ) 2... Nf6 { B00 : Pirc Defense } ( 2... f5
+{ A82 : Rat Defense: Balogh Defense } ) ( 2... Nd7
+{ B00 : Rat Defense: Antal Defense } ) 3. Nc3 { B07 : Pirc Defense } ( 3. f3
+{ B00 : Lion Defense: Lion's Jaw } ) ( 3. Nf3
+{ B00 : Pirc Defense: Roscher Gambit } ) 3... e5 ( 3... Nbd7 4. f4
+{ B07 : Lion Defense: Anti-Philidor } ( 4. Nf3 e5 5. Bc4 Be7 6. dxe5 dxe5 7.
+Bxf7+ { C41 : Philidor Defense: Lion Variation, Delayed Bishop Sacrifice } ) (
+4. g4 { B07 : Lion Defense: Bayonet Attack } ) 4... e5
+{ B07 : Lion Defense: Anti-Philidor, Lion's Cave } 5. Nf3 exd4 6. Qxd4 c6 7.
+Bc4 d5 { B07 : Lion Defense: Anti-Philidor, Lion's Cave, Lion Claw Gambit } ) (
+3... g6 { B07 : Pirc Defense } 4. f4 { B09 : Pirc Defense: Austrian Attack } (
+4. Nf3 { B08 : Pirc Defense: Classical Variation } 4... Bg7
+{ B08 : Pirc Defense: Classical Variation } 5. Be2
+{ B08 : Pirc Defense: Classical Variation, Quiet System } ( 5. h3
+{ B08 : Pirc Defense: Classical Variation, Schlechter Variation } ) 5... O-O 6.
+O-O Nc6
+{ B08 : Pirc Defense: Classical Variation, Quiet System, Chigorin Line } ( 6...
+c6 { B08 : Pirc Defense: Classical Variation, Quiet System, Czech Defense } ) (
+6... Bg4
+{ B08 : Pirc Defense: Classical Variation, Quiet System, Parma Defense } ) ) (
+4. Be3 c6 5. Qd2 { B07 : Pirc Defense: 150 Attack } ( 5. h3
+{ B07 : Pirc Defense: 150 Attack, Sveshnikov-Jansa Attack } ) 5... Bg4
+{ B07 : Pirc Defense: 150 Attack, Inner Doll Defense } ) ( 4. Be2
+{ B07 : Pirc Defense: Classical Variation } 4... Bg7 5. h4
+{ B07 : Pirc Defense: Bayonet Attack } ( 5. g4
+{ B07 : Pirc Defense: Chinese Variation } ) ) ( 4. Bg5
+{ B07 : Pirc Defense: Byrne Variation } ) ( 4. Bc4
+{ B07 : Pirc Defense: Kholmov System } ) ( 4. g3
+{ B07 : Pirc Defense: Sveshnikov System } ) 4... Bg7 5. Nf3 ( 5. Bc4
+{ B09 : Pirc Defense: Austrian Attack, Ljubojevic Variation } ) 5... O-O
+{ B09 : Pirc Defense: Austrian Attack } ( 5... c5
+{ B09 : Pirc Defense: Austrian Attack, Dragon Formation } ) 6. e5
+{ B09 : Pirc Defense: Austrian Attack, Unzicker Attack } ( 6. Be3
+{ B09 : Pirc Defense: Austrian Attack, Kurajica Variation } ) ( 6. Bd3
+{ B09 : Pirc Defense: Austrian Attack, Weiss Variation } ) 6... Nfd7 7. h4
+{ B09 : Pirc Defense: Austrian Attack, Unzicker Attack, Bronstein Variation } )
+( 3... c6 { B07 : Czech Defense } 4. Be2 Nbd7 5. Nf3 e5 6. O-O Be7
+{ B07 : Philidor Defense: Lion Variation, Lion's Claw } ) 4. Nf3 Nbd7 5. Bc4
+Be7 6. O-O O-O 7. Qe2 c6 8. a4 exd4
+{ C41 : Philidor Defense: Lion Variation, Sozin Variation } *

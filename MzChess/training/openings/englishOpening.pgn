@@ -1,0 +1,160 @@
+[Event "?"]
+[Site "ECO Tables"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Niklas Fiekas/White"]
+[Black "Niklas Fiekas/Black"]
+[Result "*"]
+
+{ Openings starting with  c4 } 1. c4 { A10 : English Opening } 1... e5
+{ A20 : English Opening: King's English Variation } ( 1... g6
+{ A10 : English Opening: Great Snake Variation } 2. Nc3 ( 2. e4 Bg7 ( 2... e5
+{ A10 : English Opening: Adorjan Defense } ) 3. d4 d6 ( 3... e5
+{ A10 : Modern Defense: Neo-Modern Defense } ) 4. Be3 Nf6 5. f3
+{ A10 : Modern Defense: Averbakh Variation, Pseudo-SÃ¤misch } ) 2... Bg7 3. g3
+( 3. e3 Nf6 4. d4 O-O 5. Nf3 d6 6. Be2 Nbd7 7. O-O e5 8. dxe5 dxe5
+{ A10 : King's Indian Defense: Semi-Classical Variation, Exchange Variation } )
+3... Nf6 4. Bg2 O-O 5. e4 d6 6. Nge2 e5 7. O-O c6 8. d3 a6
+{ A10 : English Opening: King's English Variation, Botvinnik System, Prickly Pawn Pass System }
+) ( 1... e6 { A13 : English Opening: Agincourt Defense } 2. g3 ( 2. Nc3 d5 3.
+d4 Nf6 4. Bg5 Nbd7 5. Nf3 c6 6. e4
+{ D51 : Queen's Gambit Declined: Alekhine Variation } ) ( 2. d4 b6 ( 2... e5
+{ A13 : Horwitz Defense: Zilbermints Gambit } ) 3. Nc3 Bb7 4. e4 f5 5. exf5 (
+5. d5 { A40 : English Defense: Hartlaub Gambit Declined } ) 5... Nf6
+{ A40 : English Defense: Hartlaub Gambit Accepted } ) ( 2. Nf3
+{ A13 : English Opening: Agincourt Defense } 2... d5
+{ A13 : English Opening: Agincourt Defense } ) 2... d5 3. Bg2 Nf6 4. Nf3 Be7 5.
+d4 O-O 6. Nc3 c6 7. O-O Nbd7 8. Qd3
+{ E07 : Catalan Opening: Closed, Botvinnik Variation } ) ( 1... Nf6
+{ A15 : English Opening: Anglo-Indian Defense } 2. Nc3
+{ A16 : English Opening: Anglo-Indian Defense, Queen's Knight Variation } ( 2.
+Nf3 g6 ( 2... c6 3. b3 d5 4. Bb2 Bg4
+{ A12 : RÃ©ti Opening: Anglo-Slav Variation, Capablanca Variation } ) 3. d4 Bg7
+4. Nc3 O-O 5. e3 d6 6. Be2 c6
+{ E60 : King's Indian Defense: Semi-Classical Variation, Benoni Variation } ) (
+2. g3 c6 3. Nf3 d5 4. b3 Bf5
+{ A12 : RÃ©ti Opening: Anglo-Slav Variation, London Defensive System } ( 4...
+Bg4 { A12 : RÃ©ti Opening: Anglo-Slav Variation, Torre System } ) ) ( 2. b4
+{ A15 : English Orangutan } ) 2... e6
+{ A17 : English Opening: Anglo-Indian Defense, Hedgehog System } ( 2... g6 3.
+g3 Bg7 4. Bg2 O-O 5. d4 d6 6. Nf3 Nbd7 7. O-O a6
+{ E67 : King's Indian Defense: Fianchetto Variation, Hungarian Variation } ) (
+2... d5 { A16 : English Opening: Anglo-GrÃ¼nfeld Defense } 3. cxd5 Nxd5 4. g3 (
+4. Nf3
+{ A16 : English Opening: Anglo-Indian Defense, Anglo-GrÃ¼nfeld Variation } )
+4... g6 5. Bg2 Nb6
+{ A16 : English Opening: Anglo-Indian Defense, Anglo-GrÃ¼nfeld Variation } (
+5... Nxc3
+{ A16 : English Opening: Anglo-Indian Defense, Anglo-GrÃ¼nfeld Variation } ) )
+( 2... c5 3. g3
+{ A34 : English Opening: Symmetrical Variation, Fianchetto Variation } 3... d5
+4. cxd5 Nxd5 5. Bg2 Nc7
+{ A34 : English Opening: Symmetrical Variation, Rubinstein Variation } ) 3. Nf3
+( 3. e4 { A18 : English Opening: Mikenas-Carls Variation } 3... c5
+{ A19 : English Opening: Mikenas-Carls, Sicilian } ( 3... d5 4. e5
+{ A18 : English Opening: Mikenas-Carls Variation } ) ( 3... Nc6
+{ A18 : English Opening: Mikenas-Carls Variation } ) 4. e5 Ng8
+{ A19 : English Opening: Anglo-Indian Defense, Flohr-Mikenas-Carls Variation, Nei Gambit }
+) 3... d5 ( 3... b6
+{ A17 : English Opening: Anglo-Indian Defense, Queen's Indian Formation } 4. e4
+Bb7 5. Bd3
+{ A17 : English Opening: Anglo-Indian Defense, Queen's Indian Variation } ) (
+3... Bb4 4. g4
+{ A17 : English Opening: Anglo-Indian Defense, Zvjaginsev-Krasenkow Attack } )
+4. e3 c5 5. d4 Nc6 6. Bd3 Bd6 7. O-O O-O
+{ D40 : Queen's Gambit Declined: Semi-Tarrasch Defense, Symmetrical Variation }
+) ( 1... c5 { A30 : English Opening: Symmetrical Variation } 2. Nf3 ( 2. Nc3
+{ A34 : English Opening: Symmetrical Variation, Normal Variation } 2... Nc6
+{ A35 : English Opening: Symmetrical Variation, Two Knights Variation } ( 2...
+g6 3. g3 Bg7 4. Bg2 Nc6 5. e3 e5
+{ A36 : English Opening: Symmetrical Variation, Botvinnik System Reversed } )
+3. g3 { A36 : English Opening: Symmetrical Variation, Fianchetto Variation }
+3... g6 4. Bg2 Bg7 5. Nf3
+{ A37 : English Opening: Symmetrical Variation, Two Knights Line } 5... Nf6 6.
+O-O O-O 7. b3
+{ A38 : English Opening: Symmetrical Variation, Double Fianchetto } ) ( 2. g3
+g6 3. Bg2 Bg7 4. Nc3 Nc6
+{ A36 : English Opening: Symmetrical Variation, Symmetrical Variation } ) ( 2.
+b4 { A30 : English Opening: Wing Gambit } ) 2... Nf6 3. Nc3 ( 3. b4
+{ A30 : English Opening: Symmetrical Variation, Napolitano Gambit } ) 3... e6
+4. g3 d5 5. cxd5 Nxd5 6. Bg2 Nc6 7. O-O Be7
+{ A14 : English Opening: Agincourt Defense, Keres Defense } ) ( 1... f5
+{ A10 : English Opening: Anglo-Dutch Defense } 2. g3 ( 2. Nc3 Nf6 3. Nf3 ( 3.
+e4 { A10 : English Opening: Anglo-Dutch Variation, Ferenc Gambit } 3... fxe4 4.
+g4 { A10 : English Opening: Porcupine Variation } ) 3... Nc6 4. d4 d6
+{ A10 : Dutch Defense: Krause Variation } ) ( 2. Nf3 d6 3. e4
+{ A10 : English Opening: Anglo-Dutch Variation, Chabanon Gambit } ) ( 2. e4
+{ A10 : English Opening: Anglo-Dutch Defense, Hickmann Gambit } ) ( 2. g4
+{ A10 : English Opening: Wade Gambit } ) 2... Nf6 3. Bg2 d6 4. Nc3 c6 5. d4 Qc7
+{ A86 : Dutch Defense: Hort-Antoshin System } ) ( 1... d5
+{ A10 : English Opening: Anglo-Scandinavian Defense } 2. cxd5 Qxd5 ( 2... e6
+{ A10 : English Opening: Anglo-Scandinavian Defense, LÃ¶hn Gambit } ) ( 2...
+Nf6 { A10 : English Opening: Anglo-Scandinavian Defense, Schulz Gambit } ) 3.
+Nc3 Qa5
+{ A10 : English Opening: Anglo-Scandinavian Defense, Malvinas Variation } ) (
+1... c6 { A11 : English Opening: Caro-Kann Defensive System } 2. e4 d5 3. d4
+{ B10 : Slav Defense: Diemer Gambit } ) ( 1... g5 2. d4 Bg7
+{ A10 : English Opening: Myers Variation } ( 2... e5
+{ A10 : English Opening: Zilbermints Gambit } ) ) ( 1... Nc6
+{ A10 : English Opening: Anglo-Lithuanian Variation } ) ( 1... b5
+{ A10 : English Opening: Jaenisch Gambit } ) 2. Nc3
+{ A21 : English Opening: King's English Variation, Reversed Sicilian } ( 2. e3
+Nf6 3. f4 exf4 4. Nf3
+{ A20 : English Opening: King's English Variation, Kahiko-Hula Gambit } ) ( 2.
+g3 h5 { A20 : English Opening: Drill Variation } ) ( 2. Nf3
+{ A20 : English Opening: King's English Variation, Nimzowitsch Variation } 2...
+e4
+{ A20 : English Opening: King's English Variation, Nimzowitsch-Flohr Variation }
+) 2... Nf6
+{ A22 : English Opening: King's English Variation, Two Knights Variation } (
+2... Nc6
+{ A25 : English Opening: King's English Variation, Reversed Closed Sicilian }
+3. g3 ( 3. Nf3
+{ A27 : English Opening: King's English Variation, Three Knights System } )
+3... g6 ( 3... d6 4. Bg2 Be6
+{ A21 : English Opening: King's English Variation, Troger Defense } ) 4. Bg2 (
+4. Rb1 Nh6 5. Bg2 Bg7 { A25 : English Opening: Closed, Taimanov Variation } )
+4... Bg7
+{ A25 : English Opening: King's English Variation, Taimanov Variation } 5. e3 (
+5. d3 { A25 : English Opening: King's English Variation, Closed System } 5...
+d6
+{ A26 : English Opening: King's English Variation, Closed System, Full Symmetry }
+6. e4 { A26 : English Opening: King's English Variation, Botvinnik System } ) (
+5. Rb1 { A25 : English Opening: King's English Variation, Hungarian Attack } )
+5... d6 6. Nge2 Nh6 { A25 : English Opening: Closed, Taimanov Variation } (
+6... Be6
+{ A25 : English Opening: King's English Variation, Bremen-Hort Variation } ) )
+( 2... d6 3. Nf3 { A21 : English Opening: King's English Variation } ( 3. g3 c6
+{ A21 : English Opening: King's English Variation, Keres Defense } ) 3... Bg4
+{ A21 : English Opening: King's English Variation, Smyslov Defense } ) ( 2...
+Bb4
+{ A21 : English Opening: King's English Variation, Kramnik-Shirov Counterattack }
+) 3. Nf3 ( 3. g3 { A22 : English Opening: Carls-Bremen System } 3... d5
+{ A22 : English Opening: King's English Variation, Two Knights Variation, Reversed Dragon }
+( 3... Bb4
+{ A22 : English Opening: King's English Variation, Two Knights Variation, Smyslov System }
+) ( 3... c6
+{ A23 : English Opening: King's English Variation, Two Knights Variation, Keres Variation }
+) ( 3... g6
+{ A24 : English Opening: King's English Variation, Two Knights Variation, Fianchetto Line }
+) ) ( 3. f4 { A22 : English Opening: King's English, Mazedonisch } ) 3... Nc6
+{ A28 : English Opening: King's English Variation, Four Knights Variation } (
+3... e4 4. Ng5 b5
+{ A22 : English Opening: King's English Variation, Bellon Gambit } ( 4... Ng4
+{ A22 : English Opening: King's English, Erbenheimer Gambit } ) ) 4. d4 ( 4. e3
+{ A28 : English Opening: King's English Variation, Four Knights Variation, Quiet Line }
+4... Bb4 5. Qc2 O-O ( 5... Bxc3
+{ A28 : English Opening: King's English Variation, Four Knights Variation, Quiet Line }
+) 6. Nd5 Re8 7. Qf5
+{ A28 : English Opening: King's English Variation, Four Knights Variation, Quiet Line }
+) ( 4. e4 { A28 : English Opening: Four Knights System, Nimzowitsch Variation }
+) ( 4. d3
+{ A28 : English Opening: King's English Variation, Four Knights Variation, Flexible Line }
+) ( 4. a3
+{ A28 : English Opening: King's English Variation, Four Knights Variation, Korchnoi Line }
+) ( 4. g3
+{ A29 : English Opening: King's English Variation, Four Knights Variation, Fianchetto Line }
+) 4... exd4 ( 4... e4
+{ A28 : English Opening: King's English Variation, Four Knights Variation, Bradley Beach Variation }
+) 5. Nxd4 Bb4 6. Bg5 h6 7. Bh4 Bxc3+ 8. bxc3 Ne5
+{ A28 : English Opening: King's English Variation, Four Knights Variation } *

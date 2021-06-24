@@ -1,0 +1,445 @@
+[Event "?"]
+[Site "ECO Tables"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Niklas Fiekas/White"]
+[Black "Niklas Fiekas/Black"]
+[Result "*"]
+
+{ Openings starting with  d4 d5 } 1. d4 d5 { D00 : Queen's Pawn Game } 2. c4
+{ D06 : Queen's Gambit } ( 2. Nf3
+{ D02 : Queen's Pawn Game: Zukertort Variation } 2... Nf6
+{ D02 : Queen's Pawn Game: Symmetrical Variation } ( 2... c5
+{ D02 : Queen's Pawn Game: Krause Variation } 3. e3 ( 3. g3 cxd4 4. Bg2
+{ D02 : Queen's Pawn Game: Chandler Gambit } ) 3... Nf6 4. Nbd2 e6 5. b3
+{ D05 : Queen's Pawn Game, Zukertort Variation } ) ( 2... Bf5 3. c4 e6 4. Nc3
+c6 { D02 : Queen's Gambit Declined: Baltic Defense, Pseudo-Slav } ) ( 2... c6
+3. Bg5 h6 4. Bh4 Qb6
+{ D02 : Queen's Pawn Game: Levitsky Attack, Euwe Variation, Modern Line } ) (
+2... e6 3. c4 dxc4 { D02 : Queen's Gambit Accepted: Rosenthal Variation } ) (
+2... Nc6 { D02 : Queen's Pawn Game: Chigorin Variation } ) 3. c4 ( 3. e3
+{ D04 : Queen's Pawn Game: Colle System } 3... Bf5
+{ D04 : Queen's Pawn Game: Colle System, Anti-Colle } ( 3... e6
+{ D05 : Queen's Pawn Game: Colle System } 4. Bd3
+{ D05 : Queen's Pawn Game: Colle System } 4... Bd6 5. O-O O-O 6. b3 Nbd7 7. Bb2
+{ D05 : Rubinstein Opening: Semi-Slav Defense } ) ( 3... g6 4. Bd3 Bg7
+{ D04 : Queen's Pawn Game: Colle System, GrÃ¼nfeld Formation } ) 4. c4 c6 5.
+cxd5 cxd5 6. Nc3
+{ D12 : Slav Defense: Exchange Variation, Schallopp Variation } 6... e6 7. Ne5
+Nfd7 { D12 : Queen's Gambit Declined: Slav, Amsterdam Variation } ) ( 3. Bg5
+{ D03 : Queen's Pawn Game: Torre Attack } 3... Ne4
+{ D03 : Queen's Pawn Game: Torre Attack, Gossip Variation } ( 3... g6
+{ D03 : Queen's Pawn Game: Torre Attack, GrÃ¼nfeld Variation } ) ) ( 3. Bf4
+{ D02 : Queen's Pawn Game: London System } ) ( 3. g3
+{ D02 : Queen's Pawn Game: Symmetrical Variation, Pseudo-Catalan } ) 3... c6 (
+3... e6 4. Nc3 Be7 5. Bg5 O-O 6. e3 Nbd7 7. Rc1 ( 7. Qb3
+{ D60 : Queen's Gambit Declined: Orthodox Defense, Rauzer Variation } ) 7... c6
+8. Bd3 ( 8. Qc2 a6 9. cxd5
+{ D65 : Queen's Gambit Declined: Orthodox Defense, Rubinstein Attack } ) 8...
+dxc4 9. Bxc4 Nd5 10. h4
+{ D67 : Queen's Gambit Declined: Orthodox Defense, Janowski Variation } ) (
+3... b5 { D02 : Queen's Pawn Game: Zilbermints Countergambit } ) 4. Nc3 e6 5.
+e3 Nbd7 ( 5... Ne4 6. Bd3 f5 { D45 : Semi-Slav Defense: Stonewall Defense } )
+6. Bd3 dxc4 7. Bxc4 b5 8. Bd3 a6 9. e4 c5 10. e5 cxd4 11. Nxb5 Nxe5 12. Nxe5
+axb5 13. O-O { D49 : Semi-Slav Defense: Meran Variation, Sozin Variation } ) (
+2. Nc3 { D00 : Queen's Pawn Game: Chigorin Variation } 2... Nf6 ( 2... Bf5
+{ D00 : Queen's Pawn Game: Veresov Attack, Alburt Defense } ) ( 2... Bg4
+{ D00 : Queen's Pawn Game: Veresov Attack, Anti-Veresov } ) ( 2... c5
+{ D00 : Queen's Pawn Game: Veresov Attack, Irish Gambit } ) ( 2... e5
+{ D00 : Queen's Pawn Game: Veresov Attack, Shaviliuk Gambit } ) ( 2... h5
+{ D00 : Queen's Pawn Game: Veresov Attack, Shropshire Defense } ) 3. Bg5 ( 3.
+e4 e5 { D00 : Blackmar-Diemer, Lemberger Countergambit } ) ( 3. Bf4
+{ D01 : Rapport-Jobava System } ) 3... e6 4. e4 Bb4 5. e5 h6 6. exf6 hxg5 7.
+fxg7 Rg8 8. h4 gxh4 9. Qg4
+{ C12 : French Defense: MacCutcheon Variation, Grigoriev Variation } ) ( 2. e4
+{ D00 : Blackmar Gambit } 2... dxe4 3. Nc3 { D00 : Blackmar-Diemer Gambit } (
+3. Be3 { D00 : Blackmar-Diemer Gambit: Diemer-Rosenberg Attack } ) ( 3. Bc4
+{ D00 : Blackmar-Diemer Gambit: Fritz Attack } ) ( 3. f3
+{ D00 : Blackmar-Diemer Gambit: Gedult Gambit } ) 3... Nf6 ( 3... Bf5
+{ D00 : Blackmar-Diemer Gambit: Zeller Defense } 4. f3 Nf6 5. Bc4
+{ D00 : Blackmar-Diemer Gambit: Zeller Defense, Soller Attack } ) ( 3... e5 4.
+Be3 { D00 : Blackmar-Diemer Gambit: Lemberger Countergambit, Diemer Attack } (
+4. dxe5
+{ D00 : Blackmar-Diemer Gambit: Lemberger Countergambit, Endgame Variation } )
+( 4. Nge2
+{ D00 : Blackmar-Diemer Gambit: Lemberger Countergambit, Rassmussen Attack } )
+( 4. Nxe4
+{ D00 : Blackmar-Diemer Gambit: Lemberger Countergambit, Simple Variation } ) )
+( 3... Bd7 { D00 : Blackmar-Diemer Gambit Declined: Grosshans Defense } ) 4. f3
+( 4. Bg5 { D00 : Blackmar-Diemer Gambit: von Popiel Gambit } 4... Bf5 5. Bxf6
+exf6 6. g4 Bg6 7. Qe2 Bb4 8. Qb5+
+{ D00 : Blackmar-Diemer Gambit: von Popiel Gambit, Zilbermints Variation } ) (
+4. Be3 { D00 : Blackmar-Diemer Gambit: Rasa-Studier Gambit } ) 4... exf3 ( 4...
+e5 { D00 : Blackmar-Diemer Gambit Declined: Elbert Countergambit } ) ( 4... Nc6
+{ D00 : Blackmar-Diemer Gambit Declined: Lamb Defense } ) 5. Nxf3 ( 5. Qxf3
+{ D00 : Blackmar-Diemer Gambit: Ryder Gambit } ) 5... e6 ( 5... g6 6. Bc4 Bg7
+7. O-O ( 7. h4
+{ D00 : Blackmar-Diemer Gambit: Bogoljubov Defense, Mad Dog Attack } ) ( 7. Ne5
+{ D00 : Blackmar-Diemer Gambit: Bogoljubov Variation, Nimzowitsch Attack } )
+7... O-O 8. Kh1
+{ D00 : Blackmar-Diemer Gambit: Bogoljubov Variation, Kloss Attack } ) ( 5...
+c5 { D00 : Blackmar-Diemer Gambit: Kaulich Defense } ) ( 5... Nc6
+{ D00 : Blackmar-Diemer Gambit: Pietrowsky Defense } ) ( 5... b6
+{ D00 : Blackmar-Diemer Gambit: Ritter Defense } ) ( 5... h5
+{ D00 : Blackmar-Diemer Gambit: Rook Pawn Defense } ) ( 5... Nbd7
+{ D00 : Blackmar-Diemer Gambit: Schlutter Defense } ) ( 5... c6
+{ D00 : Blackmar-Diemer Gambit: Ziegler Defense } ) 6. Bg5 Be7 7. Bd3 Nc6 8.
+O-O Nxd4 9. Kh1
+{ D00 : Blackmar-Diemer Gambit: Euwe Defense, Zilbermints Gambit } ) ( 2. Bf4
+{ D00 : Queen's Pawn Game: Mason Variation } 2... c5
+{ D00 : Queen's Pawn Game: Steinitz Countergambit } 3. e4
+{ D00 : Queen's Pawn Game: Morris Countergambit } ) ( 2. e3
+{ D00 : Queen's Pawn Game } 2... Nf6 { D00 : Queen's Pawn Game } 3. Bd3
+{ D00 : Queen's Pawn Game: Stonewall Attack } ) ( 2. Bg5
+{ D00 : Queen's Pawn Game: Levitsky Attack } 2... Bg4
+{ D00 : Queen's Pawn Game: Levitsky Attack, Welling Variation } ) ( 2. Qd3
+{ D00 : Amazon Attack } ) ( 2. f4 { D00 : Queen's Pawn Game: Mason Attack } ) (
+2. g4 { D00 : Queen's Pawn Game: Zurich Gambit } ) 2... c6
+{ D10 : Slav Defense } ( 2... e6 { D30 : Queen's Gambit Declined } 3. Nc3
+{ D31 : Queen's Gambit Declined: Queen's Knight Variation } ( 3. Nf3 Nf6 ( 3...
+c5 { D30 : Queen's Gambit Declined: Tarrasch Defense, Pseudo-Tarrasch } 4. cxd5
+exd5 5. g3 ( 5. Bg5
+{ D30 : Queen's Gambit Declined: Tarrasch Defense, Pseudo-Tarrasch Bishop Attack }
+) 5... Nc6 6. Bg2 Nf6 7. O-O Be7 8. Nc3 O-O 9. Bg5 Be6 10. Rc1 b6
+{ D34 : Queen's Gambit Declined: Tarrasch, Stoltz Variation } ) ( 3... c6 4.
+Nc3 dxc4 5. a4 Bb4 6. e3 b5 7. Bd2 Qb6
+{ D31 : Queen's Gambit Declined: Semi-Slav, Junge Variation } ) 4. Nc3 ( 4. e3
+c6 5. Nbd2 g6 { D30 : Queen's Gambit Declined: Spielmann Variation } ) 4... Be7
+5. Bg5 O-O 6. e3 Nbd7 7. Rc1 c6 8. Bd3 dxc4 9. Bxc4 Nd5 10. Bxe7 Qxe7 11. O-O
+Nxc3 12. Rxc3 e5 13. Qb1
+{ D68 : Queen's Gambit Declined: Orthodox Defense, Classical Variation } ) ( 3.
+e4 dxe4 { D30 : French Defense: Diemer-Duhm Gambit } ) 3... Nf6
+{ D35 : Queen's Gambit Declined: Normal Defense } ( 3... c5
+{ D32 : Tarrasch Defense } 4. cxd5 exd5
+{ D32 : Queen's Gambit Declined: Tarrasch Defense } ( 4... cxd4
+{ D32 : Tarrasch Defense: Schara Gambit } 5. Qxd4 Nc6 6. Qd1 exd5 7. Qxd5 Be6
+{ D32 : Tarrasch Defense: von Hennig Gambit } ) 5. Nf3
+{ D32 : Tarrasch Defense: Two Knights Variation } ( 5. dxc5 d4 6. Na4 b5
+{ D32 : Tarrasch Defense: Tarrasch Gambit } ) ( 5. e4
+{ D32 : Tarrasch Defense: Marshall Gambit } ) 5... Nc6 6. g3
+{ D33 : Tarrasch Defense: Rubinstein System } ( 6. dxc5 d4 7. Na4 b5
+{ D32 : Tarrasch Defense: GrÃ¼nfeld Gambit } ) 6... Nf6
+{ D33 : Tarrasch Defense: Prague Variation } ( 6... c4
+{ D33 : Tarrasch Defense: Swedish Variation } 7. e4
+{ D33 : Tarrasch Defense: Swedish Variation, Central Break } ) 7. Bg2 Be7
+{ D34 : Tarrasch Defense: Prague Variation, Main Line } ( 7... Bg4
+{ D33 : Tarrasch Defense: Wagner Variation } ) 8. O-O O-O
+{ D34 : Tarrasch Defense: Classical Variation } 9. Bg5
+{ D34 : Tarrasch Defense: Classical Variation, Carlsbad Variation } ( 9. dxc5
+Bxc5 ( 9... d4
+{ D34 : Tarrasch Defense: Classical Variation, Classical Tarrasch Gambit } )
+10. Na4 { D34 : Tarrasch Defense: Classical Variation, RÃ©ti Variation } ) 9...
+cxd4 ( 9... c4
+{ D34 : Tarrasch Defense: Classical Variation, Advance Variation } ) ( 9... Be6
+{ D34 : Tarrasch Defense: Classical Variation, Endgame Variation } ) 10. Nxd4
+h6 ( 10... Re8
+{ D34 : Tarrasch Defense: Classical Variation, Petursson Variation } ) 11. Be3
+Re8 { D34 : Tarrasch Defense: Classical Variation, Main Line } ( 11... Bg4
+{ D34 : Tarrasch Defense: Classical Variation, Spassky Variation } ) 12. Rc1
+Be6 { D34 : Tarrasch Defense: Classical Variation, Chandler Variation } ) (
+3... Be7 { D31 : Queen's Gambit Declined: Charousek (Petrosian) Variation } 4.
+Nf3 ( 4. e4 dxe4 5. f3
+{ D31 : Queen's Gambit Declined: Charousek (Petrosian) Variation, Miladinovic Gambit }
+) 4... Nf6 5. Bg5 ( 5. Bf4 O-O 6. e3 b6
+{ D37 : Queen's Gambit Declined: Harrwitz Attack, Fianchetto Defense } ) 5...
+h6 6. Bh4 O-O 7. e3 ( 7. Rc1 dxc4
+{ D31 : Queen's Gambit Declined: Uhlmann Variation } ) 7... b6 ( 7... Ne4
+{ D56 : Queen's Gambit Declined: Lasker Defense } 8. Bxe7 Qxe7 9. cxd5 Nxc3 10.
+bxc3 { D57 : Queen's Gambit Declined: Lasker Defense, Main Line } ) 8. cxd5
+Nxd5
+{ D59 : Queen's Gambit Declined: Tartakower Defense, Makogonov Exchange Variation }
+( 8... exd5
+{ D58 : Queen's Gambit Declined: Tartakower Defense, Exchange Variation } ) 9.
+Bxe7 Qxe7 10. Nxd5 exd5 11. Rc1 Be6
+{ D59 : Queen's Gambit Declined: Tartakower Defense } ) ( 3... c6
+{ D31 : Semi-Slav Defense: Accelerated Move Order } 4. e3 ( 4. e4
+{ D31 : Semi-Slav Defense: Marshall Gambit } 4... dxe4 5. Nxe4 ( 5. f3
+{ D31 : Semi-Slav Defense: Gunderam Gambit } ) 5... Bb4+ 6. Bd2
+{ D31 : Semi-Slav Defense: Marshall Gambit, Main Line } ( 6. Nc3
+{ D31 : Semi-Slav Defense: Marshall Gambit, Forgotten Variation } ) 6... Qxd4
+7. Bxb4 Qxe4+ 8. Be2 c5 9. Bxc5 Qxg2
+{ D31 : Semi-Slav Defense: Marshall Gambit, Tolush Variation } ) ( 4. Nf3 dxc4
+{ D31 : Semi-Slav Defense: Noteboom Variation } ( 4... Nf6 5. e3 Nbd7 6. Ne5
+{ D45 : Semi-Slav Defense: Rubinstein (Anti-Meran) System } ) 5. a4 ( 5. e3 b5
+6. a4 Bb4 7. Bd2 Qe7
+{ D31 : Queen's Gambit Declined: Semi-Slav, Koomen Variation } ) ( 5. Bg5
+{ D31 : Semi-Slav Defense: Noteboom Variation, Anti-Noteboom Variation } 5...
+f6
+{ D31 : Semi-Slav Defense: Noteboom Variation, Anti-Noteboom Variation, Belyavsky Line }
+) ( 5. g3 { D31 : Semi-Slav Defense: Noteboom Variation, Anti-Noteboom Gambit }
+) 5... Bb4 6. e3 Bxc3+ ( 6... b5 7. Bd2 a5
+{ D31 : Queen's Gambit Declined: Semi-Slav, Abrahams Variation } ) 7. bxc3 b5
+8. axb5 cxb5
+{ D31 : Semi-Slav Defense: Noteboom Variation, Abrahams Variation } ) 4... Nf6
+( 4... f5 5. g4
+{ D31 : Semi-Slav Defense: Anti-Noteboom, Stonewall Variation, Portisch Gambit }
+) 5. Nf3 Nbd7 6. Bd3 dxc4 7. Bxc4 b5 8. Bd3 a6 9. e4 b4
+{ D48 : Semi-Slav Defense: Meran Variation, Pirc Variation } ) ( 3... a6
+{ D31 : Queen's Gambit Declined: Janowski Variation } ) 4. Bg5
+{ D50 : Queen's Gambit Declined: Modern Variation } ( 4. Nf3 c5 ( 4... Be7 5.
+Bf4 O-O 6. e3 c6
+{ D37 : Queen's Gambit Declined: Harrwitz Attack, Orthodox Defense } ) 5. cxd5
+( 5. e3 Nc6 6. Bd3 Bd6 7. O-O O-O 8. Qe2 Qe7 9. dxc5 Bxc5 10. e4
+{ D40 : Queen's Gambit Declined: Semi-Tarrasch Defense, Levenfish Variation } )
+( 5. Bg5
+{ D40 : Queen's Gambit Declined: Semi-Tarrasch Defense, Pillsbury Variation } )
+5... Nxd5 6. e4 Nxc3 7. bxc3 cxd4 8. cxd4 Bb4+ 9. Bd2 Bxd2+ 10. Qxd2 O-O 11.
+Bb5 { D41 : Queen's Gambit Declined: Semi-Tarrasch Defense, Kmoch Variation } )
+( 4. cxd5 Nxd5 5. e4 Nxc3 6. bxc3 c5 7. Nf3 cxd4 8. cxd4 Bb4+ 9. Bd2 Qa5
+{ D41 : Queen's Gambit Declined: Semi-Tarrasch Defense, San Sebastian Variation }
+) ( 4. Bf4 { D35 : Queen's Gambit Declined: Harrwitz Attack } ) 4... Be7
+{ D53 : Queen's Gambit Declined } ( 4... c6 5. Nf3 Be7 6. e3 Nbd7 7. Rc1 O-O 8.
+Bd3 dxc4 9. Bxc4 b5
+{ D66 : Queen's Gambit Declined: Orthodox Defense, Fianchetto Variation } ) (
+4... Nbd7 { D51 : Queen's Gambit Declined: Modern Variation, Knight Defense }
+5. e3 { D51 : Queen's Gambit Declined: Modern Variation, Knight Defense } ( 5.
+Nf3 c6 6. Rc1 Qa5 7. Bd2 { D51 : Queen's Gambit Declined: Rochlin Variation } )
+5... c6 { D51 : Queen's Gambit Declined: Modern Variation, Knight Defense } (
+5... Bb4 { D51 : Queen's Gambit Declined: Manhattan Variation } ) 6. Nf3 ( 6.
+a3
+{ D51 : Queen's Gambit Declined: Capablanca Variation, Anti-Cambridge Springs Variation }
+) 6... Qa5 7. Nd2 ( 7. Bxf6
+{ D52 : Queen's Gambit Declined: Cambridge Springs Defense, Capablanca Variation }
+) 7... Bb4 8. Qc2 O-O 9. Bh4
+{ D52 : Queen's Gambit Declined: Cambridge Springs Defense, Argentine Variation }
+) ( 4... c5 { D50 : Queen's Gambit Declined: Been-Koomen Variation } 5. Nf3 (
+5. cxd5 { D50 : Queen's Gambit Declined: Pseudo-Tarrasch Variation } 5... Qb6
+{ D50 : Queen's Gambit Declined: Pseudo-Tarrasch Variation, Canal Variation } )
+5... cxd4 6. Nxd4 ( 6. Qxd4
+{ D50 : Queen's Gambit Declined: Pseudo-Tarrasch Variation, Primitive Pillsbury Variation }
+) 6... e5 7. Ndb5 a6 8. Qa4
+{ D50 : Queen's Gambit Declined: Semi-Tarrasch Defense, Krause Variation } ) 5.
+e3 ( 5. Bxf6
+{ D53 : Queen's Gambit Declined: Modern Variation, Heral Variation } ) 5... O-O
+6. Nf3 Nbd7 ( 6... h6 7. Bh4 Ne4 8. Bxe7 Qxe7 9. Qc2 ( 9. cxd5 Nxc3 10. bxc3
+exd5 11. Qb3 Rd8 12. c4 Be6
+{ D57 : Queen's Gambit Declined: Lasker Defense, Bernstein Variation, Mar del Plata Gambit }
+) 9... Nf6 10. Bd3 dxc4 11. Bxc4 c5 12. O-O Nc6 13. Rfd1 Bd7
+{ D56 : Queen's Gambit Declined: Lasker Defense, Russian Variation } ) 7. Rc1
+c6 8. Bd3 { D66 : Queen's Gambit Declined: Orthodox Defense, Bd3 Line } 8...
+dxc4 9. Bxc4 Nd5
+{ D67 : Queen's Gambit Declined: Orthodox Defense, Capablanca System } 10. Bxe7
+Qxe7 { D67 : Queen's Gambit Declined: Orthodox Defense, Bd3 Line } 11. O-O
+{ D67 : Queen's Gambit Declined: Orthodox Defense, Main Line } ( 11. Ne4
+{ D67 : Queen's Gambit Declined: Orthodox Defense, Alekhine Variation } ) 11...
+Nxc3 12. Rxc3 e5
+{ D68 : Queen's Gambit Declined: Orthodox Defense, Classical Variation } 13.
+dxe5 Nxe5 14. Nxe5 Qxe5
+{ D69 : Queen's Gambit Declined: Orthodox Defense, Classical Variation } ) (
+2... dxc4 { D20 : Queen's Gambit Accepted } 3. Nf3
+{ D21 : Queen's Gambit Accepted: Normal Variation } ( 3. e3
+{ D20 : Queen's Gambit Accepted: Old Variation } 3... Nf6 ( 3... e5 4. Bxc4
+exd4 5. Qb3 Qe7 6. a3
+{ D20 : Queen's Gambit Accepted: Old Variation, Billinger Gambit } ( 6. Nf3
+{ D20 : Queen's Gambit Accepted: Old Variation, Christensen Gambit } ) ( 6. Kf1
+{ D20 : Queen's Gambit Accepted: Old Variation, Korchnoi Gambit } ) ( 6. Nd2
+{ D20 : Queen's Gambit Accepted: Old Variation, Novikov Gambit } ) ) 4. Bxc4 e6
+5. Nf3 c5 6. O-O a6 7. e4
+{ D27 : Queen's Gambit Accepted: Classical Defense, Russian Gambit } ) ( 3. e4
+{ D20 : Queen's Gambit Accepted: Saduleto Variation } 3... c5
+{ D20 : Queen's Gambit Accepted: Central Variation, Rubinstein Defense } ( 3...
+e5 { D20 : Queen's Gambit Accepted: Central Variation, McDonnell Defense } 4.
+Bxc4
+{ D20 : Queen's Gambit Accepted: Central Variation, McDonnell Defense, Somov Gambit }
+) ( 3... Nf6
+{ D20 : Queen's Gambit Accepted: Central Variation, Alekhine System } ) ( 3...
+b5 { D20 : Queen's Gambit Accepted: Central Variation, Greco Variation } ) (
+3... Nc6 { D20 : Queen's Gambit Accepted: Central Variation, Modern Defense } )
+( 3... f5 { D20 : Queen's Gambit Accepted: Schwartz Defense } ) 4. d5 Nf6 (
+4... b5
+{ D20 : Queen's Gambit Accepted: Central Variation, Rubinstein Defense, Yefimov Gambit }
+) 5. Nc3 b5 { D20 : Queen's Gambit Accepted: Linares Variation } ) ( 3. Qa4+
+{ D20 : Queen's Gambit Accepted: Accelerated Mannheim Variation } ) 3... Nf6
+{ D23 : Queen's Gambit Accepted } ( 3... a6
+{ D22 : Queen's Gambit Accepted: Alekhine Defense } 4. e3 ( 4. e4
+{ D21 : Queen's Gambit Accepted: Alekhine Defense, Borisenko-Furman Variation }
+) 4... Bg4 ( 4... b5
+{ D22 : Queen's Gambit Accepted: Alekhine Defense, Haberditz Variation } ) 5.
+Bxc4 e6 6. d5
+{ D22 : Queen's Gambit Accepted: Alekhine Defense, Alatortsev Variation } ) (
+3... Nd7 { D21 : Queen's Gambit Accepted: Godes Variation } ) ( 3... c5
+{ D21 : Queen's Gambit Accepted: Gunsberg Defense } ) ( 3... b5
+{ D21 : Queen's Gambit Accepted: Slav Gambit } ) 4. e3
+{ D25 : Queen's Gambit Accepted: Normal Variation } ( 4. Nc3
+{ D24 : Queen's Gambit Accepted: Showalter Variation } 4... c5 ( 4... a6 5. e4
+{ D24 : Queen's Gambit Accepted: Bogoljubov Defense } ) 5. d5 e6 6. e4 exd5 7.
+e5 { D24 : Queen's Gambit Accepted: Gunsberg Defense, Prianishenmo Gambit } ) (
+4. Qa4+ { D23 : Queen's Gambit Accepted: Mannheim Variation } ) 4... e6
+{ D26 : Queen's Gambit Accepted: Normal Variation, Traditional System } ( 4...
+Bg4 { D25 : Queen's Gambit Accepted: Janowski-Larsen Variation } ) ( 4... g6
+{ D25 : Queen's Gambit Accepted: Smyslov Variation } ) ( 4... Be6
+{ D25 : Queen's Gambit Accepted: Winawer Defense } ) 5. Bxc4 c5
+{ D26 : Queen's Gambit Accepted: Classical Defense } 6. O-O
+{ D26 : Queen's Gambit Accepted: Classical Defense, Normal Line } ( 6. Qe2 a6
+7. dxc5 Bxc5 8. O-O Nc6 9. e4 b5 10. e5
+{ D26 : Queen's Gambit Accepted: Classical, Furman Variation } ) 6... a6
+{ D27 : Queen's Gambit Accepted: Classical Defense, Main Line } ( 6... Nc6
+{ D26 : Queen's Gambit Accepted: Classical Defense, Steinitz Variation, Development Variation }
+) ( 6... cxd4
+{ D26 : Queen's Gambit Accepted: Classical Defense, Steinitz Variation, Exchange Variation }
+) 7. Qe2 { D28 : Queen's Gambit Accepted: Classical Defense, Alekhine System }
+( 7. dxc5 Bxc5 { D27 : Queen's Gambit Accepted: Furman Variation } ) ( 7. a4
+{ D27 : Queen's Gambit Accepted: Classical Defense, Rubinstein Variation } )
+7... b5
+{ D28 : Queen's Gambit Accepted: Classical Defense, Alekhine System (Except Main Line) }
+8. Bb3 Nc6 ( 8... Bb7
+{ D29 : Queen's Gambit Accepted: Classical Defense, Alekhine System, Main Line }
+9. Rd1 Nbd7 10. Nc3 Bd6
+{ D29 : Queen's Gambit Accepted: Classical Defense, Alekhine System, Smyslov Variation }
+) 9. Rd1 c4 10. Bc2 Nb4 11. Nc3 Nxc2 12. Qxc2 Bb7 13. d5 Qc7
+{ D28 : Queen's Gambit Accepted: Classical, Flohr Variation } ) ( 2... e5
+{ D08 : Queen's Gambit Declined: Albin Countergambit } 3. dxe5 d4 4. Nf3
+{ D08 : Queen's Gambit Declined: Albin Countergambit, Normal Line } ( 4. e3
+Bb4+ 5. Bd2 dxe3
+{ D08 : Queen's Gambit Declined: Albin Countergambit, Lasker Trap } ) 4... Nc6
+( 4... c5
+{ D08 : Queen's Gambit Declined: Albin Countergambit, Tartakower Defense } ) 5.
+Nbd2 { D08 : Queen's Gambit Declined: Albin Countergambit, Modern Line } ( 5.
+g3 { D09 : Queen's Gambit Declined: Albin Countergambit, Fianchetto Variation }
+5... Be6
+{ D09 : Queen's Gambit Declined: Albin Countergambit, Fianchetto Variation, Be6 Line }
+( 5... Bf5
+{ D09 : Queen's Gambit Declined: Albin Countergambit, Fianchetto Variation, Bf5 Line }
+) ( 5... Bg4
+{ D09 : Queen's Gambit Declined: Albin Countergambit, Fianchetto Variation, Bg4 Line }
+) ) 5... Bg4 ( 5... Qe7
+{ D08 : Queen's Gambit Declined: Albin Countergambit, Balogh Variation } ) (
+5... f6
+{ D08 : Queen's Gambit Declined: Albin Countergambit, Janowski Variation } ) 6.
+h3 Bxf3 7. Nxf3 Bb4+ 8. Bd2 Qe7
+{ D08 : Queen's Gambit Declined: Albin Countergambit, Krenosz Variation } ) (
+2... Nc6 { D07 : Queen's Gambit Declined: Chigorin Defense } 3. cxd5 ( 3. Nc3
+{ D07 : Queen's Gambit Declined: Chigorin Defense } 3... dxc4
+{ D07 : Queen's Gambit Declined: Chigorin Defense } ( 3... e5
+{ D07 : Queen's Gambit Declined: Chigorin Defense, Tartakower Gambit } ) 4. Nf3
+{ D07 : Queen's Gambit Declined: Chigorin Defense, Janowski Variation } 4...
+Nf6 { D07 : Queen's Gambit Declined: Chigorin Defense, Modern Gambit } ) ( 3.
+Nf3 Bg4 { D07 : Queen's Gambit Declined: Chigorin Defense, Main Line } ( 3...
+e5 { D07 : Queen's Gambit Declined: Chigorin Defense, Lazard Gambit } ) 4. Qa4
+{ D07 : Queen's Gambit Declined: Chigorin Defense, Main Line, Alekhine Variation }
+) 3... Qxd5
+{ D07 : Queen's Gambit Declined: Chigorin Defense, Exchange Variation } 4. e3
+e5 5. Nc3 Bb4 6. Bd2 Bxc3 7. Bxc3 exd4 8. Ne2
+{ D07 : Queen's Gambit Declined: Chigorin Defense, Exchange Variation, Costa's Line }
+) ( 2... c5 { D06 : Queen's Gambit Declined: Austrian Defense } 3. cxd5 ( 3.
+dxc5 d4
+{ D06 : Queen's Gambit Declined: Austrian Attack, Salvio Countergambit } ) 3...
+Nf6 { D06 : Queen's Gambit Declined: Austrian Defense, Gusev Countergambit } 4.
+e4 Nxe4 5. dxc5 Qa5+
+{ D06 : Queen's Gambit Declined: Austrian Defense, Haberditz Variation } ) (
+2... Bf5 { D06 : Queen's Gambit Declined: Baltic Defense } 3. cxd5 ( 3. Nc3 e6
+4. Nf3 ( 4. Qb3
+{ D06 : Queen's Gambit Declined: Baltic Defense, Queen Attack Deferred } ) 4...
+Nc6 { D06 : Queen's Gambit Declined: Baltic Defense, Pseudo-Chigorin } ) ( 3.
+Qb3 { D06 : Queen's Gambit Declined: Baltic Defense, Queen Attack } ) 3... Bxb1
+4. Qa4+ c6 5. dxc6 Nxc6
+{ D06 : Queen's Gambit Declined: Baltic Defense, Argentinian Gambit } ) ( 2...
+Nf6 { D06 : Queen's Gambit Declined: Marshall Defense } 3. cxd5 c6
+{ D06 : Queen's Gambit Declined: Marshall Defense, Tan Gambit } ) ( 2... b5
+{ D06 : Queen's Gambit Declined: Zilbermints Gambit } ) 3. Nc3
+{ D10 : Slav Defense } ( 3. Nf3 { D11 : Slav Defense: Modern Line } 3... Nf6
+{ D11 : Slav Defense: Modern } 4. Nc3
+{ D15 : Slav Defense: Three Knights Variation } ( 4. cxd5 cxd5
+{ D13 : Slav Defense: Exchange Variation } 5. Nc3 Nc6 6. Bf4 Bf5 7. e3 e6 8.
+Qb3 Bb4 { D14 : Slav Defense: Exchange Variation, Trifunovic Variation } ) ( 4.
+Qc2 e6 5. Nbd2 Be7 6. g3 Nbd7 7. Bg2 O-O 8. O-O b5
+{ E09 : Catalan Opening: Closed Variation, Rabinovich Variation } ) ( 4. e3
+{ D11 : Slav Defense: Quiet Variation } 4... Bf5
+{ D12 : Slav Defense: Quiet Variation, Schallopp Defense } ( 4... e6 5. Nbd2
+{ D30 : Semi-Slav Defense: Quiet Variation } 5... Nbd7
+{ D30 : Semi-Slav Defense: Quiet Variation } ( 5... Ne4 6. Bd3 f5
+{ D30 : Queen's Gambit Declined: Stonewall Variation } ) 6. Bd3 c5
+{ D30 : Queen's Gambit Declined: Semmering Variation } ) ( 4... Bg4
+{ D11 : Slav Defense: Quiet Variation, Pin Defense } ) 5. cxd5 cxd5 6. Qb3 Qc8
+7. Bd2 e6 8. Na3 { D12 : Queen's Gambit Declined: Slav, Landau Variation } ) (
+4. Bg5 { D11 : Slav Defense: Bonet Gambit } ) ( 4. Nbd2
+{ D11 : Slav Defense: Breyer Variation } ) 4... dxc4
+{ D15 : Slav Defense: Two Knights Attack } ( 4... e6
+{ D43 : Semi-Slav Defense } 5. e3 ( 5. Bg5 dxc4
+{ D44 : Semi-Slav Defense Accepted } ( 5... Nbd7 6. e3
+{ D52 : Queen's Gambit Declined } 6... Qa5
+{ D52 : Queen's Gambit Declined: Cambridge Springs Defense } 7. Nd2 ( 7. cxd5
+{ D52 : Queen's Gambit Declined: Cambridge Springs Defense } 7... Nxd5
+{ D52 : Queen's Gambit Declined: Cambridge Springs Defense, Yugoslav Variation }
+) 7... Bb4 ( 7... dxc4
+{ D52 : Queen's Gambit Declined: Cambridge Springs Defense, Rubinstein Variation }
+) 8. Qc2
+{ D52 : Queen's Gambit Declined: Cambridge Springs Defense, Bogoljubov Variation }
+) ( 5... h6 6. Bxf6 ( 6. Bh4 { D43 : Semi-Slav Defense: Anti-Moscow Gambit } )
+6... Qxf6 7. Qb3 { D43 : Queen's Gambit Declined: Hastings Variation } ) 6. e4
+{ D44 : Semi-Slav Defense: Botvinnik Variation } 6... b5 7. e5 h6 8. Bh4 g5 9.
+Nxg5 { D44 : Semi-Slav Defense: Botvinnik Variation } ( 9. exf6 gxh4 10. Ne5
+{ D44 : Semi-Slav Defense: Botvinnik Variation, Ekstrom Variation } ) 9... hxg5
+10. Bxg5 Nbd7 11. g3
+{ D44 : Semi-Slav Defense: Botvinnik Variation, Lilienthal Variation } ) 5...
+Nbd7 6. Bd3 ( 6. Qc2 Bd6 7. e4
+{ D45 : Semi-Slav Defense: Stoltz Variation, Center Variation } ( 7. g4
+{ D45 : Semi-Slav Defense: Stoltz Variation, Shabalov Attack } ) 7... dxe4 8.
+Nxe4 Nxe4 9. Qxe4 e5 10. dxe5
+{ D45 : Semi-Slav Defense: Stoltz Variation, Center Variation, Mikhalchishin Line }
+) 6... dxc4 7. Bxc4 b5 8. Bd3 a6 ( 8... b4
+{ D47 : Semi-Slav Defense: Meran Variation, Lundin Variation } ) 9. e4 c5 10.
+e5 ( 10. d5 { D48 : Semi-Slav Defense: Meran Variation, Reynolds' Variation } )
+10... cxd4 11. Nxb5 Nxe5
+{ D49 : Semi-Slav Defense: Meran Variation, Sozin Variation } ) ( 4... a6
+{ D15 : Slav Defense: Chameleon Variation } 5. c5
+{ D15 : Slav Defense: Chameleon Variation, Advance System } ) ( 4... Qb6
+{ D15 : Slav Defense: SÃ¼chting Variation } ) ( 4... g6
+{ D90 : Slav Defense: Schlechter Variation } ) 5. a4
+{ D16 : Slav Defense: Alapin Variation } ( 5. e4
+{ D15 : Slav Defense: Geller Gambit } 5... b5 6. e5
+{ D15 : Slav Defense: Geller Gambit } ) ( 5. e3
+{ D15 : Slav Defense: Alekhine Variation } ) 5... Bf5
+{ D17 : Slav Defense: Czech Variation } ( 5... Na6
+{ D16 : Slav Defense: Smyslov Variation } 6. e4 Bg4
+{ D16 : Queen's Gambit Declined: Slav, Smyslov Variation } ) ( 5... e6
+{ D16 : Slav Defense: Soultanbeieff Variation } ) ( 5... Bg4
+{ D16 : Slav Defense: Steiner Variation } ) 6. Ne5
+{ D17 : Slav Defense: Czech Variation, Krause Attack } ( 6. e3
+{ D18 : Slav Defense: Czech Variation, Classical System } 6... e6 ( 6... Na6
+{ D18 : Slav Defense: Czech Variation, Lasker Variation } ) 7. Bxc4 Bb4 8. O-O
+{ D19 : Queen's Gambit Declined: Slav, Dutch Variation } 8... O-O 9. Qe2
+{ D19 : Slav Defense: Czech Variation, Classical System, Main Line } 9... Ne4
+10. g4 { D19 : Queen's Gambit Declined: Slav, Dutch, SÃ¤misch Variation } ) (
+6. Nh4 { D17 : Slav Defense: Czech Variation, Bled Attack } ) 6... Nbd7 ( 6...
+e6 { D17 : Slav Defense: Czech Variation, Wiesbaden Variation } 7. f3 Bb4 8. e4
+{ D17 : Slav Defense: Czech Variation, Wiesbaden Variation, Sharp Line } ) (
+6... Na6 7. e4
+{ D17 : Slav Defense: Czech Variation, Krause Attack, Fazekas Gambit } ) 7.
+Nxc4 Qc7 8. g3 e5 { D17 : Slav Defense: Czech Variation, Carlsbad Variation }
+9. dxe5 Nxe5 10. Bf4 Nfd7 11. Bg2 g5
+{ D17 : Slav Defense: Czech Variation, Carlsbad Variation, Morozevich Variation }
+) ( 3. cxd5 { D10 : Slav Defense: Exchange Variation } 3... cxd5 4. Nc3 Nf6 5.
+Nf3 Nc6 6. Bf4 Bf5 { D14 : Slav Defense: Exchange Variation, Symmetrical Line }
+) 3... Nf6 ( 3... dxc4 { D10 : Slav Defense } 4. e4
+{ D10 : Slav Defense: Slav Gambit, Alekhine Attack } ) ( 3... e5
+{ D10 : Slav Defense: Winawer Countergambit } 4. e4
+{ D10 : Slav Defense: Winawer Countergambit, Anti-Winawer Gambit } ) 4. Nf3 (
+4. e3 e6 ( 4... g6 5. Nf3 Bg7 6. Bd3 O-O 7. O-O Bf5
+{ D94 : GrÃ¼nfeld Defense: Flohr Defense } ( 7... Bg4
+{ D94 : GrÃ¼nfeld Defense: Smyslov Defense } ) ) 5. Nf3
+{ D45 : Semi-Slav Defense: Main Line } 5... Nbd7
+{ D45 : Semi-Slav Defense: Normal Variation } ( 5... a6
+{ D45 : Semi-Slav Defense: Accelerated Meran Variation } ) 6. Bd3
+{ D46 : Semi-Slav Defense: Main Line } ( 6. Qc2
+{ D45 : Semi-Slav Defense: Stoltz Variation } ) 6... dxc4 ( 6... Be7
+{ D46 : Semi-Slav Defense: Bogoljubov Variation } ) ( 6... Bd6
+{ D46 : Semi-Slav Defense: Chigorin Defense } ) ( 6... Bb4
+{ D46 : Semi-Slav Defense: Romih Variation } ) 7. Bxc4
+{ D47 : Semi-Slav Defense: Semi-Meran Variation } 7... b5
+{ D47 : Semi-Slav Defense: Meran Variation } 8. Bd3 Bb7
+{ D47 : Semi-Slav Defense: Meran Variation, Wade Variation } ( 8... a6
+{ D48 : Semi-Slav Defense: Meran Variation } 9. e4 c5
+{ D48 : Semi-Slav Defense: Meran Variation } 10. e5
+{ D48 : Semi-Slav Defense: Meran Variation, Old Variation } 10... cxd4 11. Nxb5
+{ D49 : Semi-Slav Defense: Meran Variation, Blumenfeld Variation } 11... Nxe5 (
+11... Ng4 { D49 : Semi-Slav Defense: Meran Variation, Rabinovich Variation } )
+12. Nxe5 axb5 13. Qf3
+{ D49 : Semi-Slav Defense: Meran Variation, Stahlberg Variation } ) 9. e4 b4
+10. Na4 c5 11. e5 Nd5
+{ D47 : Semi-Slav Defense: Meran Variation, Wade Variation, Larsen Variation }
+12. O-O cxd4 13. Nxd4
+{ D47 : Semi-Slav Defense: Meran Variation, Wade Variation, Kaidanov Gambit } )
+4... e6 5. e3 Nbd7 6. Bd3 dxc4 7. Bxc4 b5 8. Bd3 a6 9. e4 c5 10. e5 cxd4 11.
+Nxb5 Nxe5 12. Nxe5 axb5 13. O-O Qd5 14. Qe2 Ba6 15. Bg5
+{ D49 : Semi-Slav Defense: Meran Variation, Rellstab Attack } *

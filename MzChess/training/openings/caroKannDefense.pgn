@@ -1,0 +1,116 @@
+[Event "?"]
+[Site "ECO Tables"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Niklas Fiekas/White"]
+[Black "Niklas Fiekas/Black"]
+[Result "*"]
+
+{ Openings starting with  e4 c6 } 1. e4 c6 { B10 : Caro-Kann Defense } 2. d4
+{ B12 : Caro-Kann Defense } ( 2. d3
+{ B10 : Caro-Kann Defense: Breyer Variation } 2... d5 3. Nd2 g6 4. Ngf3 Bg7 5.
+g3 e5 6. Bg2 Ne7 7. O-O O-O 8. b4
+{ B10 : Caro-Kann Defense: Breyer Variation, Stein Attack } ) ( 2. c4
+{ B10 : Caro-Kann Defense: Accelerated Panov Attack } 2... d5
+{ B10 : Caro-Kann Defense: Accelerated Panov Attack } ( 2... e5
+{ B10 : Caro-Kann Defense: Accelerated Panov Attack, Open Variation } ) 3. exd5
+( 3. cxd5 cxd5 4. Qb3
+{ B10 : Caro-Kann Defense: Accelerated Panov Attack, Van Weersel Attack } ) (
+3. e5 { B10 : Caro-Kann Defense: Toikkanen Gambit } ) 3... cxd5 ( 3... Qxd5
+{ B10 : Caro-Kann Defense: Accelerated Panov Attack, Pseudo-Scandinavian } ) 4.
+cxd5 Nf6
+{ B10 : Caro-Kann Defense: Accelerated Panov Attack, Modern Variation } ) ( 2.
+Nc3 { B10 : Caro-Kann Defense } 2... d5 { B10 : Caro-Kann Defense } 3. Nf3
+{ B10 : Caro-Kann Defense: Two Knights Attack } ( 3. d3 dxe4 4. Bg5
+{ B10 : Caro-Kann Defense: Scorpion-Horus Gambit } ) ( 3. Qf3
+{ B10 : Caro-Kann Defense: Goldman Variation } ) 3... Bg4
+{ B11 : Caro-Kann Defense: Two Knights Attack, Mindeno Variation } ( 3... dxe4
+4. Ng5 { B10 : Caro-Kann Defense: Hector Gambit } ) 4. h3 Bxf3
+{ B11 : Caro-Kann Defense: Two Knights Attack, Mindeno Variation, Exchange Line }
+( 4... Bh5
+{ B11 : Caro-Kann Defense: Two Knights Attack, Mindeno Variation, Retreat Line }
+) ) ( 2. Bc4 { B10 : Caro-Kann Defense: Hillbilly Attack } 2... d5 3. Bb3 dxe4
+4. Qh5 { B10 : Caro-Kann Defense: Hillbilly Attack, Schaeffer Gambit } ) ( 2.
+g4 { B10 : Caro-Kann Defense: Spike Variation } 2... d5 3. Nc3 dxe4 4. d3
+{ B10 : Caro-Kann Defense: Spike Variation, Scorpion-Grob Gambit } ) ( 2. b4 d5
+( 2... e5 3. Bb2 { B10 : Caro-Kann Defense: Labahn Attack, Polish Variation } )
+3. b5 { B10 : Caro-Kann Defense: Labahn Attack, Double Gambit } ) ( 2. b3
+{ B10 : Caro-Kann Defense: Euwe Attack } ) 2... d5 { B12 : Caro-Kann Defense }
+( 2... Na6 { B12 : Caro-Kann Defense: De Bruycker Defense } 3. Nc3 Nc7
+{ B12 : Caro-Kann Defense: De Bruycker Defense } ) ( 2... Nf6
+{ B12 : Caro-Kann Defense: Masi Variation } ) ( 2... f5
+{ B12 : Caro-Kann Defense: Massachusetts Defense } ) 3. Nd2
+{ B12 : Caro-Kann Defense: Modern Variation } ( 3. exd5
+{ B13 : Caro-Kann Defense: Exchange Variation } 3... cxd5 4. c4
+{ B13 : Caro-Kann Defense: Panov Attack } ( 4. Bd3 Nc6 5. c3 Nf6 6. Bf4
+{ B13 : Caro-Kann Defense: Exchange Variation, Rubinstein Variation } ) ( 4. g4
+{ B13 : Caro-Kann Defense: Exchange Variation, Bulla Attack } ) 4... Nf6 5. Nc3
+{ B13 : Caro-Kann Defense: Panov Attack } ( 5. c5
+{ B13 : Caro-Kann Defense: Panov Attack, Gunderam Attack } ) 5... Nc6
+{ B13 : Caro-Kann Defense: Panov Attack, Modern Defense } ( 5... e6
+{ B14 : Caro-Kann Defense: Panov Attack } 6. Nf3 Bb4
+{ B14 : Nimzo-Indian Defense: Panov Attack, Main Line } ) ( 5... g6
+{ B14 : Caro-Kann Defense: Panov Attack, Fianchetto Defense } 6. cxd5 Bg7
+{ B14 : Caro-Kann Defense: Panov Attack, Fianchetto Defense, Fianchetto Gambit }
+) 6. Bg5 ( 6. Nf3 Bg4
+{ B13 : Caro-Kann Defense: Panov Attack, Modern Defense, Mieses Line } ) 6...
+dxc4 ( 6... e6
+{ B13 : Caro-Kann Defense: Panov Attack, Modern Defense, Carlsbad Line } ) (
+6... Qa5
+{ B13 : Caro-Kann Defense: Panov Attack, Modern Defense, Czerniak Line } ) (
+6... Qb6
+{ B13 : Caro-Kann Defense: Panov Attack, Modern Defense, Reifir-Spielmann Line }
+) 7. d5 Na5 { B13 : Caro-Kann Defense: Panov-Botvinnik, Herzog Defense } ) ( 3.
+e5 { B12 : Caro-Kann Defense: Advance Variation } 3... Bf5 ( 3... c5
+{ B12 : Caro-Kann Defense: Advance Variation, Botvinnik-Carls Defense } ) 4.
+Nc3 { B12 : Caro-Kann Defense: Advance Variation, Van der Wiel Attack } ( 4. c3
+e6 5. Be2 { B12 : Caro-Kann Defense: Advance, Short Variation } ) ( 4. g4
+{ B12 : Caro-Kann Defense: Advance Variation, Bayonet Attack } ) ( 4. Ne2
+{ B12 : Caro-Kann Defense: Advance Variation, Bronstein Variation } ) ( 4. b4
+{ B12 : Caro-Kann Defense: Advance Variation, Prins Attack } ) ( 4. Nf3
+{ B12 : Caro-Kann Defense: Advance Variation, Short Variation } ) ( 4. h4
+{ B12 : Caro-Kann Defense: Advance Variation, Tal Variation } ) 4... e6 ( 4...
+Qb6
+{ B12 : Caro-Kann Defense: Advance Variation, Van der Wiel Attack, Dreyev Defense }
+) 5. g4 Bg6 6. Nge2 c5 7. h4
+{ B12 : Caro-Kann Defense: Advance Variation, Van der Wiel Attack } ) ( 3. f3
+{ B12 : Caro-Kann Defense: MarÃ³czy Variation } 3... dxe4 4. fxe4 e5 5. Nf3
+exd4 6. Bc4 { B12 : Caro-Kann Defense: MarÃ³czy Variation, MarÃ³czy Gambit } )
+( 3. Nc3 { B15 : Caro-Kann Defense } 3... dxe4 ( 3... b5
+{ B15 : Caro-Kann Defense: Gurgenidze Counterattack } ) ( 3... g6
+{ B15 : Caro-Kann Defense: Gurgenidze System } ) 4. Nxe4 ( 4. f3
+{ B15 : Caro-Kann Defense: Rasa-Studier Gambit } ) ( 4. Bc4
+{ B15 : Caro-Kann Defense: von Hennig Gambit } ) 4... Nf6 ( 4... Nd7 5. Nf3
+Ngf6 6. Ng3
+{ B17 : Caro-Kann Defense: Karpov Variation, Modern Variation, Kasparov Attack }
+) 5. Nxf6+ ( 5. Bd3 { B15 : Caro-Kann Defense: Alekhine Gambit } ) 5... exf6
+{ B15 : Caro-Kann Defense: Tartakower Variation } ( 5... gxf6
+{ B16 : Caro-Kann Defense: Bronstein-Larsen Variation } ) 6. Bc4
+{ B15 : Caro-Kann Defense: Forgacs Variation } ) ( 3. Bd3 Nf6 4. e5 Nfd7 5. e6
+{ B12 : Caro-Kann Defense: Mieses Attack, Landau Gambit } ) ( 3. Nf3 dxe4 4.
+Ng5 { B12 : Caro-Kann Defense: Ulysses Gambit } ) ( 3. Be3
+{ B12 : Caro-Kann Defense: Mieses Gambit } ) 3... dxe4 ( 3... Qb6
+{ B12 : Caro-Kann Defense: Edinburgh Variation } ) 4. Nxe4
+{ B15 : Caro-Kann Defense: Main Line } 4... Bf5
+{ B18 : Caro-Kann Defense: Classical Variation } ( 4... Nd7
+{ B17 : Caro-Kann Defense: Karpov Variation } 5. Ng5
+{ B17 : Caro-Kann Defense: Karpov Variation, Modern Variation } ( 5. Bc4 Ngf6
+6. Ng5 ( 6. Nxf6+ Nxf6
+{ B17 : Caro-Kann Defense: Karpov Variation, Tiviakov-Fischer Attack } ) 6...
+e6 7. Qe2 Nb6 { B17 : Caro-Kann Defense: Karpov Variation, Smyslov Variation }
+8. Bb3
+{ B17 : Caro-Kann Defense: Karpov Variation, Smyslov Variation, Main Line } )
+5... Ngf6 ( 5... Ndf6
+{ B17 : Caro-Kann Defense: Karpov Variation, Modern Variation, Ivanchuk Defense }
+) 6. Bd3 e6 7. N1f3 Bd6 8. Qe2 h6 9. Ne4 Nxe4 10. Qxe4
+{ B17 : Caro-Kann Defense: Karpov Variation, Modern Main Line } ) ( 4... h6
+{ B15 : Caro-Kann Defense: Finnish Variation } ) 5. Ng3 Bg6 6. h4
+{ B18 : Caro-Kann Defense: Classical Variation, Main Line } ( 6. Nh3
+{ B18 : Caro-Kann Defense: Classical Variation, Flohr Variation } ) ( 6. f4
+{ B18 : Caro-Kann Defense: Classical Variation, MarÃ³czy Attack } ) 6... h6 7.
+Nf3 Nd7 { B19 : Caro-Kann Defense: Classical Variation } 8. h5
+{ B19 : Caro-Kann Defense: Classical Variation, Spassky Variation } 8... Bh7 9.
+Bd3 Bxd3 10. Qxd3 e6 ( 10... Ngf6 11. Bd2 e6 12. O-O-O Bd6
+{ B19 : Caro-Kann Defense: Classical Variation, Seirawan Variation } ) 11. Bd2
+Ngf6 12. O-O-O Be7
+{ B19 : Caro-Kann Defense: Classical Variation, Lobron System } *

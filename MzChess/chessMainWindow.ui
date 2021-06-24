@@ -1,0 +1,888 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>973</width>
+    <height>753</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MzChess</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="layoutWidget">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QBoardViewClass" name="boardGraphicsView">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>5</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>100</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="materialLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Chess Leipzig</family>
+              <pointsize>20</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="turnFrame">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>2</number>
+       </property>
+       <widget class="QWidget" name="tabGame">
+        <attribute name="title">
+         <string>Game</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="GameTreeView" name="gameTreeViewWidget">
+           <column>
+            <property name="text">
+             <string notr="true">1</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tabHeader">
+        <attribute name="title">
+         <string>Header</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="GameHeaderView" name="gameHeaderTableView">
+           <property name="editTriggers">
+            <set>QAbstractItemView::EditKeyPressed</set>
+           </property>
+           <property name="columnCount">
+            <number>2</number>
+           </property>
+           <attribute name="horizontalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
+           <attribute name="horizontalHeaderStretchLastSection">
+            <bool>true</bool>
+           </attribute>
+           <column/>
+           <column/>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tabDatabase">
+        <attribute name="title">
+         <string>Database</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="GameListTableView" name="gameListTableView">
+           <property name="font">
+            <font>
+             <family>Courier</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tabScorePlot">
+        <attribute name="title">
+         <string>Score Plot</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="ScorePlot" name="scorePlotGraphicsView"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tabLog">
+        <attribute name="title">
+         <string>Log</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QUCIEdit" name="uciTextEdit"/>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>973</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuRecent_PGN">
+     <property name="title">
+      <string>Recent</string>
+     </property>
+     <addaction name="actionbla"/>
+    </widget>
+    <widget class="QMenu" name="menuEncoding">
+     <property name="title">
+      <string>Encoding</string>
+     </property>
+     <addaction name="actionUTF_8"/>
+     <addaction name="actionISO_8859_1"/>
+     <addaction name="actionASCII"/>
+    </widget>
+    <addaction name="menuEncoding"/>
+    <addaction name="actionOpen_PGN"/>
+    <addaction name="menuRecent_PGN"/>
+    <addaction name="actionAppend_to_DB"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_PGN"/>
+    <addaction name="actionSave_Game"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionCopy_PGN"/>
+    <addaction name="actionPaste_PGN"/>
+    <addaction name="separator"/>
+    <addaction name="actionCopy_FEN"/>
+    <addaction name="actionPaste_FEN"/>
+    <addaction name="separator"/>
+    <addaction name="actionNext_Move"/>
+    <addaction name="actionPrevious_Move"/>
+    <addaction name="actionUndo_Last_Move"/>
+    <addaction name="separator"/>
+    <addaction name="actionNext_Variant"/>
+    <addaction name="actionPrevious_Variant"/>
+    <addaction name="actionPromote_Variant"/>
+    <addaction name="actionPromote_Variant_to_Main"/>
+    <addaction name="actionDemote_Variant"/>
+    <addaction name="actionDelete_Variant"/>
+   </widget>
+   <widget class="QMenu" name="menuGame">
+    <property name="title">
+     <string>Game</string>
+    </property>
+    <widget class="QMenu" name="menuEnd_Game">
+     <property name="title">
+      <string>End Game</string>
+     </property>
+     <addaction name="actionWhite_wins"/>
+     <addaction name="action0_1"/>
+     <addaction name="action1_2_1_2"/>
+    </widget>
+    <addaction name="actionNew_Game"/>
+    <addaction name="actionSelect_Header_Elements"/>
+    <addaction name="menuEnd_Game"/>
+    <addaction name="separator"/>
+    <addaction name="actionFlip_Board"/>
+    <addaction name="separator"/>
+    <addaction name="actionShow_Options"/>
+    <addaction name="actionWarn_of_Danger"/>
+   </widget>
+   <widget class="QMenu" name="menuEngine">
+    <property name="title">
+     <string>Engine</string>
+    </property>
+    <widget class="QMenu" name="menuSelect_Engine">
+     <property name="title">
+      <string>Select Engine</string>
+     </property>
+     <addaction name="separator"/>
+    </widget>
+    <widget class="QMenu" name="menuSearch_Depth">
+     <property name="title">
+      <string>Search Depth</string>
+     </property>
+     <addaction name="action5_Moves"/>
+     <addaction name="action10_Moves"/>
+     <addaction name="action15_Moves"/>
+     <addaction name="action20_Moves"/>
+     <addaction name="action25_Moves"/>
+    </widget>
+    <widget class="QMenu" name="menuBlunder_Limit">
+     <property name="title">
+      <string>Blunder Limit</string>
+     </property>
+     <addaction name="actionBlNone"/>
+     <addaction name="separator"/>
+     <addaction name="action0_5_pawns"/>
+     <addaction name="action1_pawn"/>
+     <addaction name="action1_5_pawns"/>
+     <addaction name="action2_0_pawns"/>
+     <addaction name="action2_5_pawns"/>
+     <addaction name="action3_0_pawns"/>
+    </widget>
+    <widget class="QMenu" name="menuAnnotate_Variants">
+     <property name="title">
+      <string>Annotate Variants</string>
+     </property>
+     <addaction name="actionAvNone"/>
+     <addaction name="actionAll"/>
+     <addaction name="separator"/>
+     <addaction name="action2_Halfmoves"/>
+     <addaction name="action4_Halfmoves"/>
+     <addaction name="action6_Halfmoves"/>
+    </widget>
+    <widget class="QMenu" name="menuNumber_of_Annotations">
+     <property name="title">
+      <string># Annotations</string>
+     </property>
+     <addaction name="action1"/>
+     <addaction name="action2"/>
+     <addaction name="action3"/>
+    </widget>
+    <addaction name="menuSelect_Engine"/>
+    <addaction name="menuSearch_Depth"/>
+    <addaction name="separator"/>
+    <addaction name="actionAnnotate_Last_Move"/>
+    <addaction name="actionAnnotate_All"/>
+    <addaction name="menuNumber_of_Annotations"/>
+    <addaction name="menuBlunder_Limit"/>
+    <addaction name="menuAnnotate_Variants"/>
+    <addaction name="separator"/>
+    <addaction name="actionShow_Scores"/>
+    <addaction name="actionShow_Hints"/>
+    <addaction name="separator"/>
+    <addaction name="actionConfigureEngine"/>
+    <addaction name="actionDebugEngine"/>
+   </widget>
+   <widget class="QMenu" name="menuDatabase">
+    <property name="title">
+     <string>Database</string>
+    </property>
+    <addaction name="actionNew_PGN"/>
+    <addaction name="actionClose_PGN"/>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_Game"/>
+    <addaction name="actionRemove_Games"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionHelp"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuDatabase"/>
+   <addaction name="menuGame"/>
+   <addaction name="menuEngine"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="actionCopy_FEN">
+   <property name="text">
+    <string>Copy FEN</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+C</string>
+   </property>
+  </action>
+  <action name="actionPaste_FEN">
+   <property name="text">
+    <string>Paste FEN</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+V</string>
+   </property>
+  </action>
+  <action name="actionCopy_PGN">
+   <property name="text">
+    <string>Copy PGN</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionPaste_PGN">
+   <property name="text">
+    <string>Paste PGN</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionNew_Game">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionWhite_wins">
+   <property name="text">
+    <string>1-0</string>
+   </property>
+  </action>
+  <action name="action0_1">
+   <property name="text">
+    <string>0-1</string>
+   </property>
+  </action>
+  <action name="action1_2_1_2">
+   <property name="text">
+    <string>1/2-1/2</string>
+   </property>
+  </action>
+  <action name="actionShow_Options">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Move Options</string>
+   </property>
+  </action>
+  <action name="action5_Moves">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>5 Moves</string>
+   </property>
+  </action>
+  <action name="action10_Moves">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>10 Moves</string>
+   </property>
+  </action>
+  <action name="action15_Moves">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>15 Moves</string>
+   </property>
+  </action>
+  <action name="action20_Moves">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>20 Moves</string>
+   </property>
+  </action>
+  <action name="action25_Moves">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>25 Moves</string>
+   </property>
+  </action>
+  <action name="actionShow_Hints">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Hints</string>
+   </property>
+  </action>
+  <action name="actionNext_Move">
+   <property name="text">
+    <string>Next Move</string>
+   </property>
+   <property name="shortcut">
+    <string>Down</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WidgetShortcut</enum>
+   </property>
+  </action>
+  <action name="actionPrevious_Move">
+   <property name="text">
+    <string>Previous Move</string>
+   </property>
+   <property name="shortcut">
+    <string>Up</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WidgetShortcut</enum>
+   </property>
+  </action>
+  <action name="actionOpen_PGN">
+   <property name="text">
+    <string>Open DB ...</string>
+   </property>
+  </action>
+  <action name="actionSave_PGN">
+   <property name="text">
+    <string>Save DB ...</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionbla">
+   <property name="text">
+    <string>bla</string>
+   </property>
+  </action>
+  <action name="actionAdd_To_DB">
+   <property name="text">
+    <string>Add to DB</string>
+   </property>
+  </action>
+  <action name="actionAppend_to_DB">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Append to DB</string>
+   </property>
+  </action>
+  <action name="actionSave_Game">
+   <property name="text">
+    <string>Save Game ...</string>
+   </property>
+  </action>
+  <action name="actionClose_PGN">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="actionAdd_Game">
+   <property name="text">
+    <string>Add Game</string>
+   </property>
+  </action>
+  <action name="actionRemove_Games">
+   <property name="text">
+    <string>Remove Games</string>
+   </property>
+  </action>
+  <action name="actionNew_PGN">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionFlip_Board">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Flip Board</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionNext_Variant">
+   <property name="text">
+    <string>Next Variant</string>
+   </property>
+   <property name="shortcut">
+    <string>Right</string>
+   </property>
+  </action>
+  <action name="actionPrevious_Variant">
+   <property name="text">
+    <string>Previous Variant</string>
+   </property>
+   <property name="shortcut">
+    <string>Left</string>
+   </property>
+  </action>
+  <action name="actionShow_Scores">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Scores</string>
+   </property>
+  </action>
+  <action name="actionWarn_of_Danger">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Warn of Danger</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionUndo_Last_Move">
+   <property name="text">
+    <string>Undo Last Move</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionAnnotate_Last_Move">
+   <property name="text">
+    <string>Annotate Last Move</string>
+   </property>
+  </action>
+  <action name="actionBlNone">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>None</string>
+   </property>
+  </action>
+  <action name="action0_5_pawns">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>0.5 pawns</string>
+   </property>
+  </action>
+  <action name="action1_pawn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>1 pawn</string>
+   </property>
+  </action>
+  <action name="action1_5_pawns">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>1.5 pawns</string>
+   </property>
+  </action>
+  <action name="action2_0_pawns">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>2 pawns</string>
+   </property>
+  </action>
+  <action name="action2_5_pawns">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>2.5 pawns</string>
+   </property>
+  </action>
+  <action name="action3_0_pawns">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>3 pawns</string>
+   </property>
+  </action>
+  <action name="actionAvNone">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>None</string>
+   </property>
+  </action>
+  <action name="action2_Halfmoves">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>2 Halfmoves</string>
+   </property>
+  </action>
+  <action name="action4_Halfmoves">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>4 Halfmoves</string>
+   </property>
+  </action>
+  <action name="action6_Halfmoves">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>6 Halfmoves</string>
+   </property>
+  </action>
+  <action name="actionAll">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>All</string>
+   </property>
+  </action>
+  <action name="actionConfigureEngine">
+   <property name="text">
+    <string>Configure ...</string>
+   </property>
+  </action>
+  <action name="actionDebugEngine">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Debug</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About ...</string>
+   </property>
+  </action>
+  <action name="actionPromote_Variant">
+   <property name="text">
+    <string>Promote Variant</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionDelete_Variant">
+   <property name="text">
+    <string>Delete Variant</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionAnnotate_All">
+   <property name="text">
+    <string>Annotate All</string>
+   </property>
+  </action>
+  <action name="action1">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>1 variant</string>
+   </property>
+  </action>
+  <action name="action2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>2 variants</string>
+   </property>
+  </action>
+  <action name="action3">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>3 variants</string>
+   </property>
+  </action>
+  <action name="actionAll_2">
+   <property name="text">
+    <string>All</string>
+   </property>
+  </action>
+  <action name="actionUTF_8">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>UTF-8</string>
+   </property>
+  </action>
+  <action name="actionISO_8859_1">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>ISO 8859/1</string>
+   </property>
+  </action>
+  <action name="actionASCII">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>ASCII</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="text">
+    <string>Help ...</string>
+   </property>
+  </action>
+  <action name="actionDemote_Variant">
+   <property name="text">
+    <string>Demote Variant</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionPromote_Variant_to_Main">
+   <property name="text">
+    <string>Promote Variant to Main</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="actionSelect_Header_Elements">
+   <property name="text">
+    <string>Select Header Elements ...</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QBoardViewClass</class>
+   <extends>QGraphicsView</extends>
+   <header>qboardviewclass</header>
+  </customwidget>
+  <customwidget>
+   <class>GameTreeView</class>
+   <extends>QTreeWidget</extends>
+   <header>gametreeview</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GameListTableView</class>
+   <extends>QTableView</extends>
+   <header>gamelisttableview</header>
+  </customwidget>
+  <customwidget>
+   <class>GameHeaderView</class>
+   <extends>QTableWidget</extends>
+   <header>gameheaderview</header>
+  </customwidget>
+  <customwidget>
+   <class>ScorePlot</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">scoreplotgraphicsview</header>
+  </customwidget>
+  <customwidget>
+   <class>QUCIEdit</class>
+   <extends>QTextEdit</extends>
+   <header>uciedit</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

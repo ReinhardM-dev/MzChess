@@ -1,0 +1,488 @@
+[Event "?"]
+[Site "ECO Tables"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Niklas Fiekas/White"]
+[Black "Niklas Fiekas/Black"]
+[Result "*"]
+
+{ Openings starting with  e4 c5 } 1. e4 c5 { B20 : Sicilian Defense } 2. Nc3
+{ B23 : Sicilian Defense: Closed } ( 2. Nf3 { B27 : Sicilian Defense } 2... g6
+{ B27 : Sicilian Defense: Hyperaccelerated Dragon } ( 2... d6
+{ B50 : Sicilian Defense } 3. d4 { B50 : Sicilian Defense } ( 3. c3
+{ B50 : Sicilian Defense: Delayed Alapin } 3... Nf6 4. Be2 Nc6 5. d4 cxd4 6.
+cxd4 Nxe4 { B50 : Sicilian Defense: Delayed Alapin, Basman-Palatnik Gambit } 7.
+d5 Qa5+ 8. Nc3 Nxc3 9. bxc3
+{ B50 : Sicilian Defense: Delayed Alapin, Basman-Palatnik Double Gambit } ) (
+3. Bb5+ { B51 : Sicilian Defense: Moscow Variation } 3... Nc6 ( 3... Bd7
+{ B52 : Sicilian Defense: Canal Attack, Main Line } 4. Bxd7+ Qxd7 5. O-O ( 5.
+c4 { B52 : Sicilian Defense: Moscow Variation, Sokolsky Variation } ) 5... Nc6
+6. c3 Nf6 7. d4 { B52 : Sicilian Defense: Canal Attack, Haag Gambit } ) 4. O-O
+Bd7 5. c3 ( 5. Qe2 g6 6. e5
+{ B51 : Sicilian Defense: Canal Attack, Dorfman Gambit } ) 5... Nf6 6. Re1 a6
+7. Bxc6 Bxc6 8. d4 Bxe4 9. Bg5
+{ B51 : Sicilian Defense: Canal Attack, Moscow Gambit } ) ( 3. g3 b5
+{ B50 : Sicilian Defense: Kotov Gambit } ) ( 3. b4
+{ B50 : Sicilian Defense: Wing Gambit, Deferred Variation } ) 3... cxd4
+{ B50 : Sicilian Defense } ( 3... Nf6
+{ B50 : Sicilian Defense: Modern Variations, Anti-Qxd4 Move Order } 4. dxc5
+Nxe4
+{ B50 : Sicilian Defense: Modern Variations, Anti-Qxd4 Move Order Accepted } )
+4. Nxd4 ( 4. Qxd4 { B53 : Sicilian Defense: Chekhover Variation } 4... Nc6 5.
+Bb5 Qd7 { B53 : Sicilian Defense: Chekhover Variation, Zaitsev Defense } ) ( 4.
+c3 { B50 : Sicilian Defense: Modern Variations, Tartakower } ) 4... Nf6
+{ B54 : Sicilian Defense: Modern Variations, Main Line } ( 4... g6
+{ B54 : Sicilian Defense: Accelerated Dragon } ) 5. Nc3
+{ B56 : Sicilian Defense: Modern Variations } ( 5. f3
+{ B54 : Sicilian Defense: Prins Variation } 5... e5 6. Bb5+
+{ B55 : Sicilian Defense: Prins Variation, Venice Attack } ) 5... g6
+{ B70 : Sicilian Defense: Dragon Variation } ( 5... a6
+{ B90 : Sicilian Defense: Najdorf Variation } 6. Bg5
+{ B94 : Sicilian Defense: Najdorf Variation } ( 6. Be3
+{ B90 : Sicilian Defense: Najdorf Variation, English Attack } 6... e6 ( 6...
+Ng4 { B90 : Sicilian Defense: Najdorf Variation, English Attack, Anti-English }
+) 7. g4
+{ B90 : Sicilian Defense: Scheveningen Variation, Delayed Keres Attack } ( 7.
+Qd2 { B80 : Sicilian Defense: Scheveningen Variation, English Attack } ) ( 7.
+f3 { B90 : Sicilian Defense: Scheveningen Variation, English Attack } ) 7... e5
+8. Nf5 g6 9. g5
+{ B90 : Sicilian Defense: Scheveningen Variation, Delayed Keres Attack, Perenyi Gambit }
+) ( 6. Be2 { B92 : Sicilian Defense: Najdorf Variation, Opocensky Variation }
+6... e5 ( 6... e6
+{ B84 : Sicilian Defense: Scheveningen Variation, Classical Variation } 7. O-O
+Nbd7 { B84 : Sicilian Defense: Najdorf Variation, Scheveningen Variation } (
+7... Qc7
+{ B84 : Sicilian Defense: Scheveningen Variation, Classical Variation } ) ) 7.
+Nb3 Be7 8. O-O Be6
+{ B92 : Sicilian Defense: Najdorf Variation, Opocensky Variation, Modern Line }
+( 8... O-O
+{ B92 : Sicilian Defense: Najdorf Variation, Opocensky Variation, Traditional Line }
+) ) ( 6. f4 { B93 : Sicilian Defense: Najdorf Variation, Amsterdam Variation }
+6... e6 7. Be2 Qc7 8. O-O Nc6
+{ B85 : Sicilian Defense: Scheveningen Variation, Classical Variation, Paulsen Variation }
+) ( 6. Bc4 { B90 : Sicilian Defense: Najdorf Variation, Lipnitsky Attack } 6...
+e6 7. Bb3 b5 { B87 : Sicilian Defense: Sozin Attack, Flank Variation } ) ( 6.
+h3 { B90 : Sicilian Defense: Najdorf Variation, Adams Attack } ) ( 6. g4
+{ B90 : Sicilian Defense: Najdorf Variation, Dekker Gambit } ) ( 6. Rg1
+{ B90 : Sicilian Defense: Najdorf Variation, Freak Attack } ) ( 6. g3
+{ B91 : Sicilian Defense: Najdorf Variation, Zagreb (Fianchetto) Variation } )
+6... Nbd7 ( 6... e6 { B95 : Sicilian Defense: Najdorf Variation } 7. f4
+{ B96 : Sicilian Defense: Najdorf Variation } 7... b5
+{ B96 : Sicilian Defense: Najdorf Variation, Polugaevsky Variation } ( 7... Qb6
+{ B97 : Sicilian Defense: Najdorf Variation, Poisoned Pawn Variation } 8. Qd2
+Qxb2 9. Rb1 Qa3
+{ B97 : Sicilian Defense: Najdorf Variation, Poisoned Pawn Accepted } ) ( 7...
+Be7 { B98 : Sicilian Defense: Najdorf Variation } 8. Qf3 h6 ( 8... Qc7
+{ B98 : Sicilian Defense: Najdorf Variation, Traditional Line } 9. O-O-O Nbd7
+{ B99 : Sicilian Defense: Najdorf Variation, Main Line } ) 9. Bh4 Qc7
+{ B98 : Sicilian Defense: Najdorf Variation, Browne Variation } ( 9... g5
+{ B98 : Sicilian Defense: Najdorf Variation, Goteborg (Argentine) } ) ) ( 7...
+Nc6 { B96 : Sicilian Defense: Najdorf Variation, Neo-Classical Defense } ) 8.
+e5 dxe5 9. fxe5 Qc7 10. Qe2
+{ B96 : Sicilian Defense: Najdorf Variation, Polugaevsky Variation, Simagin Line }
+) 7. Bc4 Qa5 8. Qd2 e6 9. O-O-O b5 10. Bb3 Bb7 11. Rhe1 Nc5 12. e5
+{ B94 : Sicilian Defense: Najdorf Variation, Ivkov Variation } ) ( 5... Nc6
+{ B56 : Sicilian Defense: Classical Variation } 6. Bg5
+{ B60 : Sicilian Defense: Richter-Rauzer Variation } ( 6. Bc4 e6 7. Be3 Be7 8.
+Bb3 O-O 9. O-O Na5 10. f4 b6
+{ B89 : Sicilian Defense: Sozin Attack, Main Line, Sherbakov Variation } ) ( 6.
+Be2 { B58 : Sicilian Defense: Classical Variation } 6... Nxd4 ( 6... e5
+{ B58 : Sicilian Defense: Boleslavsky Variation } ) 7. Qxd4 g6
+{ B58 : Sicilian Defense: Classical Variation, Dragon Transfer } ) ( 6. g3
+{ B56 : Sicilian Defense: Classical Variation, Fianchetto Variation } ) 6... e6
+{ B62 : Sicilian Defense: Richter-Rauzer Variation } ( 6... Bd7
+{ B60 : Sicilian Defense: Richter-Rauzer Variation, Modern Variation } ) 7. Qd2
+{ B63 : Sicilian Defense: Richter-Rauzer Variation, Traditional Variation } (
+7. Qd3 { B62 : Sicilian Defense: Richter-Rauzer Variation } ) ( 7. Nxc6
+{ B62 : Sicilian Defense: Richter-Rauzer Variation, Exchange Variation } ) ( 7.
+Bb5 { B62 : Sicilian Defense: Richter-Rauzer Variation, Vitolins Variation } )
+7... Be7
+{ B63 : Sicilian Defense: Richter-Rauzer Variation, Classical Variation } (
+7... Qb6 { B63 : Sicilian Defense: Richter-Rauzer Variation, Ivanov Variation }
+) ( 7... a6
+{ B66 : Sicilian Defense: Richter-Rauzer Variation, Neo-Modern Variation, Early Deviations }
+) 8. O-O-O Nxd4 ( 8... O-O 9. f4
+{ B64 : Sicilian Defense: Richter-Rauzer Variation, Classical Variation } 9...
+Nxd4 { B65 : Sicilian Defense: Richter-Rauzer Variation, Rauzer Attack } 10.
+Qxd4 { B65 : Sicilian Defense: Richter-Rauzer Variation, Classical Variation }
+) 9. Qxd4 a6 10. f4 b5
+{ B63 : Sicilian Defense: Richter-Rauzer Variation, Classical Variation, Kantscher Line }
+) ( 5... e5 6. Bb5+ { B56 : Sicilian Defense: Venice Attack } ) ( 5... Bd7
+{ B56 : Sicilian Defense: Kupreichik Variation } ) 6. Be3
+{ B72 : Sicilian Defense: Dragon Variation } ( 6. Be2
+{ B70 : Sicilian Defense: Dragon Variation, Classical Variation } 6... Bg7 7.
+O-O O-O ( 7... Nc6 8. Be3
+{ B73 : Sicilian Defense: Dragon Variation, Classical Variation } ) 8. Be3 Nc6
+9. Nb3
+{ B74 : Sicilian Defense: Dragon Variation, Classical Variation, Normal Line }
+( 9. Qd2
+{ B73 : Sicilian Defense: Dragon Variation, Classical Variation, Battery Variation }
+) 9... Be6 10. f4 Na5
+{ B74 : Sicilian Defense: Dragon Variation, Classical Variation, MarÃ³czy Line }
+( 10... Qc8
+{ B74 : Sicilian Defense: Dragon Variation, Classical Variation, Tartakower Line }
+) ) ( 6. f4 { B71 : Sicilian Defense: Dragon Variation, Levenfish Variation }
+6... Nbd7
+{ B71 : Sicilian Defense: Dragon Variation, Levenfish Variation, Main Line } )
+( 6. g3 { B70 : Sicilian Defense: Dragon Variation, Fianchetto Variation } )
+6... Bg7 7. f3
+{ B75 : Sicilian Defense: Dragon Variation, Yugoslav Attack, Early Deviations }
+( 7. Be2 { B72 : Sicilian Defense: Dragon Variation, Classical Variation } 7...
+Nc6 { B72 : Sicilian Defense: Dragon Variation, Classical Variation } 8. Nb3
+{ B72 : Sicilian Defense: Dragon Variation, Classical Variation } ) 7... O-O
+{ B76 : Sicilian Defense: Dragon Variation, Yugoslav Attack } ( 7... Nc6
+{ B75 : Sicilian Defense: Dragon Variation, Yugoslav Attack, Belezky Line } 8.
+Qd2 O-O 9. Bc4 ( 9. O-O-O
+{ B76 : Sicilian Defense: Dragon Variation, Yugoslav Attack, Modern Line } )
+9... Nxd4 ( 9... Nd7
+{ B77 : Sicilian Defense: Dragon Variation, Yugoslav Attack, Sosonko Variation }
+) 10. Bxd4 Be6
+{ B77 : Sicilian Defense: Dragon Variation, Yugoslav Attack, Czerniak Variation }
+) 8. Qd2 Nc6 { B76 : Sicilian Defense: Dragon Variation, Yugoslav Attack } 9.
+Bc4 { B77 : Sicilian Defense: Dragon Variation, Yugoslav Attack, Main Line } (
+9. g4
+{ B76 : Sicilian Defense: Dragon Variation, Yugoslav Attack, Panov Variation }
+) 9... Bd7 { B77 : Sicilian Defense: Dragon Variation, Yugoslav Attack } ( 9...
+a5
+{ B77 : Sicilian Defense: Dragon Variation, Yugoslav Attack, Byrne Variation }
+) 10. O-O-O { B78 : Sicilian Defense: Dragon Variation, Yugoslav Attack } ( 10.
+h4 Qa5 11. O-O-O Rfc8 12. Bb3
+{ B79 : Sicilian Defense: Dragon Variation, Yugoslav Attack } ) 10... Qa5 (
+10... Rc8
+{ B78 : Sicilian Defense: Dragon Variation, Yugoslav Attack, Old Line } ) 11.
+h4 Rfc8 12. Bb3 h5
+{ B79 : Sicilian Defense: Dragon Variation, Yugoslav Attack, Soltis Variation }
+) ( 2... Nc6 { B30 : Sicilian Defense: Old Sicilian } 3. d4
+{ B32 : Sicilian Defense: Open } ( 3. Nc3 e5 4. Bc4 Be7 5. d3 d6 6. Nd2 Bg5
+{ B30 : Sicilian Defense: Closed, Anti-Sveshnikov Variation, Kharlov-Kramnik Line }
+) ( 3. Bb5 { B30 : Sicilian Defense: Nyezhmetdinov-Rossolimo Attack } 3... g6
+{ B31 : Sicilian Defense: Nyezhmetdinov-Rossolimo Attack, Fianchetto Variation }
+( 3... Na5 4. b4
+{ B30 : Sicilian Defense: Nyezhmetdinov-Rossolimo Attack, San Francisco Gambit }
+) ( 3... Nb8
+{ B30 : Sicilian Defense: Rossolimo Variation, Brooklyn Retreat Defense } ) 4.
+O-O Bg7 5. c3 ( 5. Re1 e5 6. b4
+{ B31 : Sicilian Defense: Nyezhmetdinov-Rossolimo Attack, Gurgenidze Variation }
+) 5... e5 ( 5... Nf6 6. d4
+{ B31 : Sicilian Defense: Nyezhmetdinov-Rossolimo Attack, Fianchetto Variation, Lutikov Gambit }
+( 6. Qa4
+{ B31 : Sicilian Defense: Nyezhmetdinov-Rossolimo Attack, Fianchetto Variation, Totsky Attack }
+) ) 6. d4
+{ B31 : Sicilian Defense: Nyezhmetdinov-Rossolimo Attack, Fianchetto Variation, Gufeld Gambit }
+) 3... cxd4 { B32 : Sicilian Defense: Open } ( 3... e6
+{ B32 : Sicilian Defense: Franco-Sicilian Variation } ) 4. Nxd4
+{ B32 : Sicilian Defense: Open } 4... g6
+{ B32 : Sicilian Defense: Accelerated Dragon } ( 4... Nf6
+{ B33 : Sicilian Defense: Open } 5. Nc3 e5
+{ B33 : Sicilian Defense: Lasker-Pelikan Variation } ( 5... d6 6. Bg5 ( 6. Bc4
+{ B57 : Sicilian Defense: Sozin, not Scheveningen } 6... e6
+{ B88 : Sicilian Defense: Sozin Attack, Leonhardt Variation } ( 6... g6 7. Nxc6
+bxc6 8. e5 { B57 : Sicilian Defense: Magnus Smith Trap } ) ( 6... Qb6
+{ B57 : Sicilian Defense: Classical Variation, Anti-Sozin Variation } ) 7. Bb3
+( 7. Be3 { B89 : Sicilian Defense: Sozin Attack, Main Line } 7... Be7 8. Qe2
+{ B89 : Sicilian Defense: Velimirovic Attack } ) 7... Be7 8. Be3 O-O 9. f4
+{ B88 : Sicilian Defense: Sozin Attack, Fischer Variation } ) ( 6. Be2 g6 (
+6... e5 7. Nxc6
+{ B58 : Sicilian Defense: Boleslavsky Variation, Louma Variation } ( 7. Nb3
+{ B59 : Sicilian Defense: Boleslavsky Variation } ) ) 7. Be3 Bg7 8. Qd2
+{ B72 : Sicilian Defense: Dragon Variation, Classical Variation, Amsterdam Variation }
+8... O-O 9. O-O-O
+{ B72 : Sicilian Defense: Dragon Variation, Classical Variation, Grigoriev Variation }
+) ( 6. Nde2 { B56 : Sicilian Defense: Spielmann Variation } ) ( 6. Bd3
+{ B56 : Sicilian Defense: Yates Variation } ) 6... e6 ( 6... Bd7 7. Qd2
+{ B61 : Sicilian Defense: Richter-Rauzer Variation, Modern Variation } ) ( 6...
+g6 { B60 : Sicilian Defense: Richter-Rauzer Variation, Dragon Variation } ) 7.
+Qd2 ( 7. Nb3
+{ B62 : Sicilian Defense: Richter-Rauzer Variation, Podebrady Variation } )
+7... a6 ( 7... Be7 8. O-O-O O-O 9. f4 e5
+{ B64 : Sicilian Defense: Richter-Rauzer Variation, Classical Variation } ) 8.
+O-O-O Bd7
+{ B67 : Sicilian Defense: Richter-Rauzer Variation, Neo-Modern Variation } 9.
+f4 Be7
+{ B68 : Sicilian Defense: Richter-Rauzer Variation, Neo-Modern Variation } 10.
+Nf3 b5 11. Bxf6
+{ B69 : Sicilian Defense: Richter-Rauzer Variation, Neo-Modern Variation, Nyezhmetdinov Attack }
+) ( 5... e6 6. Ndb5 Bc5
+{ B33 : Sicilian Defense: Four Knights Variation, Cobra Variation } ) 6. Ndb5 (
+6. Nxc6
+{ B33 : Sicilian Defense: Lasker-Pelikan Variation, Exchange Variation } ) ( 6.
+Nf3 { B33 : Sicilian Defense: Lasker-Pelikan Variation, Retreat Variation } ) (
+6. Nb3
+{ B33 : Sicilian Defense: Lasker-Pelikan Variation, Schlechter Variation } )
+6... d6 7. Bg5 a6 8. Na3 b5
+{ B33 : Sicilian Defense: Lasker-Pelikan Variation, Sveshnikov Variation } (
+8... Be6 { B33 : Sicilian Defense: Lasker-Pelikan Variation, Bird Variation } )
+9. Bxf6 ( 9. Nd5
+{ B33 : Sicilian Defense: Lasker-Pelikan Variation, Sveshnikov Variation, Chelyabinsk Variation }
+) 9... gxf6 10. Nd5 f5
+{ B33 : Sicilian Defense: Lasker-Pelikan Variation, Sveshnikov Variation } (
+10... Bg7
+{ B33 : Sicilian Defense: Lasker-Pelikan Variation, Sveshnikov Variation, Novosibirsk Variation }
+) 11. Bxb5
+{ B33 : Sicilian Defense: Lasker-Pelikan Variation, Sveshnikov Variation, Peresypkin's Sacrifice }
+) ( 4... Qc7 { B32 : Sicilian Defense: Flohr Variation } 5. Nc3 e6 6. Be3 a6 7.
+f3
+{ B48 : Sicilian Defense: Paulsen Variation, Bastrikov Variation, English Attack }
+) ( 4... e5 { B32 : Sicilian Defense: LÃ¶wenthal Variation } 5. Nb5 d6
+{ B32 : Sicilian Defense: Kalashnikov Variation } ) ( 4... a6 5. c4 e5
+{ B32 : Sicilian Defense: O'Kelly Variation, MarÃ³czy Bind, Geller Line } ) (
+4... Qb6 { B32 : Sicilian Defense: Godiva Variation } ) ( 4... d5
+{ B32 : Sicilian Defense: Nimzo-American Variation } ) 5. Nc3
+{ B34 : Sicilian Defense: Accelerated Dragon, Modern Variation } ( 5. Be3 Bg7
+6. Be2 Nf6 7. Nc3 O-O 8. O-O d6 9. f4 Qb6 10. e5
+{ B73 : Sicilian Defense: Dragon Variation, Classical Variation, Zollner Gambit }
+) ( 5. c4 { B36 : Sicilian Defense: Accelerated Dragon, MarÃ³czy Bind } 5...
+Nf6 ( 5... Bg7
+{ B37 : Sicilian Defense: Accelerated Fianchetto, MarÃ³czy Bind } 6. Be3
+{ B38 : Sicilian Defense: Accelerated Dragon, MarÃ³czy Bind } 6... Nf6 7. Nc3
+Ng4
+{ B39 : Sicilian Defense: Accelerated Dragon, MarÃ³czy Bind, Breyer Variation }
+) 6. Nc3 Nxd4 7. Qxd4 d6
+{ B36 : Sicilian Defense: Accelerated Dragon, MarÃ³czy Bind, Gurgenidze Variation }
+) ( 5. Nxc6 { B34 : Sicilian Defense: Accelerated Dragon, Exchange Variation }
+) 5... Bg7 6. Be3 Nf6 7. Be2 ( 7. Bc4
+{ B35 : Sicilian Defense: Accelerated Dragon, Modern Bc4 Variation } 7... d6
+{ B35 : Sicilian Defense: Dragon Variation, Modern Bc4 Variation } ) 7... O-O
+8. Nb3 ( 8. O-O d6 9. Nb3 a5
+{ B74 : Sicilian Defense: Dragon Variation, Classical Variation, Alekhine Line }
+) 8... d6 9. O-O Be6 10. f4 Na5 11. f5 Bc4 12. Bd3
+{ B74 : Sicilian Defense: Dragon Variation, Classical Variation, Spielmann Variation }
+) ( 2... e6 { B40 : Sicilian Defense: French Variation } 3. d4 ( 3. Nc3 a6 4.
+g3 b5 5. d4 cxd4 6. Nxd4
+{ B40 : Sicilian Defense: Kan Variation, Wing Attack, Fianchetto Variation } )
+( 3. c3 { B40 : Sicilian Defense: Delayed Alapin Variation } 3... Nf6 4. e5 Nd5
+5. d4 Nc6 { B40 : Sicilian Defense: Alapin Variation, Sherzer Variation } ) (
+3. b3 { B40 : Sicilian Defense: French Variation, Westerinen Attack } ) ( 3. c4
+{ B40 : Sicilian Defense: Kramnik Variation } ) ( 3. b4
+{ B40 : Sicilian Defense: Wing Gambit Deferred } ) 3... cxd4
+{ B40 : Sicilian Defense: French Variation, Open } ( 3... d5
+{ B40 : Sicilian Defense: Marshall Counterattack } ) 4. Nxd4 ( 4. c3
+{ B40 : Sicilian Defense: Smith-Morra Gambit Deferred } ) 4... Nc6
+{ B44 : Sicilian Defense: Paulsen Variation } ( 4... Nf6
+{ B40 : Sicilian Defense: French Variation, Normal } 5. Nc3 d6
+{ B80 : Sicilian Defense: Scheveningen Variation } ( 5... Nc6
+{ B40 : Sicilian Defense: Four Knights Variation } 6. Ndb5 ( 6. Nxc6
+{ B40 : Sicilian Defense: Four Knights Variation, Exchange Variation } ) 6...
+Bb4 7. Nd6+ { B45 : Sicilian Defense: Paulsen Variation, American Attack } ) (
+5... Bb4 { B40 : Sicilian Defense: Pin Variation } 6. Bd3 ( 6. e5
+{ B40 : Sicilian Defense: Pin Variation, Koch Variation } ) 6... e5
+{ B40 : Sicilian Defense: Pin Variation, Jaffe Variation } ) ( 5... Qb6
+{ B40 : Sicilian Defense: Gaw-Paw Variation } ) 6. Be2
+{ B83 : Sicilian Defense: Scheveningen Variation, Classical Variation } ( 6. f4
+{ B82 : Sicilian Defense: Scheveningen Variation, Matanovic Attack } 6... Nc6
+7. Be3 Be7 8. Qf3
+{ B82 : Sicilian Defense: Scheveningen Variation, Tal Variation } ) ( 6. g3
+{ B80 : Sicilian Defense: Scheveningen Variation, Fianchetto Variation } ) ( 6.
+Bb5+ { B80 : Sicilian Defense: Scheveningen Variation, Vitolins Variation } ) (
+6. g4 { B81 : Sicilian Defense: Scheveningen Variation, Keres Attack } ) ( 6.
+Bc4 { B86 : Sicilian Defense: Sozin Attack } ) 6... Be7 7. O-O O-O 8. f4 Nc6 9.
+Be3 { B83 : Sicilian Defense: Scheveningen Variation, Modern Variation } 9...
+Bd7 10. Nb3
+{ B83 : Sicilian Defense: Scheveningen Variation, Modern Variation } ) ( 4...
+a6 { B41 : Sicilian Defense: Kan Variation } 5. c4
+{ B41 : Sicilian Defense: Kan Variation, MarÃ³czy Bind, RÃ©ti Variation } ( 5.
+Nc3 { B43 : Sicilian Defense: Kan Variation, Knight Variation } 5... b5
+{ B43 : Sicilian Defense: Kan Variation, Wing Attack } 6. Bd3 Qb6 7. Be3 ( 7.
+Nf3 { B43 : Sicilian Defense: Kan Variation, Wing Attack, Spraggett Attack } )
+7... Bc5 8. Qg4
+{ B43 : Sicilian Defense: Kan Variation, Wing Attack, Christiansen's Dream } )
+( 5. Bd3 { B42 : Sicilian Defense: Kan Variation, Modern Variation } 5... Nf6 (
+5... Bc5 { B42 : Sicilian Defense: Kan Variation, Polugaevsky Variation } ) (
+5... g6 { B42 : Sicilian Defense: Kan Variation, Swiss Cheese Variation } ) 6.
+O-O d6 7. c4 g6 { B42 : Sicilian Defense: Kan Variation, Gipslis Variation } )
+5... Nf6 ( 5... g6
+{ B41 : Sicilian Defense: Kan Variation, MarÃ³czy Bind, Hedgehog Variation } )
+6. Nc3 Bb4 7. Bd3 Nc6
+{ B41 : Sicilian Defense: Kan Variation, MarÃ³czy Bind, Bronstein Variation }
+8. Bc2
+{ B41 : Sicilian Defense: Kan Variation, MarÃ³czy Bind, Bronstein Variation } )
+( 4... Qb6 { B40 : Sicilian Defense: Kveinis Variation } ) ( 4... Bc5
+{ B40 : Sicilian Defense: Paulsen-Basman Defense } ) 5. Nb5
+{ B44 : Sicilian Defense: Paulsen Variation, SzÃ©n Variation } ( 5. Nc3
+{ B45 : Sicilian Defense: Paulsen Variation, Normal Variation } 5... Qc7
+{ B47 : Sicilian Defense: Paulsen Variation, Bastrikov Variation } ( 5... a6
+{ B46 : Sicilian Defense: Paulsen Variation } 6. Be2 Nge7
+{ B46 : Sicilian Defense: Paulsen Variation, Taimanov Variation } ) ( 5... d6
+6. Be2 Nf6 { B83 : Sicilian Defense: Scheveningen Variation, Modern Variation }
+) 6. Be2 ( 6. Ndb5 Qb8 7. Be3 a6 8. Bb6
+{ B47 : Sicilian Defense: Paulsen Variation, Bastrikov Variation, Ponomariov Gambit }
+) ( 6. Be3 { B48 : Sicilian Defense: Paulsen Variation, Bastrikov Variation }
+6... a6 7. Qd2
+{ B48 : Sicilian Defense: Paulsen Variation, Bastrikov Variation, English Attack }
+( 7. Be2 { B49 : Sicilian Defense: Paulsen Variation, Bastrikov Variation } ) )
+6... a6 7. O-O Nf6 8. Be3 ( 8. Kh1 Be7 9. f4 d6 10. a4
+{ B85 : Sicilian Defense: Scheveningen Variation, Classical Variation, Paulsen Variation }
+) 8... Be7 ( 8... d6 9. f4
+{ B85 : Sicilian Defense: Scheveningen Variation, Classical Variation, Paulsen Variation }
+) 9. f4 d6 10. Qe1 O-O
+{ B85 : Sicilian Defense: Scheveningen Variation, Classical Main Line } ) 5...
+d6 6. c4 Nf6 7. N1c3 a6 8. Na3 Be7 ( 8... d5
+{ B44 : Sicilian Defense: Paulsen Variation, Gary Gambit } ) 9. Be2 O-O 10. O-O
+b6 { B44 : Sicilian Defense: Paulsen Variation, Modern Line } ) ( 2... Nf6
+{ B29 : Sicilian Defense: Nimzowitsch Variation } 3. e5
+{ B29 : Sicilian Defense: Nimzowitsch Variation, Advance Variation } ( 3. Nc3
+{ B29 : Sicilian Defense: Nimzowitsch Variation, Closed Variation } ) 3... Nd5
+4. Nc3 e6 ( 4... Nxc3
+{ B29 : Sicilian Defense: Nimzowitsch Variation, Exchange Variation } ) 5. Nxd5
+exd5 6. d4 Nc6 { B29 : Sicilian Defense: Nimzowitsch Variation, Main Line } ) (
+2... a6 { B28 : Sicilian Defense: O'Kelly Variation } 3. d4
+{ B28 : Sicilian Defense: O'Kelly Variation, Normal System } ( 3. c3
+{ B28 : Sicilian Defense: O'Kelly Variation, Venice System } 3... d5 ( 3... Nf6
+{ B28 : Sicilian Defense: O'Kelly Variation, Venice System, Barcza Line } ) (
+3... b5
+{ B28 : Sicilian Defense: O'Kelly Variation, Venice System, Ljubojevic Line } )
+( 3... d6
+{ B28 : Sicilian Defense: O'Kelly Variation, Venice System, Steiner Line } ) 4.
+exd5 Nf6
+{ B28 : Sicilian Defense: O'Kelly Variation, Venice System, Gambit Line } ) (
+3. c4 { B28 : Sicilian Defense: O'Kelly Variation, MarÃ³czy Bind } 3... e6
+{ B28 : Sicilian Defense: O'Kelly Variation, MarÃ³czy Bind, Paulsen Line } (
+3... d6
+{ B28 : Sicilian Defense: O'Kelly Variation, MarÃ³czy Bind, Robatsch Line } ) )
+( 3. Be2 { B28 : Sicilian Defense: O'Kelly Variation, Aronin System } ) ( 3. b3
+{ B28 : Sicilian Defense: O'Kelly Variation, Kieseritzky System } ) ( 3. d3
+{ B28 : Sicilian Defense: O'Kelly Variation, Quiet System } ) ( 3. g3
+{ B28 : Sicilian Defense: O'Kelly Variation, RÃ©ti System } ) ( 3. b4
+{ B28 : Sicilian Defense: O'Kelly Variation, Wing Gambit } ) ( 3. Nc3
+{ B28 : Sicilian Defense: O'Kelly Variation, Yerevan System } ) 3... cxd4 4.
+Nxd4 ( 4. Bc4
+{ B28 : Sicilian Defense: O'Kelly Variation, Normal System, Cortlever Gambit }
+) ( 4. c3
+{ B28 : Sicilian Defense: O'Kelly Variation, Normal System, Smith-Morra Line }
+) ( 4. Qxd4
+{ B28 : Sicilian Defense: O'Kelly Variation, Normal System, Zagorovsky Line } )
+4... e5
+{ B28 : Sicilian Defense: O'Kelly Variation, Normal System, Taimanov Line } ) (
+2... f5 { B27 : Sicilian Defense: Brussels Gambit } 3. exf5 Nh6
+{ B27 : Sicilian Defense: Double-Dutch Gambit } ) ( 2... h6
+{ B27 : Sicilian Defense: BÃ¼cker Variation } ) ( 2... e5
+{ B27 : Sicilian Defense: Jalalabad Variation } ) ( 2... b6
+{ B27 : Sicilian Defense: Katalimov Variation } ) ( 2... Qa5
+{ B27 : Sicilian Defense: Mongoose Variation } ) ( 2... b5
+{ B27 : Sicilian Defense: Polish Gambit } ) ( 2... Qc7
+{ B27 : Sicilian Defense: Quinteros Variation } ) 3. d4
+{ B27 : Sicilian Defense: Hyperaccelerated Fianchetto } ( 3. c3 Bg7 4. d4 Qa5
+{ B27 : Pterodactyl Defense: Western, Pterodactyl } ) ( 3. c4 Bh6
+{ B27 : Sicilian Defense: Acton Extension } ) 3... cxd4 ( 3... Bg7
+{ B27 : Sicilian Defense: Hyperaccelerated Pterodactyl } 4. dxc5 ( 4. Nc3 Qa5
+{ B27 : Modern Defense: Pterodactyl Variation } 5. Be3
+{ B27 : Pterodactyl Defense: Sicilian, Anhanguera } ( 5. d5
+{ B27 : Pterodactyl Defense: Sicilian, Benoni Gambit } ) ( 5. Bd2
+{ B27 : Pterodactyl Defense: Sicilian, Unpin } ) ) 4... Qa5+
+{ B27 : Pterodactyl Defense: Western, Rhamphorhynchus } 5. Nc3
+{ B27 : Pterodactyl Defense: Sicilian, Rhamporhynchus } 5... Bxc3+ 6. bxc3
+{ B27 : Pterodactyl Defense: Sicilian, Pteranodon } 6... Qxc3+
+{ B27 : Sicilian Defense: Hyperaccelerated Pterodactyl, Exchange Variation } )
+( 3... f5 { B27 : Sicilian Defense: Frederico Variation } ) 4. Nxd4 Nf6 5. Nc3
+d6 6. Be2 Bg7 7. O-O O-O 8. Be3 Nc6 9. Nb3 Be6 10. f4 Na5 11. f5 Bc4 12. Bd3
+Bxd3 13. cxd3 d5
+{ B74 : Sicilian Defense: Dragon Variation, Classical Variation, Bernard Defense }
+) ( 2. c3 { B22 : Sicilian Defense: Alapin Variation } 2... d5 ( 2... Nf6 3. e5
+Nd5 4. Nf3 ( 4. d4 cxd4
+{ B22 : Sicilian Defense: Alapin Variation, Smith-Morra Declined } ) 4... Nc6
+5. Bc4 ( 5. Na3 { B22 : Sicilian Defense: Heidenfeld Variation } ) 5... Nb6 6.
+Bb3 { B22 : Sicilian Defense: Alapin Variation, Stoltz Attack } 6... c4 7. Bc2
+Qc7 8. Qe2 g5
+{ B22 : Sicilian Defense: Alapin Variation, Stoltz Attack, Ivanchuk Line } ) (
+2... e5 3. d4 cxd4
+{ B22 : Sicilian Defense: Smith-Morra Gambit Declined, Center Formation } ) 3.
+exd5 Qxd5 { B22 : Sicilian Defense: Alapin Variation, Barmen Defense } 4. d4
+cxd4 ( 4... Nc6 5. Nf3 cxd4 6. cxd4 e5 7. Nc3 Bb4 8. Be2
+{ B22 : Sicilian Defense: Alapin Variation, Barmen Defense, Milner-Barry Attack }
+) ( 4... Nf6 5. Nf3 Bg4
+{ B22 : Sicilian Defense: Alapin Variation, Barmen Defense, Modern Line } ) 5.
+cxd4 Nc6 6. Nf3 Bg4
+{ B22 : Sicilian Defense: Alapin Variation, Barmen Defense, Central Exchange }
+7. Nc3 Bxf3 8. gxf3 Qxd4 9. Qxd4 Nxd4
+{ B22 : Sicilian Defense: Alapin Variation, Barmen Defense, Endgame Variation }
+) ( 2. d4 { B21 : Sicilian Defense: Smith-Morra Gambit } 2... cxd4 3. c3
+{ B21 : Sicilian Defense: Smith-Morra Gambit } ( 3. Qxd4 Nc6 4. Qd1 Nf6 5. Bc4
+{ B21 : Sicilian Defense: Coles Sicilian Gambit } ) ( 3. f4
+{ B21 : Sicilian Defense: Halasz Gambit } ) 3... dxc3 ( 3... d3
+{ B21 : Sicilian Defense: Smith-Morra Gambit Declined, Push Variation } 4. c4
+{ B21 : Sicilian Defense: Smith-Morra Gambit Declined, Dubois Variation } ) (
+3... Nf6
+{ B21 : Sicilian Defense: Smith-Morra Gambit Declined, Alapin Formation } ) (
+3... d5
+{ B21 : Sicilian Defense: Smith-Morra Gambit Declined, Scandinavian Formation }
+) ( 3... Qa5
+{ B21 : Sicilian Defense: Smith-Morra Gambit Declined, Wing Formation } ) 4.
+Nxc3 ( 4. Nf3 { B21 : Sicilian Defense: Smith-Morra Gambit, Danish Variation }
+) 4... Nc6 ( 4... d6 5. Nf3 e6 6. Bc4 Nf6 7. O-O a6
+{ B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Chicago Defense } ) (
+4... e6 5. Bc4 ( 5. Nf3 a6
+{ B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Kan Formation } ) 5...
+a6 6. Nf3 Ne7
+{ B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Taimanov Formation } )
+5. Bc4 ( 5. Nf3 e6 ( 5... d6 6. Bc4 a6 ( 6... e6
+{ B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Scheveningen Formation }
+) 7. O-O Nf6
+{ B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Classical Formation } )
+( 5... g6
+{ B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Fianchetto Defense } )
+6. Bc4 Qc7 ( 6... a6
+{ B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Paulsen Formation } 7.
+O-O b5 8. Bb3 Bc5
+{ B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Morphy Defense Deferred }
+) ( 6... Bc5
+{ B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Morphy Defense } ) (
+6... Bb4 { B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Pin Defense } )
+7. Qe2 a6 8. O-O Bd6
+{ B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Larsen Defense } ) 5...
+e6 6. Nf3 d6 7. O-O a6 8. Qe2 b5
+{ B21 : Sicilian Defense: Smith-Morra Gambit Accepted, Sozin Formation } 9. Bb3
+Ra7 { B21 : Sicilian Defense: Smith-Morra Gambit, Chicago Defense } ) ( 2. b4
+{ B20 : Sicilian Defense: Wing Gambit } 2... cxb4 3. a3
+{ B20 : Sicilian Defense: Wing Gambit, Marshall Variation } ( 3. Bb2
+{ B20 : Sicilian Defense: Wing Gambit, Abrahams Variation } ) ( 3. c4
+{ B20 : Sicilian Defense: Wing Gambit, Santasiere Variation } ) 3... d5 ( 3...
+bxa3 { B20 : Sicilian Defense: Wing Gambit, Carlsbad Variation } ) 4. exd5 Qxd5
+5. Nf3 ( 5. Bb2 { B20 : Sicilian Defense: Wing Gambit, Marienbad Variation } )
+5... e5 6. Bb2 ( 6. c4 Qe6 7. Bd3
+{ B20 : Sicilian Defense: Wing Gambit, Nanu Gambit } ) 6... Nc6 7. c4 Qe6
+{ B20 : Sicilian Defense: Wing Gambit, Romanian Defense } ) ( 2. c4
+{ B20 : Sicilian Defense: Staunton-Cochrane Variation } 2... Nc6 ( 2... d6 3.
+Nc3 Nc6 4. g3 h5 { B20 : Sicilian Defense: Gloria Variation } ) 3. Nc3 g6 4. g3
+Bg7 5. Bg2 { A36 : English Opening: Symmetrical Variation, Botvinnik System } )
+( 2. d3 Nc6 3. c3 d6 4. f4 { B20 : Sicilian Defense: Big Clamp Formation } ) (
+2. Na3 { B20 : Sicilian Defense: Kronberger Variation } 2... Nc6 3. d4 cxd4 4.
+Bc4 { B20 : Sicilian Defense: Kronberger Variation, Nemeth Gambit } ) ( 2. f4
+{ B21 : Sicilian Defense: McDonnell Attack } 2... d5 ( 2... e5
+{ C30 : King's Gambit Declined: Mafia Defense } ) 3. Nf3 ( 3. exd5 Nf6
+{ B21 : Sicilian Defense: McDonnell Attack, Tal Gambit } ) 3... dxe4
+{ B21 : Bird Opening: Dutch Variation, Batavo Gambit } ) ( 2. b3
+{ B20 : Sicilian Defense: Snyder Variation } 2... d5 ( 2... b6
+{ B20 : Sicilian Defense: Snyder Variation, Queen Fianchetto Variation } ) 3.
+Bb2 { B20 : Caro-Kann Defense: Euwe Attack, Prins Gambit } ) ( 2. Ne2
+{ B20 : Sicilian Defense: Keres Variation } ) ( 2. g3
+{ B20 : Sicilian Defense: Lasker-Dunne Attack } ) ( 2. Bc4
+{ B20 : Sicilian Defense: Bowdler Attack } ) ( 2. Qg4
+{ B20 : Sicilian Defense: Amazon Attack } ) ( 2. Nh3
+{ B20 : Sicilian Defense: Brick Variation } ) ( 2. g4
+{ B20 : Sicilian Defense: Grob Variation } ) ( 2. Ke2
+{ B20 : Sicilian Defense: King David's Opening } ) ( 2. a3
+{ B20 : Sicilian Defense: Mengarini Variation } ) ( 2. a4
+{ B20 : Sicilian Defense: Myers Attack } ) ( 2. h4
+{ B20 : Sicilian Defense: Myers Attack } ) 2... d6 ( 2... Nc6
+{ B23 : Sicilian Defense: Closed, Traditional } 3. g3
+{ B24 : Sicilian Defense: Closed, Fianchetto Variation } ( 3. f4
+{ B23 : Sicilian Defense: Grand Prix Attack } 3... g6 4. Nf3 Bg7 5. Bc4 e6 6.
+f5 { B23 : Sicilian Defense: Grand Prix Attack, Schofman Variation } ) ( 3.
+Nge2 { B23 : Sicilian Defense: Closed, Chameleon Variation } ) ( 3. g4
+{ B23 : Sicilian Defense: Closed, Grob Attack } ) 3... g6
+{ B24 : Sicilian Defense: Closed } 4. Bg2 Bg7
+{ B24 : Sicilian Defense: Closed } 5. d3 d6 { B25 : Sicilian Defense: Closed }
+( 5... e6 6. Be3 Nd4 7. Nce2
+{ B24 : Sicilian Defense: Closed, Smyslov Variation } ) 6. f4
+{ B25 : Sicilian Defense: Closed } ( 6. Nge2 e5
+{ B25 : Sicilian Defense: Closed, Botvinnik Defense } ) ( 6. Be3
+{ B26 : Sicilian Defense: Closed } ) 6... e5
+{ B25 : Sicilian Defense: Closed, Botvinnik Defense } 7. Nh3 Nge7
+{ B25 : Sicilian Defense: Closed, Botvinnik Defense, Edge Variation } ) ( 2...
+e6 { B23 : Sicilian Defense: Closed } 3. g3 { B23 : Sicilian Defense: Closed }
+( 3. d4 d5 { C10 : Sicilian Defense: Marshall Gambit } ) 3... d5
+{ B23 : Sicilian Defense: Closed, Korchnoi Defense } ) 3. f4 Nc6 4. Nf3 g6 5.
+d4 cxd4 6. Nxd4 Bg7 7. Be3 Nf6 8. Be2 O-O 9. Nb3 Be6 10. O-O Na5 11. f5 Bc4 12.
+Nxa5 Bxe2 13. Qxe2 Qxa5 14. g4
+{ B74 : Sicilian Defense: Dragon Variation, Classical Variation, Stockholm Attack }
+*

@@ -156,7 +156,8 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   self.version = '0.999'
   self.dateString = 'June 23,2021'
   
-  self.helpIndex = os.path.join(self.fileDirectory, 'doc', 'html', 'index.html')
+  # self.helpIndex = PyQt5.QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(self.fileDirectory), 'docs', 'index.html'))
+  self.helpIndex = PyQt5.QtCore.QUrl('https://reinhardm-dev.github.io/MzChess')
 
   self.ecoDB = eco.ECODatabase()
   self.ecoFen2IdDict = self.ecoDB.fen2Id()
@@ -949,7 +950,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
  
  @PyQt5.QtCore.pyqtSlot()
  def on_actionHelp_triggered(self):
-  PyQt5.QtGui.QDesktopServices.openUrl(PyQt5.QtCore.QUrl.fromLocalFile(self.helpIndex))
+  PyQt5.QtGui.QDesktopServices.openUrl(self.helpIndex)
 
  # ---------------------------------------------------------------------------
 

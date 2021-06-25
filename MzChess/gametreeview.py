@@ -18,7 +18,7 @@ The tree widget has 4 colums:
  
 By clicking the annotation (*Ann*) and position assessment (*Pos*) fields, a popup dialog
 opens which allows to change the contents   
- .. |GameEditor| image:: gameEditor.png
+.. |GameEditor| image:: gameEditor.png
   :width: 800
   :alt: Game Editor
 '''
@@ -198,7 +198,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
    else:
     moveText = '... {}'.format(san)
    newNode.setText(0, moveText)
-   newNode.setText(1, self._findNAGSymbol (False,  gameNode))
+   newNode.setText(1, self._findNAGSymbol (True,  gameNode))
    newNode.setText(2, self._findNAGSymbol (False,  gameNode))
    comment = gameNode.comment
    comment = comment.replace('\n','\\n')

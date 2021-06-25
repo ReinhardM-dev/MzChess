@@ -188,8 +188,7 @@ class ConfigureEngine(PyQt5.QtWidgets.QDialog, Ui_configureEngine.Ui_Dialog):
   if platform.system() == 'Windows':
    fDialog.setNameFilter("Executables (*.exe);;All Files (*)")
   else:
-   fDialog.setFilter(PyQt5.QtCore.QDir.Executable)
-   fDialog.setNameFilter("Executables (*);;All Files (*)")
+   fDialog.setNameFilter("All Files (*)")
   if fDialog.exec():
    executable = fDialog.selectedFiles()[0]
    self.engineDetails = dict()

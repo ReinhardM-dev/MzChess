@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Main Window &mdash; MzChess 0.9 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Chess Board" href="qboardview.html" />
+    <link rel="prev" title="GUI" href="gui.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> MzChess
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="gui.html">GUI</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Main Window</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main-window-of-the-chess-gui">Main Window of the Chess GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-window-menu">Main Window Menu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#keyboard-and-mouse-contol">Keyboard and Mouse Contol</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qboardview.html">Chess Board</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameTreeView.html">Game Editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameHeaderView.html">Game Header Editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scoreplotgraphicsview.html">Score Chart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configureEngine.html">UCI Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MzChess</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="gui.html">GUI</a> &raquo;</li>
+        
+      <li>Main Window</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/chessMainWindow.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-chessMainWindow">
+<span id="main-window"></span><h1>Main Window<a class="headerlink" href="#module-chessMainWindow" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="main-window-of-the-chess-gui">
+<h2>Main Window of the Chess GUI<a class="headerlink" href="#main-window-of-the-chess-gui" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_images/mainWindow.png"><img alt="Main Window" src="_images/mainWindow.png" style="width: 800px;" /></a></p>
+<p>The main Window consists of 4 parts:</p>
+<blockquote>
+<div><ul>
+<li><p>On the left, the <em>game board</em> with the <em>material</em> and <em>next turn</em> labels. The <em>next turn</em> may 4 colors <code class="docutils literal notranslate"><span class="pre">white</span></code>, <code class="docutils literal notranslate"><span class="pre">black</span></code>, <code class="docutils literal notranslate"><span class="pre">red</span></code> (mate), <code class="docutils literal notranslate"><span class="pre">yellow</span></code> (draw)</p></li>
+<li><p>On the right, the TAB widget with the</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>Game</em> tree widget displaying the body of the actual game</p></li>
+<li><p><em>Headers</em> list widget displaying the header of the actual game</p></li>
+<li><p><em>Database</em> list widget displaying all loaded games</p></li>
+<li><p><em>Score</em> plot displaying engine and material scores</p></li>
+<li><p><em>Log</em> edit displaying communication with the engine in use</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>On the bottom, the status bar with the labels</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>info/error</em> displaying information or errors</p></li>
+<li><p><em>engine</em> displaying the engine in use</p></li>
+<li><p><em>hint/score</em> displaying the hint and score computed by the engine</p></li>
+<li><p><em>ECO code</em> displaying the eco code of the current opening, the hint shows the full opening string</p></li>
+<li><p><em>square</em> displaying the square under the cursor within the board</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="main-window-menu">
+<h2>Main Window Menu<a class="headerlink" href="#main-window-menu" title="Permalink to this headline">¶</a></h2>
+<p>On the top, the menu with</p>
+<blockquote>
+<div><ul>
+<li><p><em>File</em> menu handling files in the Portable Game Notation (<a class="reference external" href="https://github.com/fsmosca/PGN-Standard">PGN</a>) and pickled PGN (<em>PPNG</em>) formats</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>Encoding</em> sub-menu to set encoding for opening/saveing PNG-format</p></li>
+<li><p><em>Open DB …</em> action to open a PPGN- or PGN-file and replace the current database</p></li>
+<li><p><em>Recent</em> sub-menu with the recent PPGN- or PGN-files</p></li>
+<li><p><em>Append to DB …</em> action to open a PPGN- or PGN-file and append to the current database</p></li>
+<li><p><em>Save DB …</em> action to save the whole database as a PPGN- or PGN-file</p></li>
+<li><p><em>Save Game …</em> action to save the actual game as a PGN-file</p></li>
+<li><p><em>Exit</em> action to terminate the GUI</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><em>Edit</em> menu with obvious functionality with the exception of</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>Copy/Paste PGN</em>, i.e. the actual game is copied to or pasted from the clipboard</p></li>
+<li><p><em>Copy/Paste FEN</em>, i.e. the actual position is copied to or pasted from the clipboard</p></li>
+<li><p><em>Promote/Demote Variant</em> promote/demote the variant selected in the Game TAB</p></li>
+<li><p><em>Promote Variant to Main</em> promote the variant selected in the Game TAB to mainline</p></li>
+<li><p><em>Delete Variant</em> delete the variant selected in the Game TAB</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><em>Database</em> menu with obvious functionality with the exception of</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>Remove Games</em> removes selected games in the <em>Database</em> TAB</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><em>Game</em> menu with obvious functionality with the exception of</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>Select Header Elements …</em> opens a dialog to add/remove header elements according to the <a class="reference external" href="https://github.com/fsmosca/PGN-Standard">PGN</a> standard</p></li>
+<li><p><em>Show Move Options</em> shows by left-button selecting a square the weighted options</p></li>
+<li><p><em>Warn of Danger</em> shows squares attacked by the opponent</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><em>Engine</em> menu for handling Universal Chess Interface (<a class="reference external" href="http://wbec-ridderkerk.nl/html/UCIProtocol.html">UCI</a>) engines with</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>Select Engine</em> sub-menu to select the engine for hints/scores and annotations</p></li>
+<li><p><em>Search Depth</em> sub-menu to set the search depth of the selected engine</p></li>
+<li><p><em>Annotate Last Move</em> annotates the move leading to actual position</p></li>
+<li><p><em>Annotate All</em> annotates the actual game</p></li>
+<li><p><em># Annotations</em> defines the number of variants to be suggested in case of a blunder</p></li>
+<li><p><em>Annotate Variants</em> defines the number of half moves (PLY) to be shown in variants</p></li>
+<li><p><em>Show Scores</em> toggle actions enables the <em>score</em> part of the <em>hint/score</em> label of the status bar</p></li>
+<li><p><em>Show Hints</em> toggle actions enables the <em>hint</em> part of the <em>hint/score</em> label of the status bar</p></li>
+<li><p><em>Configure …</em> opens a dialog to add/remove/configure engines</p></li>
+<li><p><em>Debug</em> logs the communication with engine in the <em>Log</em> TAB</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="keyboard-and-mouse-contol">
+<h2>Keyboard and Mouse Contol<a class="headerlink" href="#keyboard-and-mouse-contol" title="Permalink to this headline">¶</a></h2>
+<p>To allow for a user-friendly usage, the game can be controlled by keyboard and/or mouse:</p>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Game Control by Keyboard/Mouse/Mouse Wheel</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key/Wheel</p></th>
+<th class="head"><p>Board</p></th>
+<th class="head"><p>Game-TAB</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><kbd class="kbd docutils literal notranslate">up</kbd> | <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">scroll</kbd>-<kbd class="kbd docutils literal notranslate">up</kbd></kbd></p></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p>goto last move</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd docutils literal notranslate">down</kbd> | <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">scroll</kbd>-<kbd class="kbd docutils literal notranslate">down</kbd></kbd></p></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p>goto next move</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd docutils literal notranslate">left</kbd></p></td>
+<td></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p>step into variant</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd docutils literal notranslate">right</kbd></p></td>
+<td></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p>step out of a variant</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd docutils literal notranslate">home</kbd></p></td>
+<td></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p>goto initial move</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd docutils literal notranslate">end</kbd></p></td>
+<td></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p>goto end-of-game</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">mouse</kbd>-<kbd class="kbd docutils literal notranslate">left</kbd>-<kbd class="kbd docutils literal notranslate">press</kbd></kbd></p></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td></td>
+<td><p>begin move</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">mouse</kbd>-<kbd class="kbd docutils literal notranslate">left</kbd>-<kbd class="kbd docutils literal notranslate">release</kbd></kbd></p></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td></td>
+<td><p>end move</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">P</kbd></kbd></p></td>
+<td></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p>promote variant</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">D</kbd></kbd></p></td>
+<td></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p>demote variant</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">R</kbd></kbd></p></td>
+<td></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p>remove variant</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">M</kbd></kbd></p></td>
+<td></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p>promote variant to mainline</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">W</kbd></kbd></p></td>
+<td></td>
+<td><p><kbd class="kbd docutils literal notranslate">✔</kbd></p></td>
+<td><p>toggle warn of danger</p></td>
+</tr>
+</tbody>
+</table>
+<p>In addition, several <em>standard</em> key strokes are supported:</p>
+<table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-text">Other Key-Codes</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 63%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">Z</kbd></kbd></p></td>
+<td><p>undo last move</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">F</kbd></kbd></p></td>
+<td><p>flip board</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">C</kbd></kbd></p></td>
+<td><p>copy game (PGN) to clipboard</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">V</kbd></kbd></p></td>
+<td><p>paste game (PGN) from clipboard</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">C</kbd></kbd></p></td>
+<td><p>copy position (FEN) to clipboard</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">V</kbd></kbd></p></td>
+<td><p>paste position (FEN) from clipboard</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="qboardview.html" class="btn btn-neutral float-right" title="Chess Board" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="gui.html" class="btn btn-neutral float-left" title="GUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Reinhard März.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

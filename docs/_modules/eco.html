@@ -1,0 +1,445 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>eco &mdash; MzChess 0.9 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> MzChess
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MzChess</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>eco</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for eco</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;A Wrapper for Encyclopaedia of Chess Openings (ECO) (see `fiekas.eco`_) </span>
+<span class="sd"> </span>
+<span class="sd">.. _fiekas.eco: https://github.com/niklasf/eco</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">unique</span>
+
+<span class="kn">import</span> <span class="nn">chess</span><span class="o">,</span> <span class="nn">chess.pgn</span><span class="o">,</span> <span class="nn">chess.polyglot</span>
+
+<div class="viewcode-block" id="TSVType"><a class="viewcode-back" href="../eco.html#eco.TSVType">[docs]</a><span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">TSVType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+ <span class="s1">&#39;Columns of TSV-files&#39;</span>
+ <span class="n">ECO</span> <span class="o">=</span> <span class="mi">0</span>
+ <span class="n">OPENING</span> <span class="o">=</span> <span class="mi">1</span>
+ <span class="n">FEN</span> <span class="o">=</span> <span class="mi">2</span>
+ <span class="n">MOVES</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+<div class="viewcode-block" id="ECODatabase"><a class="viewcode-back" href="../eco.html#eco.ECODatabase">[docs]</a><span class="k">class</span> <span class="nc">ECODatabase</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+ <span class="sd">&#39;&#39;&#39;A Wrapper class for Encyclopaedia of Chess Openings (ECO)</span>
+
+<span class="sd">:param ecoDirectory: directory of tsv - files</span>
+<span class="sd">:param tsvPattern: a glob pattern describing the files to be loaded. ``None`` -&gt; nothing is loaded</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+ <span class="n">keys</span> <span class="o">=</span>  <span class="p">[</span><span class="s1">&#39;eco&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;fen&#39;</span><span class="p">,</span> <span class="s1">&#39;moves&#39;</span><span class="p">]</span>
+ 
+ <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+  <span class="n">ecoDirectory</span> <span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;eco&#39;</span><span class="p">),</span>
+  <span class="n">tsvPattern</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;*.tsv&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">ECODatabase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">ecoDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">ecoDirectory</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">tsvPattern</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">tsvPattern</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="k">return</span>
+  <span class="k">for</span> <span class="n">tsvFile</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ecoDirectory</span><span class="p">,</span> <span class="n">tsvPattern</span><span class="p">)):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">loadTSVFile</span><span class="p">(</span><span class="n">tsvFile</span><span class="p">)</span>
+   <span class="c1"># print(&#39;{} lines read from file {}&#39;.format(len(self), os.path.basename(tsvFile)))</span>
+
+<div class="viewcode-block" id="ECODatabase.loadTSVFile"><a class="viewcode-back" href="../eco.html#eco.ECODatabase.loadTSVFile">[docs]</a> <span class="k">def</span> <span class="nf">loadTSVFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsvFile</span> <span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Adds a *tsvFile* to the database </span>
+
+<span class="sd">:param tsvFile: tsv - file to be added</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">tsvFile</span><span class="p">):</span>
+   <span class="n">tsvFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ecoDirectory</span><span class="p">,</span> <span class="n">tsvFile</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">tsvFile</span><span class="p">):</span>
+   <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;ECODatabase/loadTSVFile: ECO file </span><span class="si">{}</span><span class="s1"> not found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tsvFile</span><span class="p">))</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tsvFile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+   <span class="n">isFirst</span> <span class="o">=</span> <span class="kc">True</span>
+   <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">isFirst</span><span class="p">:</span>
+     <span class="k">if</span> <span class="n">row</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;ECODatabase/loadTSVFile: </span><span class="si">{}</span><span class="s1"> is not a valid ECO file&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tsvFile</span><span class="p">))</span>
+     <span class="n">isFirst</span> <span class="o">=</span> <span class="kc">False</span>
+     <span class="k">continue</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+     <span class="k">return</span>
+    <span class="n">moveList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">uciCode</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+     <span class="n">moveList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="n">uciCode</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">moveList</span><span class="p">))</span></div>
+ 
+ <span class="k">def</span> <span class="nf">column2IdList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span> <span class="p">:</span> <span class="n">TSVType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+  <span class="n">resultDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+  <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">tpl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="n">_key</span> <span class="o">=</span> <span class="n">tpl</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+   <span class="k">if</span> <span class="n">_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">resultDict</span><span class="p">:</span>
+    <span class="n">resultDict</span><span class="p">[</span><span class="n">_key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+   <span class="n">resultDict</span><span class="p">[</span><span class="n">_key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">resultDict</span>
+
+ <span class="k">def</span> <span class="nf">column2Id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+  <span class="c1"># standard databases =&gt; only fen is unique </span>
+  <span class="k">assert</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">3</span>
+  <span class="n">resultDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+  <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">tpl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="n">key</span> <span class="o">=</span> <span class="n">tpl</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+   <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">resultDict</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;ECODatabase/column2Id: Duplicate key </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+   <span class="n">resultDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span>
+  <span class="k">return</span> <span class="n">resultDict</span>
+  
+ <span class="k">def</span> <span class="nf">fen2Id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column2Id</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="nf">column2Count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+  <span class="k">assert</span> <span class="n">column</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">3</span>
+  <span class="n">resultDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">tpl</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+   <span class="n">key</span> <span class="o">=</span> <span class="n">tpl</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+   <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">resultDict</span><span class="p">:</span>
+    <span class="n">resultDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="n">resultDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="k">return</span> <span class="n">resultDict</span>
+  
+ <span class="nd">@staticmethod</span>
+ <span class="k">def</span> <span class="nf">commonLength</span><span class="p">(</span><span class="n">listOLists</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+   <span class="n">itemSet</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+   <span class="k">for</span> <span class="n">valueList</span> <span class="ow">in</span> <span class="n">listOLists</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valueList</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+     <span class="k">return</span> <span class="n">n</span>
+    <span class="n">itemSet</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">valueList</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">itemSet</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">n</span>
+   <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="k">return</span> <span class="mi">0</span>
+  
+<div class="viewcode-block" id="ECODatabase.statistics"><a class="viewcode-back" href="../eco.html#eco.ECODatabase.statistics">[docs]</a> <span class="k">def</span> <span class="nf">statistics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span> <span class="p">:</span> <span class="n">TSVType</span> <span class="o">=</span> <span class="n">TSVType</span><span class="o">.</span><span class="n">ECO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]]:</span>
+  <span class="sd">&#39;&#39;&#39;Delivers statistical data. ``key`` one of the 4 columns of a TSV-file, i.e.</span>
+<span class="sd">  </span>
+<span class="sd">  * *ECO* : eco code</span>
+<span class="sd">  * *OPENING* : opening name</span>
+<span class="sd">  * *FEN* : Forsyth-Edwards-Notation of the starting position</span>
+<span class="sd">  * *MOVES* : move list</span>
+
+<span class="sd"> The values of the returned dictionary are</span>
+<span class="sd"> </span>
+<span class="sd">  * *idList* : list of entries in the TSV table</span>
+<span class="sd">  * *nItems* : len(idlist)</span>
+<span class="sd">  * *nCommon* : number of common moves</span>
+<span class="sd">  </span>
+<span class="sd">:param key: column of a TSV-file (see above)</span>
+<span class="sd">:returns: return dictionary</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">statisticsDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">columnValue</span><span class="p">,</span> <span class="n">idList</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column2IdList</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+   <span class="n">newDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+   <span class="n">newDict</span><span class="p">[</span><span class="s1">&#39;idList&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">idList</span>
+   <span class="n">newDict</span><span class="p">[</span><span class="s1">&#39;nItems&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">idList</span><span class="p">)</span>
+   <span class="n">listOfMoveLists</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+   <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">idList</span><span class="p">:</span>
+     <span class="n">listOfMoveLists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span>
+   <span class="n">newDict</span><span class="p">[</span><span class="s1">&#39;nCommon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">commonLength</span><span class="p">(</span><span class="n">listOfMoveLists</span><span class="p">)</span>
+   <span class="n">statisticsDict</span><span class="p">[</span><span class="n">columnValue</span><span class="p">]</span> <span class="o">=</span> <span class="n">newDict</span>
+  <span class="k">return</span> <span class="n">statisticsDict</span></div>
+ 
+ <span class="nd">@staticmethod</span>
+ <span class="k">def</span> <span class="nf">sortGameNode</span><span class="p">(</span><span class="n">gameNode</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">):</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">variations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="k">return</span> <span class="mi">1</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">variations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+   <span class="k">return</span> <span class="n">ECODatabase</span><span class="o">.</span><span class="n">sortGameNode</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">variations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="n">nItems2idList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">variations</span><span class="p">)):</span>
+   <span class="n">nItems2idList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ECODatabase</span><span class="o">.</span><span class="n">sortGameNode</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">variations</span><span class="p">[</span><span class="n">n</span><span class="p">]),</span> <span class="n">n</span><span class="p">))</span>
+  <span class="n">nItems2idList</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">nItems2idList</span><span class="p">,</span> <span class="n">reverse</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">el</span> <span class="p">:</span> <span class="n">el</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="n">newVariations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">nItems</span><span class="p">,</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">nItems2idList</span><span class="p">:</span>
+   <span class="n">newVariations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">variations</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span>
+  <span class="n">gameNode</span><span class="o">.</span><span class="n">variations</span> <span class="o">=</span> <span class="n">newVariations</span>
+  <span class="k">return</span> <span class="n">nItems2idList</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+  
+ <span class="k">def</span> <span class="nf">_createVariation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameNode</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">,</span> <span class="n">nPly</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">idList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">polyglotBook</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">polyglot</span><span class="o">.</span><span class="n">MemoryMappedReader</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="n">move2idDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+  <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">idList</span><span class="p">:</span>
+   <span class="n">actMoveList</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">actMoveList</span><span class="p">)</span> <span class="o">==</span> <span class="n">nPly</span><span class="p">:</span>
+    <span class="n">gameNode</span><span class="o">.</span><span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">actMove</span> <span class="o">=</span> <span class="n">actMoveList</span><span class="p">[</span><span class="n">nPly</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">actMove</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">move2idDict</span><span class="p">:</span>
+     <span class="n">move2idDict</span><span class="p">[</span><span class="n">actMove</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">move2idDict</span><span class="p">[</span><span class="n">actMove</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">polyglotBook</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">w2mDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+   <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">polyglotBook</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()):</span>
+    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">move</span> <span class="ow">in</span> <span class="n">move2idDict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+     <span class="n">w2mDict</span><span class="p">[</span><span class="n">entry</span><span class="o">.</span><span class="n">weight</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">move</span>
+   <span class="n">moveList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+   <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">w2mDict</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>  <span class="n">reverse</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="n">moveList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w2mDict</span><span class="p">[</span><span class="n">weight</span><span class="p">])</span>
+   <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">move2idDict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">move</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">moveList</span><span class="p">:</span>
+     <span class="n">moveList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">moveList</span> <span class="o">=</span> <span class="n">move2idDict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">moveList</span><span class="p">:</span>
+   <span class="n">newIdList</span> <span class="o">=</span> <span class="n">move2idDict</span><span class="p">[</span><span class="n">move</span><span class="p">]</span>
+   <span class="n">newGameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">add_variation</span><span class="p">(</span><span class="n">move</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">_createVariation</span><span class="p">(</span><span class="n">newGameNode</span><span class="p">,</span> <span class="n">nPly</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">newIdList</span><span class="p">)</span>
+  
+<div class="viewcode-block" id="ECODatabase.createGame"><a class="viewcode-back" href="../eco.html#eco.ECODatabase.createGame">[docs]</a> <span class="k">def</span> <span class="nf">createGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listOfFirstMoves</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">],</span> <span class="n">polyglotBook</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">polyglot</span><span class="o">.</span><span class="n">MemoryMappedReader</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Creates a opening game starting with ``listOfFirstMoves``. The opening variants are implemented as variants</span>
+<span class="sd">    </span>
+<span class="sd">:param listOfFirstMoves: list of starting moves</span>
+<span class="sd">:param polyglotBook: if present, the moves are sorted with respect to frequency of use</span>
+<span class="sd">:returns: return dictionary</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Openings starting with &#39;</span>
+  <span class="n">gameNode</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">listOfFirstMoves</span><span class="p">:</span>
+   <span class="n">title</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">square_name</span><span class="p">(</span><span class="n">move</span><span class="o">.</span><span class="n">to_square</span><span class="p">))</span>
+   <span class="n">gameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">add_variation</span><span class="p">(</span><span class="n">move</span><span class="p">)</span>
+  <span class="n">game</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">game</span><span class="p">()</span>
+  <span class="n">game</span><span class="o">.</span><span class="n">comment</span> <span class="o">=</span> <span class="n">title</span>
+  <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Site&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ECO Tables&#39;</span>
+  <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;White&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Niklas Fiekas/White&#39;</span>
+  <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Black&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Niklas Fiekas/Black&#39;</span>
+  <span class="n">nFirst</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">listOfFirstMoves</span><span class="p">)</span>
+  <span class="n">idList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">tpl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="n">actMoves</span> <span class="o">=</span> <span class="n">tpl</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">actMoves</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">nFirst</span> <span class="ow">and</span> <span class="n">actMoves</span><span class="p">[:</span><span class="n">nFirst</span><span class="p">]</span> <span class="o">==</span> <span class="n">listOfFirstMoves</span><span class="p">:</span>
+    <span class="n">idList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_createVariation</span><span class="p">(</span><span class="n">gameNode</span><span class="p">,</span> <span class="n">nFirst</span><span class="p">,</span> <span class="n">idList</span><span class="p">,</span> <span class="n">polyglotBook</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">game</span></div></div>
+    
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+ <span class="k">def</span> <span class="nf">createOpeningGame</span><span class="p">(</span><span class="n">opening</span><span class="p">,</span> <span class="n">moveList</span><span class="p">):</span>
+  <span class="k">global</span> <span class="n">fileDirectory</span><span class="p">,</span> <span class="n">eco</span><span class="p">,</span> <span class="n">polyglotBook</span>
+  <span class="n">game</span> <span class="o">=</span> <span class="n">eco</span><span class="o">.</span><span class="n">createGame</span><span class="p">(</span><span class="n">moveList</span><span class="p">,</span> <span class="n">polyglotBook</span> <span class="o">=</span> <span class="n">polyglotBook</span><span class="p">)</span>
+  <span class="n">newPgnName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fileDirectory</span><span class="p">,</span> <span class="s1">&#39;training&#39;</span><span class="p">,</span><span class="s1">&#39;openings&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.pgn&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opening</span><span class="p">))</span>
+  <span class="n">ECODatabase</span><span class="o">.</span><span class="n">sortGameNode</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+  <span class="c1"># print(game)</span>
+  <span class="n">exporter</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">StringExporter</span><span class="p">(</span><span class="n">headers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">newPgnName</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+  <span class="n">pgnString</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">exporter</span><span class="p">)</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pgnString</span><span class="p">)</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> bytes written to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pgnString</span><span class="p">),</span> <span class="n">newPgnName</span><span class="p">))</span>
+
+ <span class="n">fileDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+ <span class="n">bookFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fileDirectory</span><span class="p">,</span><span class="s1">&#39;books&#39;</span><span class="p">,</span><span class="s1">&#39;elo2400.bin&#39;</span><span class="p">)</span>
+ <span class="n">polyglotBook</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">polyglot</span><span class="o">.</span><span class="n">open_reader</span><span class="p">(</span><span class="n">bookFile</span><span class="p">)</span>
+ <span class="n">eco</span> <span class="o">=</span> <span class="n">ECODatabase</span><span class="p">()</span>
+ <span class="n">fen2IdDict</span> <span class="o">=</span> <span class="n">eco</span><span class="o">.</span><span class="n">fen2Id</span><span class="p">()</span>
+ <span class="n">statistics</span> <span class="o">=</span> <span class="n">eco</span><span class="o">.</span><span class="n">statistics</span><span class="p">()</span>
+ <span class="k">for</span> <span class="n">ecoCode</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">statistics</span><span class="p">):</span>
+  <span class="n">iDict</span> <span class="o">=</span> <span class="n">statistics</span><span class="p">[</span><span class="n">ecoCode</span><span class="p">]</span> 
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:3}</span><span class="s1"> : </span><span class="si">{:3}</span><span class="s1">, </span><span class="si">{}</span><span class="s1"> items&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ecoCode</span><span class="p">,</span> <span class="n">iDict</span><span class="p">[</span><span class="s1">&#39;nCommon&#39;</span><span class="p">],</span> <span class="n">iDict</span><span class="p">[</span><span class="s1">&#39;nItems&#39;</span><span class="p">]</span> <span class="p">))</span>
+
+ <span class="n">createOpeningGame</span><span class="p">(</span><span class="s1">&#39;kingsPawn&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;e2e4&#39;</span><span class="p">),</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;e7e5&#39;</span><span class="p">)])</span>
+ <span class="n">createOpeningGame</span><span class="p">(</span><span class="s1">&#39;sicilianDefense&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;e2e4&#39;</span><span class="p">),</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;c7c5&#39;</span><span class="p">)])</span>
+ <span class="n">createOpeningGame</span><span class="p">(</span><span class="s1">&#39;frenchDefense&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;e2e4&#39;</span><span class="p">),</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;e7e6&#39;</span><span class="p">)])</span>
+ <span class="n">createOpeningGame</span><span class="p">(</span><span class="s1">&#39;caroKannDefense&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;e2e4&#39;</span><span class="p">),</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;c7c6&#39;</span><span class="p">)])</span>
+ <span class="n">createOpeningGame</span><span class="p">(</span><span class="s1">&#39;pircDefense&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;e2e4&#39;</span><span class="p">),</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;d7d6&#39;</span><span class="p">)])</span>
+ <span class="n">createOpeningGame</span><span class="p">(</span><span class="s1">&#39;queensGambit&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;d2d4&#39;</span><span class="p">),</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;d7d5&#39;</span><span class="p">)])</span>
+ <span class="n">createOpeningGame</span><span class="p">(</span><span class="s1">&#39;indianDefense&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;d2d4&#39;</span><span class="p">),</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;g8f6&#39;</span><span class="p">)])</span>
+ <span class="n">createOpeningGame</span><span class="p">(</span><span class="s1">&#39;englishOpening&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;c2c4&#39;</span><span class="p">)])</span>
+ <span class="n">createOpeningGame</span><span class="p">(</span><span class="s1">&#39;retiOpening&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;g7f6&#39;</span><span class="p">)])</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Reinhard März.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

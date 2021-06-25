@@ -1,0 +1,599 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>scoreplotgraphicsview &mdash; MzChess 0.9 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> MzChess
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MzChess</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>scoreplotgraphicsview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for scoreplotgraphicsview</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Score Chart</span>
+<span class="sd">=============</span>
+
+<span class="sd">|ScoreChart|</span>
+
+<span class="sd">The score chart shows the material score (blue) representing material budget where </span>
+<span class="sd">the pieces represent as usual the values</span>
+
+<span class="sd">* :math:`s_{pawn} = 1`</span>
+<span class="sd">* :math:`s_{knight} = 3`</span>
+<span class="sd">* :math:`s_{bishop} = 3`</span>
+<span class="sd">* :math:`s_{rook} = 5`</span>
+<span class="sd">* :math:`s_{queen} = 9`</span>
+
+<span class="sd">If available, the scores emitted by a chess engine (red) are also shown.</span>
+<span class="sd">The engine annotations require command tags according to `PGNExt`_ supplement, i.e. tags like [%eval *score*] or [%  *score*]</span>
+<span class="sd">*score* is the score in pawns. </span>
+
+<span class="sd">The handling of positions close to mate vary from GUI to GUI. This GUI delivers for</span>
+<span class="sd">a mate in *n* moves a score of</span>
+
+<span class="sd"> * *mateScore - n*, if black is facing a mate in $n$</span>
+<span class="sd"> * *n -mateScore*, if white is facing a mate in $n$</span>
+
+<span class="sd">with :math:`mateScore = 100`.</span>
+
+<span class="sd">The actual position of the game and the corresponding score values are indicated in the score graph.</span>
+<span class="sd">It is updated when it changes.</span>
+
+<span class="sd">It is possible to control the zoom of the *Score* axis. The GUI with an ongoing zoom process is shown here.</span>
+
+<span class="sd">.. csv-table:: Zoom control by mouse</span>
+<span class="sd">   :header: &quot;Key&quot;, &quot;Description&quot;</span>
+<span class="sd">   :widths: 30, 50</span>
+
+<span class="sd">   :kbd:`mouse-left-press`       , begin zoom</span>
+<span class="sd">   :kbd:`mouse-left-release`     , end zoom</span>
+<span class="sd">   :kbd:`mouse-right-release`   , reset zoom</span>
+
+<span class="sd">.. |ScoreChart| image:: scoreplotgraphicsview.png</span>
+<span class="sd">  :width: 800</span>
+<span class="sd">  :alt: Score Chart</span>
+<span class="sd">.. _PGNExt: https://github.com/mliebelt/pgn-spec-commented/blob/main/pgn-spec-supplement.md</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtCore</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtGui</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtWidgets</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtChart</span>
+
+<span class="kn">import</span> <span class="nn">chess</span><span class="o">,</span> <span class="nn">chess.pgn</span>
+<span class="kn">from</span> <span class="nn">chessengine</span> <span class="kn">import</span> <span class="n">PGNEval_REGEX</span>
+
+<div class="viewcode-block" id="ScorePlot"><a class="viewcode-back" href="../scoreplotgraphicsview.html#scoreplotgraphicsview.ScorePlot">[docs]</a><span class="k">class</span> <span class="nc">ScorePlot</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtChart</span><span class="o">.</span><span class="n">QChartView</span><span class="p">):</span>
+ <span class="sd">&#39;&#39;&#39;Score plot object</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+ <span class="n">piecePawnScoreDict</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">chess</span><span class="o">.</span><span class="n">PAWN</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+  <span class="n">chess</span><span class="o">.</span><span class="n">KNIGHT</span> <span class="p">:</span> <span class="mi">3</span><span class="p">,</span> 
+  <span class="n">chess</span><span class="o">.</span><span class="n">BISHOP</span> <span class="p">:</span> <span class="mi">3</span><span class="p">,</span> 
+  <span class="n">chess</span><span class="o">.</span><span class="n">ROOK</span> <span class="p">:</span> <span class="mi">5</span><span class="p">,</span> 
+  <span class="n">chess</span><span class="o">.</span><span class="n">QUEEN</span> <span class="p">:</span> <span class="mi">9</span>
+ <span class="p">}</span>
+ <span class="n">seriesPens</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s1">&#39;Material&#39;</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPen</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QBrush</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">blue</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span> 
+  <span class="s1">&#39;Engine&#39;</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPen</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QBrush</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">red</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span> 
+  <span class="kc">None</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPen</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QBrush</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">gray</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">DotLine</span><span class="p">)}</span>
+  
+ <span class="n">axesPen</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPen</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QBrush</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">blue</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+ <span class="n">axesBrush</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QBrush</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">black</span><span class="p">)</span>
+ <span class="n">mateScore</span> <span class="o">=</span> <span class="mi">100</span>
+
+ <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">blue</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">ScorePlot</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setRenderHint</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPainter</span><span class="o">.</span><span class="n">Antialiasing</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setRubberBand</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtChart</span><span class="o">.</span><span class="n">QChartView</span><span class="o">.</span><span class="n">VerticalRubberBand</span><span class="p">)</span>
+ 
+<div class="viewcode-block" id="ScorePlot.setup"><a class="viewcode-back" href="../scoreplotgraphicsview.html#scoreplotgraphicsview.ScorePlot.setup">[docs]</a> <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notifyGameNodeSelectedSignal</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&#39;&#39;&#39;Set up of the score</span>
+<span class="sd">  </span>
+<span class="sd">:param notifyGameNodeSelectedSignal: signal to be emitted if a game node is selected</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="s1">&#39;xAxis&#39;</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="k">return</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span> <span class="o">=</span> <span class="n">notifyGameNodeSelectedSignal</span> 
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">scUp</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QShortcut</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+   <span class="n">scUp</span><span class="o">.</span><span class="n">setKey</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_Up</span><span class="p">)</span>
+   <span class="n">scUp</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_sc_activated</span><span class="p">)</span>
+   <span class="n">scDown</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QShortcut</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+   <span class="n">scDown</span><span class="o">.</span><span class="n">setKey</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_Down</span><span class="p">)</span>
+   <span class="n">scDown</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_sc_activated</span><span class="p">)</span></div>
+ 
+ <span class="k">def</span> <span class="nf">_setupChart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notifyGameNodeSelectedSignal</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_createChart</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">xAxis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addAxis</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignBottom</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Move&#39;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">yAxis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addAxis</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignLeft</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Score [pawns]&#39;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">materialSeries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addSeries</span><span class="p">(</span><span class="s1">&#39;Material&#39;</span><span class="p">,</span> <span class="n">isLineSeries</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">engineSeries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addSeries</span><span class="p">(</span><span class="s1">&#39;Engine&#39;</span><span class="p">,</span> <span class="n">isLineSeries</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">selectedGameNode</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">vLine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addSeries</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">isLineSeries</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">vLine</span><span class="o">.</span><span class="n">setPointsVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">vLine</span><span class="o">.</span><span class="n">setPointLabelsVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">vLine</span><span class="o">.</span><span class="n">setPointLabelsClipping</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">vLine</span><span class="o">.</span><span class="n">setPointLabelsFormat</span><span class="p">(</span><span class="s1">&#39;@xPoint&#39;</span><span class="p">)</span>
+  <span class="n">vLineMarkers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span><span class="o">.</span><span class="n">markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vLine</span><span class="p">)</span>
+  <span class="n">vLineMarkers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addSeries</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">isLineSeries</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span><span class="o">.</span><span class="n">setMarkerSize</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span><span class="o">.</span><span class="n">setPointsVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span><span class="o">.</span><span class="n">setPointLabelsVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span><span class="o">.</span><span class="n">setPointLabelsClipping</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span><span class="o">.</span><span class="n">setPointLabelsFormat</span><span class="p">(</span><span class="s1">&#39;@yPoint&#39;</span><span class="p">)</span>
+  <span class="n">meLabelMarkers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span><span class="o">.</span><span class="n">markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span><span class="p">)</span>
+  <span class="n">meLabelMarkers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ScorePlot.minQtVersion"><a class="viewcode-back" href="../scoreplotgraphicsview.html#scoreplotgraphicsview.ScorePlot.minQtVersion">[docs]</a> <span class="nd">@staticmethod</span>
+ <span class="k">def</span> <span class="nf">minQtVersion</span><span class="p">(</span><span class="n">major</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minor</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">patch</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Checks whether the actual Qt-version is smaller or equal than the specified version</span>
+<span class="sd">  </span>
+<span class="sd">:param major: specified major version number</span>
+<span class="sd">:param minor: specified minor version number</span>
+<span class="sd">:param patch: specified patch number</span>
+<span class="sd">:returns: True, if the actual Qt-version is smaller or equal than the specified version</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">qtMajor</span><span class="p">,</span> <span class="n">qtMinor</span><span class="p">,</span> <span class="n">qtPatch</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QT_VERSION_STR</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)))</span>
+  <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="n">qtMajor</span> <span class="o">&lt;</span> <span class="n">major</span> \
+              <span class="ow">or</span> <span class="p">(</span><span class="n">qtMajor</span> <span class="o">==</span> <span class="n">major</span> <span class="ow">and</span> <span class="n">qtMinor</span> <span class="o">&lt;</span> <span class="n">minor</span><span class="p">)</span> \
+              <span class="ow">or</span> <span class="p">(</span><span class="n">qtMajor</span> <span class="o">==</span> <span class="n">major</span> <span class="ow">and</span> <span class="n">qtMinor</span> <span class="o">==</span> <span class="n">minor</span> <span class="ow">and</span> <span class="n">qtPatch</span> <span class="o">&lt;=</span> <span class="n">patch</span><span class="p">))</span></div>
+              
+ <span class="k">def</span> <span class="nf">interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minV</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">maxV</span> <span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+  <span class="k">assert</span> <span class="n">maxV</span> <span class="o">&gt;</span> <span class="n">minV</span>
+  <span class="k">if</span> <span class="n">maxV</span> <span class="o">-</span> <span class="n">minV</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+   <span class="k">return</span> <span class="mi">1</span>
+  <span class="k">if</span> <span class="n">maxV</span> <span class="o">-</span> <span class="n">minV</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+   <span class="k">return</span> <span class="mi">10</span>
+  <span class="k">return</span> <span class="mi">100</span>
+  
+ <span class="k">def</span> <span class="nf">_createChart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+   <span class="n">bColor</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">lightGray</span><span class="p">,</span> 
+   <span class="n">paColor</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> 
+   <span class="n">legendPosition</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignBottom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">chart</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtChart</span><span class="o">.</span><span class="n">QChart</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="o">.</span><span class="n">setBackgroundBrush</span><span class="p">(</span><span class="n">bColor</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="o">.</span><span class="n">setPlotAreaBackgroundBrush</span><span class="p">(</span><span class="n">paColor</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="o">.</span><span class="n">setPlotAreaBackgroundVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">legendPosition</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setChart</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="nf">_addSeries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">isLineSeries</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtChart</span><span class="o">.</span><span class="n">QLineSeries</span><span class="p">:</span>
+  <span class="k">if</span> <span class="n">isLineSeries</span><span class="p">:</span>
+   <span class="n">series</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtChart</span><span class="o">.</span><span class="n">QLineSeries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">series</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+   <span class="n">series</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seriesPens</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">series</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtChart</span><span class="o">.</span><span class="n">QScatterSeries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="p">)</span>
+   <span class="n">series</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axesPen</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="o">.</span><span class="n">addSeries</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+  <span class="n">series</span><span class="o">.</span><span class="n">attachAxis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xAxis</span><span class="p">)</span>
+  <span class="n">series</span><span class="o">.</span><span class="n">attachAxis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yAxis</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">series</span>
+
+ <span class="k">def</span> <span class="nf">_addTextLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsSimpleTextItem</span><span class="p">:</span>
+  <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="p">()</span><span class="o">.</span><span class="n">addSimpleText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="n">label</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">label</span>
+
+ <span class="k">def</span> <span class="nf">_addAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alignment</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignmentFlag</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtChart</span><span class="o">.</span><span class="n">QValueAxis</span><span class="p">:</span>
+  <span class="n">axis</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtChart</span><span class="o">.</span><span class="n">QValueAxis</span><span class="p">()</span>
+  <span class="n">axis</span><span class="o">.</span><span class="n">setLinePen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axesPen</span><span class="p">)</span>
+  <span class="n">axis</span><span class="o">.</span><span class="n">setLabelsBrush</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axesBrush</span><span class="p">)</span>
+  <span class="n">axis</span><span class="o">.</span><span class="n">setGridLineVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+  <span class="n">axis</span><span class="o">.</span><span class="n">setMinorTickCount</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">minQtVersion</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span>
+   <span class="n">axis</span><span class="o">.</span><span class="n">setTickType</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtChart</span><span class="o">.</span><span class="n">QValueAxis</span><span class="o">.</span><span class="n">TicksDynamic</span><span class="p">)</span>
+   <span class="n">axis</span><span class="o">.</span><span class="n">setTickAnchor</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">title</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> 
+   <span class="n">axis</span><span class="o">.</span><span class="n">setTitleText</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="o">.</span><span class="n">addAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">alignment</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">axis</span>
+  
+ <span class="k">def</span> <span class="nf">_setRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtChart</span><span class="o">.</span><span class="n">QValueAxis</span><span class="p">,</span> <span class="n">minV</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">maxV</span> <span class="p">:</span> <span class="nb">float</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">assert</span> <span class="n">maxV</span> <span class="o">&gt;</span> <span class="n">minV</span>
+  <span class="k">if</span> <span class="n">maxV</span> <span class="o">-</span> <span class="n">minV</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+   <span class="n">delta</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="k">elif</span> <span class="n">maxV</span> <span class="o">-</span> <span class="n">minV</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+   <span class="n">delta</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="k">elif</span> <span class="n">maxV</span> <span class="o">-</span> <span class="n">minV</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">:</span>
+   <span class="n">delta</span> <span class="o">=</span> <span class="mi">5</span>
+  <span class="k">elif</span> <span class="n">maxV</span> <span class="o">-</span> <span class="n">minV</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+   <span class="n">delta</span> <span class="o">=</span> <span class="mi">10</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">delta</span> <span class="o">=</span> <span class="mi">100</span>
+  <span class="n">axis</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="n">minV</span><span class="p">,</span> <span class="n">maxV</span><span class="p">)</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">minQtVersion</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span>
+   <span class="n">axis</span><span class="o">.</span><span class="n">setTickInterval</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">minV</span> <span class="o">=</span> <span class="p">(</span><span class="n">minV</span> <span class="o">//</span> <span class="n">delta</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta</span>
+   <span class="n">maxV</span> <span class="o">=</span> <span class="p">(</span><span class="n">maxV</span> <span class="o">//</span> <span class="n">delta</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta</span>
+   <span class="n">axis</span><span class="o">.</span><span class="n">setMin</span><span class="p">(</span><span class="n">minV</span><span class="p">)</span>
+   <span class="n">axis</span><span class="o">.</span><span class="n">setMax</span><span class="p">(</span><span class="n">maxV</span><span class="p">)</span>
+   <span class="n">axis</span><span class="o">.</span><span class="n">setTickCount</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">maxV</span><span class="o">-</span><span class="n">minV</span><span class="p">)</span> <span class="o">//</span> <span class="n">delta</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+   
+ <span class="k">def</span> <span class="nf">_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ply</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">ply</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+<div class="viewcode-block" id="ScorePlot.resetChart"><a class="viewcode-back" href="../scoreplotgraphicsview.html#scoreplotgraphicsview.ScorePlot.resetChart">[docs]</a> <span class="k">def</span> <span class="nf">resetChart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Clears the chart</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">engineDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">minY</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">maxY</span> <span class="o">=</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">xAxis</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">yAxis</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">materialSeries</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">engineSeries</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">vLine</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+  <span class="k">return</span></div>
+
+<div class="viewcode-block" id="ScorePlot.copyAsBitmap"><a class="viewcode-back" href="../scoreplotgraphicsview.html#scoreplotgraphicsview.ScorePlot.copyAsBitmap">[docs]</a> <span class="k">def</span> <span class="nf">copyAsBitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Copies the chart as a bitmap to clipboard</span>
+<span class="sd">  </span>
+<span class="sd">:param width: width of the bitmap (Def: current width of the bounding box)</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">sourceRect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sceneBoundingRect</span><span class="p">()</span><span class="o">.</span><span class="n">toRect</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">width</span> <span class="o">=</span> <span class="n">sourceRect</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+  <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+  <span class="n">height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sourceRect</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">*</span> <span class="n">width</span> <span class="o">/</span> <span class="n">sourceRect</span><span class="o">.</span><span class="n">width</span><span class="p">())</span>
+  <span class="n">bgColor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="p">()</span><span class="o">.</span><span class="n">views</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">backgroundBrush</span><span class="p">()</span><span class="o">.</span><span class="n">color</span><span class="p">()</span><span class="o">.</span><span class="n">toRgb</span><span class="p">()</span>
+  <span class="n">plt</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QImage</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span>  <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QImage</span><span class="o">.</span><span class="n">Format_RGB32</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">bgColor</span><span class="p">)</span>
+  <span class="n">painter</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPainter</span><span class="p">()</span>
+  <span class="n">painter</span><span class="o">.</span><span class="n">begin</span><span class="p">(</span><span class="n">plt</span><span class="p">)</span>
+  <span class="n">painter</span><span class="o">.</span><span class="n">setRenderHint</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPainter</span><span class="o">.</span><span class="n">Antialiasing</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">painter</span><span class="p">)</span>
+  <span class="n">painter</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+  <span class="n">clipboard</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">clipboard</span><span class="p">()</span>
+  <span class="n">clipboard</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">plt</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScorePlot.selectNodeItem"><a class="viewcode-back" href="../scoreplotgraphicsview.html#scoreplotgraphicsview.ScorePlot.selectNodeItem">[docs]</a> <span class="k">def</span> <span class="nf">selectNodeItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameNode</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Selects a game node</span>
+<span class="sd">  </span>
+<span class="sd">:param gameNode: game node to be selected</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">is_mainline</span><span class="p">():</span>
+   <span class="k">return</span>
+  <span class="n">ply</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">ply</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
+  <span class="k">assert</span> <span class="n">ply</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">materialSeries</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">selectedGameNode</span> <span class="o">=</span> <span class="n">gameNode</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">vLine</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+  <span class="n">xValue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">materialSeries</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ply</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">vLine</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xValue</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yAxis</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">vLine</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xValue</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">vLine</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">materialSeries</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ply</span><span class="p">))</span>
+  <span class="k">if</span> <span class="n">ply</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">engineDict</span><span class="p">:</span>
+   <span class="n">ply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">engineDict</span><span class="p">[</span><span class="n">ply</span><span class="p">]</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engineSeries</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ply</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">meLabels</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ScorePlot.addGameNodes"><a class="viewcode-back" href="../scoreplotgraphicsview.html#scoreplotgraphicsview.ScorePlot.addGameNodes">[docs]</a> <span class="k">def</span> <span class="nf">addGameNodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameNode</span> <span class="p">:</span>  <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Adds 1 or more nodes, parent node of first node must exist in the editor</span>
+<span class="sd">  </span>
+<span class="sd">:param gameNode: game node to be added (must be main_variation !!)</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">is_mainline</span><span class="p">():</span>
+   <span class="k">return</span>
+  <span class="n">ply</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">ply</span><span class="p">()</span>
+  <span class="n">engineData</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="n">materialData</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="n">nMaterial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">materialSeries</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+  <span class="n">nEngine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">engineSeries</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+  <span class="k">while</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">pieceMap</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()</span><span class="o">.</span><span class="n">piece_map</span><span class="p">()</span>
+   <span class="n">pawnScore</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pieceMap</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+    <span class="k">if</span> <span class="n">piece</span><span class="o">.</span><span class="n">piece_type</span> <span class="o">!=</span> <span class="n">chess</span><span class="o">.</span><span class="n">KING</span><span class="p">:</span>
+     <span class="k">if</span> <span class="n">piece</span><span class="o">.</span><span class="n">color</span> <span class="o">==</span> <span class="n">chess</span><span class="o">.</span><span class="n">WHITE</span><span class="p">:</span>
+      <span class="n">pawnScore</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">piecePawnScoreDict</span><span class="p">[</span><span class="n">piece</span><span class="o">.</span><span class="n">piece_type</span><span class="p">]</span>
+     <span class="k">else</span><span class="p">:</span>
+      <span class="n">pawnScore</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">piecePawnScoreDict</span><span class="p">[</span><span class="n">piece</span><span class="o">.</span><span class="n">piece_type</span><span class="p">]</span>
+   <span class="n">materialData</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QPointF</span><span class="p">((</span><span class="n">ply</span> <span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">pawnScore</span><span class="p">))</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">minY</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">minY</span><span class="p">,</span> <span class="n">pawnScore</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">maxY</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maxY</span><span class="p">,</span> <span class="n">pawnScore</span><span class="p">)</span>
+   <span class="n">match</span> <span class="o">=</span> <span class="n">PGNEval_REGEX</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">comment</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;%&#39;</span> <span class="ow">or</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="si">%e</span><span class="s1">val&#39;</span><span class="p">):</span>
+    <span class="n">engineScore</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">engineScore</span> <span class="o">!=</span> <span class="s1">&#39;None&#39;</span><span class="p">:</span>
+     <span class="k">try</span><span class="p">:</span>
+      <span class="n">engineScore</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">engineScore</span><span class="p">)</span>
+     <span class="k">except</span><span class="p">:</span>
+      <span class="n">engineScore</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">engineScore</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+      <span class="k">if</span> <span class="n">engineScore</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+       <span class="n">engineScore</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mateScore</span>
+      <span class="k">else</span><span class="p">:</span>
+       <span class="n">engineScore</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mateScore</span>
+     <span class="n">engineData</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QPointF</span><span class="p">((</span><span class="n">ply</span> <span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">engineScore</span><span class="p">))</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">engineDict</span><span class="p">[</span><span class="n">nMaterial</span><span class="p">]</span> <span class="o">=</span> <span class="n">nEngine</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">minY</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">minY</span><span class="p">,</span> <span class="n">engineScore</span><span class="p">)</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">maxY</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maxY</span><span class="p">,</span> <span class="n">engineScore</span><span class="p">)</span>
+     <span class="n">nEngine</span> <span class="o">+=</span> <span class="mi">1</span>
+   <span class="n">gameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+   <span class="n">nMaterial</span> <span class="o">+=</span> <span class="mi">1</span>
+   <span class="n">ply</span> <span class="o">+=</span> <span class="mi">1</span>
+   
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">materialData</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">materialSeries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">materialData</span><span class="p">)</span>
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">engineData</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">engineSeries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">engineData</span><span class="p">)</span>
+
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xAxis</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ply</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yAxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">minY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxY</span><span class="p">)</span></div>
+  
+<div class="viewcode-block" id="ScorePlot.setGame"><a class="viewcode-back" href="../scoreplotgraphicsview.html#scoreplotgraphicsview.ScorePlot.setGame">[docs]</a> <span class="k">def</span> <span class="nf">setGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Sets a new game</span>
+<span class="sd">  </span>
+<span class="sd">:param game: game node to be set</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setupChart</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">resetChart</span><span class="p">()</span>
+  <span class="k">if</span> <span class="s1">&#39;Annotator&#39;</span> <span class="ow">in</span> <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">engineSeries</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Annotator&#39;</span><span class="p">])</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">engineSeries</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="s1">&#39;Engine&#39;</span><span class="p">)</span>
+  <span class="n">gameNode</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">addGameNodes</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">selectNodeItem</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span></div>
+ 
+ <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">()</span>
+ <span class="k">def</span> <span class="nf">on_sc_activated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectedGameNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">sendingSC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">()</span>
+   <span class="k">if</span> <span class="n">sendingSC</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_Down</span><span class="p">:</span>
+    <span class="n">newGameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectedGameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">newGameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectedGameNode</span><span class="o">.</span><span class="n">parent</span>
+   <span class="k">if</span> <span class="n">newGameNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">newGameNode</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ScorePlot.mouseReleaseEvent"><a class="viewcode-back" href="../scoreplotgraphicsview.html#scoreplotgraphicsview.ScorePlot.mouseReleaseEvent">[docs]</a> <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QMouseEvent</span><span class="p">)</span>
+ <span class="k">def</span> <span class="nf">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+  <span class="n">plies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">materialSeries</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">plies</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="k">return</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">ScorePlot</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">mouseReleaseEvent</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">RightButton</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">chart</span><span class="o">.</span><span class="n">zoomReset</span><span class="p">()</span>
+
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xAxis</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">plies</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yAxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yAxis</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">yAxis</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">selectNodeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectedGameNode</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+ <span class="kn">import</span> <span class="nn">io</span><span class="o">,</span> <span class="nn">sys</span>
+ <span class="kn">import</span> <span class="nn">PyQt5.QtGui</span>
+ <span class="kn">import</span> <span class="nn">PyQt5.QtWidgets</span>
+ <span class="kn">from</span> <span class="nn">pgnParse</span> <span class="kn">import</span> <span class="n">read_game</span>
+
+
+ <span class="k">class</span> <span class="nc">My</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="p">):</span>
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span><span class="p">):</span>
+   <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;self.chart Formatting Demo&#39;</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="n">ScorePlot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">1200</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+  
+  <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  
+   <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">setGame</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+   <span class="n">gameNode</span> <span class="o">=</span> <span class="n">game</span>
+   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">gameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">selectNodeItem</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
+     
+ 
+ <span class="n">ps</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/Reinh/OneDrive/Dokumente/Schach/ps210105.pgn&quot;</span>
+ <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span>  <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+  <span class="n">newData</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+ <span class="n">pgn</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">newData</span><span class="p">)</span>
+ <span class="n">game</span> <span class="o">=</span> <span class="n">read_game</span><span class="p">(</span><span class="n">pgn</span><span class="p">)</span>
+ <span class="n">app</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+ <span class="n">plotWindow</span> <span class="o">=</span> <span class="n">My</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+ <span class="n">plotWindow</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+ <span class="n">plotWindow</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+ <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">())</span>
+
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Reinhard März.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

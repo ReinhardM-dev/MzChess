@@ -1,0 +1,822 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>pgnParse &mdash; MzChess 0.9 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> MzChess
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MzChess</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>pgnParse</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pgnParse</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;A new-Parser for Portable Game Notation (`PGN`_) files for `chess.pgn`_ items</span>
+<span class="sd"> </span>
+<span class="sd">.. _chess.pgn: https://pypi.org/project/python-chess</span>
+<span class="sd">.. _PGN: https://github.com/fsmosca/PGN-Standard</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TextIO</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">import</span> <span class="nn">chess.pgn</span>
+<span class="kn">import</span> <span class="nn">ply.lex</span>
+
+<div class="viewcode-block" id="PGNLexer"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer">[docs]</a><span class="k">class</span> <span class="nc">PGNLexer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+ <span class="sd">&#39;&#39;&#39;A Lexer for Portable Game Notation (PGN) files (see `ply`_)</span>
+<span class="sd">tracking line number, gameID, position (in game) </span>
+
+<span class="sd">:param bufsize: size of the token buffer (min: 4096). The buffer is refilled at bufsize/4 </span>
+<span class="sd">:param debug: run the lexer in debug mode</span>
+<span class="sd">:param kwargs: other keyword arguments of ply.lex.lex </span>
+<span class="sd"> </span>
+<span class="sd">.. _ply: https://ply.readthedocs.io/en/latest/</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+ <span class="n">states</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">,</span><span class="s1">&#39;exclusive&#39;</span><span class="p">),</span>  <span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="s1">&#39;exclusive&#39;</span><span class="p">)</span> <span class="p">)</span>
+ <span class="n">tokens</span> <span class="o">=</span> <span class="p">(</span> <span class="s1">&#39;TAGNAME&#39;</span><span class="p">,</span> <span class="s1">&#39;TAGVALUE&#39;</span><span class="p">,</span> <span class="s1">&#39;ENDOFGAME&#39;</span><span class="p">,</span> <span class="s1">&#39;MOVENUMBER&#39;</span><span class="p">,</span> <span class="s1">&#39;SANPLY&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;LPAREN&#39;</span><span class="p">,</span> <span class="s1">&#39;RPAREN&#39;</span><span class="p">,</span> <span class="s1">&#39;LBRACE&#39;</span><span class="p">,</span> <span class="s1">&#39;RBRACE&#39;</span><span class="p">,</span> <span class="s1">&#39;LBRACK&#39;</span><span class="p">,</span> <span class="s1">&#39;RBRACK&#39;</span><span class="p">,</span> <span class="s1">&#39;NAG&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;COMMENT&#39;</span><span class="p">,</span> <span class="s1">&#39;LINECOMMENT&#39;</span><span class="p">)</span>
+ <span class="n">nagDict</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;?&#39;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="s1">&#39;??&#39;</span> <span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;?!&#39;</span> <span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="s1">&#39;!!&#39;</span> <span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;!?&#39;</span> <span class="p">:</span> <span class="mi">5</span><span class="p">,</span> 
+                  <span class="s1">&#39;+=&#39;</span> <span class="p">:</span>  <span class="mi">14</span><span class="p">,</span> <span class="s1">&#39;=+&#39;</span> <span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;+/-&#39;</span> <span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="s1">&#39;+-&#39;</span> <span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="s1">&#39;+--&#39;</span> <span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                  <span class="s1">&#39;-/+&#39;</span> <span class="p">:</span> <span class="mi">17</span><span class="p">,</span> <span class="s1">&#39;-+&#39;</span> <span class="p">:</span> <span class="mi">19</span><span class="p">,</span> <span class="s1">&#39;--+&#39;</span> <span class="p">:</span> <span class="mi">21</span><span class="p">,</span>  <span class="s1">&#39;=&#39;</span> <span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;~&#39;</span> <span class="p">:</span> <span class="mi">13</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span> <span class="p">:</span> <span class="mi">146</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">:</span> <span class="mi">220</span><span class="p">}</span>
+ 
+ <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bufsize</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2147483647</span><span class="p">,</span> <span class="n">debug</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">assert</span> <span class="n">bufsize</span> <span class="o">&gt;=</span> <span class="mi">4096</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">bufsize</span> <span class="o">=</span> <span class="n">bufsize</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">lexer</span> <span class="o">=</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">lex</span><span class="p">(</span><span class="n">module</span> <span class="o">=</span> <span class="bp">self</span><span class="p">,</span> <span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameID</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="PGNLexer.newGame"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.newGame">[docs]</a> <span class="k">def</span> <span class="nf">newGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">LexToken</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Prepared the lexer to deliver tokens for a game </span>
+<span class="sd">  </span>
+<span class="sd">:param f: file handle opened in text mode </span>
+<span class="sd">:returns: the first token of the game</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">:</span>
+   <span class="n">lexer</span><span class="o">.</span><span class="n">lineno</span> <span class="o">=</span> <span class="mi">1</span>
+   <span class="n">lexer</span><span class="o">.</span><span class="n">gameID</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bufsize</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\ufeff</span><span class="s2">&quot;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameID</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">()</span></div>
+  
+<div class="viewcode-block" id="PGNLexer.endGame"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.endGame">[docs]</a> <span class="k">def</span> <span class="nf">endGame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="s1">&#39;Ends running through a new game&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lexpos</span><span class="p">:]</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_loadBuffer</span><span class="p">()</span></div>
+
+ <span class="k">def</span> <span class="nf">_loadBuffer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">bufsize</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lexpos</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bufsize</span> <span class="o">//</span> <span class="mi">4</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bufsize</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lexpos</span><span class="p">:]</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="nf">token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">LexToken</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_loadBuffer</span><span class="p">()</span>
+  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+  
+ <span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tok</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">LexToken</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">notify</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="n">msgList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">tok</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">tok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+  <span class="k">while</span> <span class="n">tok</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">notify</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">notify</span><span class="p">(</span><span class="s1">&#39;(</span><span class="si">{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">): </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">lexpos</span><span class="p">))</span>
+   <span class="n">msgList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;(</span><span class="si">{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">): </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">lexpos</span><span class="p">))</span>
+   <span class="n">tok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+  <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msgList</span><span class="p">)</span>
+  
+<div class="viewcode-block" id="PGNLexer.endOfGamePattern"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.endOfGamePattern">[docs]</a> <span class="k">def</span> <span class="nf">endOfGamePattern</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Returns the compiled *t_ENDOFGAME* pattern</span>
+<span class="sd">  </span>
+<span class="sd">:returns: compiled *t_ENDOFGAME* pattern</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t_ENDOFGAME</span><span class="p">)</span> </div>
+
+ <span class="k">def</span> <span class="nf">_raise_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rootCause</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="n">t</span> <span class="p">:</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="p">,</span> <span class="n">warn</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+   <span class="n">txt</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">[:</span><span class="mi">20</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">txt</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">warn</span><span class="p">:</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;LEXER/</span><span class="si">{}</span><span class="s2">: &#39;</span><span class="si">{}</span><span class="s2"> ...&#39; @ Line: </span><span class="si">{}</span><span class="s2">, Game </span><span class="si">{}</span><span class="s2">, Pos: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rootCause</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameID</span><span class="p">,</span>  <span class="n">t</span><span class="o">.</span><span class="n">lexpos</span><span class="p">))</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;LEXER/</span><span class="si">{}</span><span class="s2">: &#39;</span><span class="si">{}</span><span class="s2"> ...&#39; @ Line: </span><span class="si">{}</span><span class="s2">, Game </span><span class="si">{}</span><span class="s2">, Pos: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rootCause</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameID</span><span class="p">,</span>  <span class="n">t</span><span class="o">.</span><span class="n">lexpos</span><span class="p">))</span>
+ 
+ <span class="c1"># ---------------------------------------------------------------------------------- </span>
+ 
+ <span class="c1"># Completely ignored characters</span>
+ <span class="n">t_ignore</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="se">\t\x0c</span><span class="s1">&#39;</span>
+ <span class="n">t_tag_ignore</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="se">\t\x0c</span><span class="s1">&#39;</span>
+ <span class="n">t_comment_ignore</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\x0c</span><span class="s1">&#39;</span>
+ <span class="n">t_ENDOFGAME</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;(1\-0|0\-1|1/2\-1/2|\*)&#39;</span>
+
+ <span class="c1"># Newlines</span>
+<div class="viewcode-block" id="PGNLexer.t_NEWLINE"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_NEWLINE">[docs]</a> <span class="k">def</span> <span class="nf">t_NEWLINE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;\n+&#39;</span>
+  <span class="n">t</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lineno</span> <span class="o">+=</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PGNLexer.t_tag_NEWLINE"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_tag_NEWLINE">[docs]</a> <span class="k">def</span> <span class="nf">t_tag_NEWLINE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;\n+&#39;</span>
+  <span class="n">t</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lineno</span> <span class="o">+=</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+ <span class="n">t_tag_TAGNAME</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;[A-Z][A-Za-z0-9]*&#39;</span>
+ <span class="n">t_LPAREN</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\(&#39;</span>
+ <span class="n">t_RPAREN</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\)&#39;</span>
+
+<div class="viewcode-block" id="PGNLexer.t_tag_TAGVALUE"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_tag_TAGVALUE">[docs]</a> <span class="k">def</span> <span class="nf">t_tag_TAGVALUE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span> 
+  <span class="sa">r</span><span class="s1">&#39;\&quot;(</span><span class="se">\\</span><span class="s1">\&quot;|[^&quot;])*\&quot;&#39;</span>
+  <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">t</span></div>
+
+<div class="viewcode-block" id="PGNLexer.t_SANPLY"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_SANPLY">[docs]</a> <span class="k">def</span> <span class="nf">t_SANPLY</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;(([NBKRQ]?[a-h]?[1-8]?)?[\:x]?[a-h][1-8](=[QRBN])?[+#]?|O-O(-O)?|0-0(-0)?|0</span><span class="si">{4}</span><span class="s1">|@</span><span class="si">{4}</span><span class="s1">|Z0|--(?![+\-]))&#39;</span>
+  <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;@@@@&#39;</span> <span class="ow">or</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;Z0&#39;</span><span class="p">:</span>
+   <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;0000&#39;</span>
+  <span class="k">return</span> <span class="n">t</span></div>
+
+<div class="viewcode-block" id="PGNLexer.t_LBRACK"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_LBRACK">[docs]</a> <span class="k">def</span> <span class="nf">t_LBRACK</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;\[&#39;</span>
+  <span class="n">t</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">begin</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">)</span></div>
+ 
+<div class="viewcode-block" id="PGNLexer.t_tag_RBRACK"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_tag_RBRACK">[docs]</a> <span class="k">def</span> <span class="nf">t_tag_RBRACK</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;\]&#39;</span>
+  <span class="n">t</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">begin</span><span class="p">(</span><span class="s1">&#39;INITIAL&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PGNLexer.t_MOVENUMBER"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_MOVENUMBER">[docs]</a> <span class="k">def</span>  <span class="nf">t_MOVENUMBER</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;([1-9][0-9]*\.*|\.+)(?!-)&#39;</span>
+  <span class="k">pass</span></div>
+  
+<div class="viewcode-block" id="PGNLexer.t_NAG"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_NAG">[docs]</a> <span class="k">def</span> <span class="nf">t_NAG</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;(\$[1-9][0-9]{0,2}(?![0-9])|(--\+|\+--|-/\+|\+/-|-\+|-\+|\+-|-\+|\+=|=\+)(?![=+\-])|(\?[?!]|![?!])(?![?!])|[?!=~DN](?![?!=~DN]))&#39;</span>
+  <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;$&#39;</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nagDict</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_raise_error</span><span class="p">(</span><span class="s2">&quot;Illegal NAG symbol&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">warn</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nagDict</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+   <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;=</span> <span class="mi">140</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_raise_error</span><span class="p">(</span><span class="s2">&quot;Illegal NAG string&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">warn</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">return</span> <span class="n">t</span>  </div>
+  
+<div class="viewcode-block" id="PGNLexer.t_comment_COMMENT"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_comment_COMMENT">[docs]</a> <span class="k">def</span> <span class="nf">t_comment_COMMENT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;[^</span><span class="si">{}</span><span class="s1">]+&#39;</span>
+  <span class="n">t</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lineno</span> <span class="o">+=</span> <span class="n">t</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">t</span></div>
+
+<div class="viewcode-block" id="PGNLexer.t_LBRACE"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_LBRACE">[docs]</a> <span class="k">def</span> <span class="nf">t_LBRACE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;\{&#39;</span>
+  <span class="n">t</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">begin</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">)</span></div>
+ 
+<div class="viewcode-block" id="PGNLexer.t_comment_RBRACE"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_comment_RBRACE">[docs]</a> <span class="k">def</span> <span class="nf">t_comment_RBRACE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;\}&#39;</span>
+  <span class="n">t</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">begin</span><span class="p">(</span><span class="s1">&#39;INITIAL&#39;</span><span class="p">)</span></div>
+ 
+<div class="viewcode-block" id="PGNLexer.t_tag_LINECOMMENT"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_tag_LINECOMMENT">[docs]</a> <span class="k">def</span> <span class="nf">t_tag_LINECOMMENT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;;[^\n]*&#39;</span>
+  <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="PGNLexer.t_LINECOMMENT"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_LINECOMMENT">[docs]</a> <span class="k">def</span> <span class="nf">t_LINECOMMENT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;;[^\n]*&#39;</span>
+  <span class="k">pass</span></div>
+
+  <span class="c1"># -----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="PGNLexer.t_TAGNAME"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_TAGNAME">[docs]</a> <span class="k">def</span>  <span class="nf">t_TAGNAME</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;\[&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_raise_error</span><span class="p">(</span><span class="s2">&quot;Illegal tagname&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PGNLexer.t_TAGVALUE"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_TAGVALUE">[docs]</a> <span class="k">def</span> <span class="nf">t_TAGVALUE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;\]&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_raise_error</span><span class="p">(</span><span class="s2">&quot;Illegal tagname&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PGNLexer.t_RBRACK"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_RBRACK">[docs]</a> <span class="k">def</span> <span class="nf">t_RBRACK</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;\]&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_raise_error</span><span class="p">(</span><span class="s2">&quot;Unexpected ]&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PGNLexer.t_COMMENT"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_COMMENT">[docs]</a> <span class="k">def</span> <span class="nf">t_COMMENT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;\{&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_raise_error</span><span class="p">(</span><span class="s2">&quot;Illegal comment string&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
+ 
+<div class="viewcode-block" id="PGNLexer.t_RBRACE"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.t_RBRACE">[docs]</a> <span class="k">def</span> <span class="nf">t_RBRACE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="sa">r</span><span class="s1">&#39;\}&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_raise_error</span><span class="p">(</span><span class="s2">&quot;Unexpected }&quot;</span><span class="p">)</span></div>
+
+ <span class="k">def</span> <span class="nf">t_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_raise_error</span><span class="p">(</span><span class="s2">&quot;Illegal character&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="nf">t_tag_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_raise_error</span><span class="p">(</span><span class="s2">&quot;Illegal tag character&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="nf">t_comment_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_raise_error</span><span class="p">(</span><span class="s2">&quot;Illegal comment character&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
+
+<span class="c1"># ==================================================================</span>
+
+<span class="n">lexer</span> <span class="p">:</span> <span class="n">PGNLexer</span> <span class="o">=</span> <span class="n">PGNLexer</span><span class="p">()</span>
+<span class="sd">&#39;&#39;&#39;The global instance of the lexer&#39;&#39;&#39;</span>
+
+<span class="k">def</span> <span class="nf">_checkToken</span><span class="p">(</span><span class="n">tok</span> <span class="p">:</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">LexToken</span><span class="p">,</span> <span class="n">expectedType</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+ <span class="k">global</span> <span class="n">lexer</span>
+ <span class="k">if</span> <span class="n">tok</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;Parser: </span><span class="si">{}</span><span class="s1"> marker missing&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">expectedType</span><span class="p">))</span>
+ <span class="k">elif</span> <span class="n">tok</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">expectedType</span><span class="p">:</span>
+  <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;Parser: Unexpected token &quot;</span><span class="si">{}</span><span class="s1">&quot; = </span><span class="si">{}</span><span class="s1"> ... (expected &quot;</span><span class="si">{}</span><span class="s1">&quot;) @ Line </span><span class="si">{}</span><span class="s1">, Game </span><span class="si">{}</span><span class="s1">, Pos </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">tok</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">value</span><span class="p">)[:</span><span class="mi">10</span><span class="p">],</span> <span class="n">expectedType</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">lexer</span><span class="o">.</span><span class="n">gameID</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">lexpos</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">_skipGameBody</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+ <span class="k">global</span> <span class="n">lexer</span>
+ <span class="n">data</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lexdata</span><span class="p">[</span><span class="n">lexer</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lexpos</span><span class="p">:]</span>
+ <span class="n">actPos</span> <span class="o">=</span> <span class="mi">0</span>
+
+ <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+  <span class="k">return</span> <span class="n">lexer</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lexpos</span>
+ 
+ <span class="n">endOfGameID</span> <span class="o">=</span> <span class="mi">0</span>
+ <span class="n">brackID</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+ <span class="n">patternList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+ <span class="n">patternList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">endOfGamePattern</span><span class="p">())</span>
+ <span class="n">patternList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{[^</span><span class="si">{}</span><span class="s1">]*\}&#39;</span><span class="p">))</span>
+ <span class="n">patternList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;;[^\n]*\n&#39;</span><span class="p">))</span>
+
+ <span class="n">matchDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+ <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>  
+  <span class="n">match</span> <span class="o">=</span> <span class="n">patternList</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">span</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">span</span><span class="p">()</span>
+   <span class="c1"># print(&#39;Setup: {}/{}: {}&#39;.format(id, actPos + span[1], data[actPos + span[0]:actPos + span[1]]))</span>
+   <span class="n">matchDict</span><span class="p">[</span><span class="n">actPos</span> <span class="o">+</span> <span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">actPos</span> <span class="o">+</span> <span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+ <span class="n">newBrackPos</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">actPos</span><span class="p">:]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span>
+ <span class="k">if</span> <span class="n">newBrackPos</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+  <span class="n">brackPos</span> <span class="o">=</span> <span class="n">actPos</span> <span class="o">+</span> <span class="n">newBrackPos</span>
+ <span class="k">else</span><span class="p">:</span>
+  <span class="n">brackPos</span> <span class="o">=</span> <span class="mi">2147483647</span>
+ <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">matchDict</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+  <span class="n">minPos</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">matchDict</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="nb">id</span><span class="p">,</span> <span class="n">endPos</span> <span class="o">=</span> <span class="n">matchDict</span><span class="p">[</span><span class="n">minPos</span><span class="p">]</span>
+  <span class="k">if</span> <span class="n">brackPos</span> <span class="o">&lt;</span> <span class="n">minPos</span><span class="p">:</span>
+   <span class="nb">id</span> <span class="o">=</span> <span class="n">brackID</span>
+   <span class="n">endPos</span> <span class="o">=</span> <span class="n">minPos</span> <span class="o">+</span><span class="mi">1</span>
+   <span class="k">break</span>
+  <span class="k">if</span> <span class="nb">id</span> <span class="o">==</span> <span class="n">endOfGameID</span><span class="p">:</span>
+   <span class="k">break</span>
+  <span class="k">del</span> <span class="n">matchDict</span><span class="p">[</span><span class="n">minPos</span><span class="p">]</span>
+  <span class="n">idList</span> <span class="o">=</span> <span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+  <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">matchDict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+  <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="n">endPos</span><span class="p">:</span>
+    <span class="nb">id</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">matchDict</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">matchDict</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+    <span class="n">idList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+  <span class="n">actPos</span> <span class="o">=</span> <span class="n">endPos</span>
+  <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">idList</span><span class="p">:</span>
+   <span class="n">match</span> <span class="o">=</span> <span class="n">patternList</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">actPos</span><span class="p">:])</span>
+   <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">span</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">span</span><span class="p">()</span>
+    <span class="c1"># print(&#39;{}/{}: {}&#39;.format(id, actPos + span[1], data[actPos + span[0]:actPos + span[1]]))</span>
+    <span class="n">matchDict</span><span class="p">[</span><span class="n">actPos</span> <span class="o">+</span> <span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">actPos</span> <span class="o">+</span> <span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+  <span class="n">newBrackPos</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">actPos</span><span class="p">:]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">newBrackPos</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">brackPos</span> <span class="o">=</span> <span class="n">actPos</span> <span class="o">+</span> <span class="n">newBrackPos</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">brackPos</span> <span class="o">=</span> <span class="mi">2147483647</span>
+    
+ <span class="n">lexer</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lineno</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[:</span><span class="n">endPos</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+ <span class="n">lexer</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lexpos</span> <span class="o">+=</span> <span class="n">endPos</span> <span class="o">-</span> <span class="p">(</span><span class="nb">id</span> <span class="o">==</span> <span class="n">brackID</span><span class="p">)</span>
+ <span class="k">if</span> <span class="nb">id</span> <span class="o">==</span> <span class="n">endOfGameID</span><span class="p">:</span>
+  <span class="k">return</span> <span class="kc">None</span>
+ <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matchDict</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+  <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;SkipBody: Parsing ended by EOF&quot;</span><span class="p">)</span>
+ <span class="k">elif</span> <span class="nb">id</span> <span class="o">==</span> <span class="n">brackID</span><span class="p">:</span>
+  <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;SkipBody: Parsing ended by new header&quot;</span><span class="p">)</span>
+ <span class="k">else</span><span class="p">:</span>
+  <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;SkipBody: Parsing ended inside a comment&quot;</span><span class="p">)</span>
+ <span class="k">return</span> <span class="kc">None</span>
+ 
+<span class="k">def</span> <span class="nf">_readComments</span><span class="p">(</span><span class="n">visitor</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">BaseVisitor</span><span class="p">,</span> <span class="n">tok</span> <span class="p">:</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">LexToken</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">LexToken</span><span class="p">:</span>
+ <span class="k">global</span> <span class="n">lexer</span>
+ <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+ <span class="k">while</span> <span class="n">tok</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tok</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;COMMENT&#39;</span><span class="p">:</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">comment</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+  <span class="n">comment</span> <span class="o">+=</span> <span class="n">tok</span><span class="o">.</span><span class="n">value</span>
+  <span class="n">tok</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+  <span class="n">visitor</span><span class="o">.</span><span class="n">visit_comment</span><span class="p">(</span><span class="n">comment</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+ <span class="k">return</span> <span class="n">tok</span>
+
+<span class="k">def</span> <span class="nf">_read_variants</span><span class="p">(</span><span class="n">visitor</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">BaseVisitor</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">ResultT</span><span class="p">],</span> <span class="n">board_stack</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">],</span> <span class="n">tok</span> <span class="p">:</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">LexToken</span><span class="p">,</span> <span class="n">semanticError</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">LexToken</span><span class="p">:</span>
+ <span class="k">global</span> <span class="n">lexer</span>
+ <span class="k">while</span> <span class="n">tok</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tok</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;LPAREN&#39;</span><span class="p">:</span>
+  <span class="n">visitor</span><span class="o">.</span><span class="n">begin_variation</span><span class="p">()</span>
+  <span class="n">board</span> <span class="o">=</span> <span class="n">board_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+  <span class="n">board</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+  <span class="n">board_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">board</span><span class="p">)</span>
+  <span class="n">tok</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+  <span class="n">tok</span> <span class="o">=</span> <span class="n">_readComments</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span> <span class="n">tok</span><span class="p">)</span>
+  <span class="n">tok</span><span class="p">,</span> <span class="n">semanticError</span> <span class="o">=</span> <span class="n">_read_gameNodes</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span> <span class="n">board_stack</span><span class="p">,</span> <span class="n">tok</span><span class="p">,</span> <span class="n">semanticError</span><span class="p">)</span>
+  <span class="n">_checkToken</span><span class="p">(</span><span class="n">tok</span><span class="p">,</span> <span class="s1">&#39;RPAREN&#39;</span><span class="p">)</span>
+  <span class="n">visitor</span><span class="o">.</span><span class="n">end_variation</span><span class="p">()</span>
+  <span class="n">board_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+  <span class="n">tok</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+ <span class="k">return</span> <span class="n">tok</span><span class="p">,</span> <span class="n">semanticError</span>
+
+<span class="k">def</span> <span class="nf">_read_gameNodes</span><span class="p">(</span><span class="n">visitor</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">BaseVisitor</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">ResultT</span><span class="p">],</span> <span class="n">board_stack</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">],</span>  <span class="n">tok</span> <span class="p">:</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">LexToken</span><span class="p">,</span> <span class="n">semanticError</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">LexToken</span><span class="p">:</span>
+ <span class="k">global</span> <span class="n">lexer</span>
+ <span class="k">while</span> <span class="n">tok</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tok</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;SANPLY&#39;</span><span class="p">:</span>
+  <span class="k">try</span><span class="p">:</span>
+   <span class="n">move</span> <span class="o">=</span>  <span class="n">board_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">parse_san</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+  <span class="k">except</span><span class="p">:</span>
+   <span class="n">move</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">null</span><span class="p">()</span>
+   <span class="k">if</span> <span class="n">semanticError</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+    <span class="n">semanticError</span> <span class="o">=</span> <span class="s1">&#39;Parser: Improper SAN </span><span class="si">{}</span><span class="s1"> @ Line </span><span class="si">{}</span><span class="s1">, Game </span><span class="si">{}</span><span class="s1">, Pos </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">lexer</span><span class="o">.</span><span class="n">gameID</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">lexpos</span><span class="p">)</span>
+  <span class="n">visitor</span><span class="o">.</span><span class="n">visit_move</span><span class="p">(</span><span class="n">board_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">move</span><span class="p">)</span>
+  <span class="n">board_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">move</span><span class="p">)</span>
+  <span class="n">visitor</span><span class="o">.</span><span class="n">visit_board</span><span class="p">(</span><span class="n">board_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+  <span class="n">tok</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+  <span class="k">while</span> <span class="n">tok</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tok</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;NAG&#39;</span><span class="p">:</span>
+    <span class="n">visitor</span><span class="o">.</span><span class="n">visit_nag</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">tok</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+  <span class="n">tok</span> <span class="o">=</span> <span class="n">_readComments</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span> <span class="n">tok</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">tok</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tok</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;LPAREN&#39;</span><span class="p">:</span>
+   <span class="n">tok</span><span class="p">,</span> <span class="n">semanticError</span> <span class="o">=</span> <span class="n">_read_variants</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span> <span class="n">board_stack</span><span class="p">,</span> <span class="n">tok</span><span class="p">,</span> <span class="n">semanticError</span><span class="p">)</span>
+ <span class="k">return</span> <span class="n">tok</span><span class="p">,</span> <span class="n">semanticError</span>
+
+<div class="viewcode-block" id="read_game"><a class="viewcode-back" href="../pgnParse.html#pgnParse.read_game">[docs]</a><span class="k">def</span> <span class="nf">read_game</span><span class="p">(</span><span class="n">f</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Visitor</span> <span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">BaseVisitor</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">ResultT</span><span class="p">]]</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameBuilder</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">ResultT</span><span class="p">]:</span>
+ <span class="sd">&quot;&quot;&quot;Reads a game from an open handle PGN-file in text mode.</span>
+<span class="sd"> </span>
+<span class="sd">By using text mode, the parser does not need to handle encodings. </span>
+<span class="sd">The file must be opened using the correct encoding, usually </span>
+<span class="sd">  </span>
+<span class="sd">  * &#39;utf-8-sig&#39;: UTF-8 with optional BOM,</span>
+<span class="sd">  * &#39;ascii&#39;: 7-bit ASCII,</span>
+<span class="sd">  * &#39;iso-8859-1&#39;: ISO 8859/1 (Latin 1), rarely used but suggested by PGN standard.</span>
+<span class="sd">  </span>
+<span class="sd">Please note: *read_game* uses a private buffer.</span>
+
+<span class="sd">As an extension of the PGN Standard, read_game accepts</span>
+
+<span class="sd">  * null move extensions of the Standard Algebraic Notation (SAN) (0000|@@@@|Z0)</span>
+<span class="sd">  * NAG symbols for annotations (?|??|?!|!|!!|!?)</span>
+<span class="sd">  * NAG symbols for positions (+=|=+|+/-|+-|+--|-/+|-+|--+|=|~&#39;)</span>
+<span class="sd">  * NAG symbols for novelty (N) and display(D)</span>
+<span class="sd">  * Improper end of a game (see below)</span>
+<span class="sd">    </span>
+<span class="sd">The parser is configured by using the Visitor object leading to different *ResultT* nodes</span>
+<span class="sd">  </span>
+<span class="sd">  * chess.pgn.GameBuilder delivers a chess.pgn.Game object</span>
+<span class="sd">  * chess.pgn.HeadersBuilder delivers a chess.pgn.Headers object </span>
+<span class="sd">  * chess.pgn.BoardBuilder delivers a chess.Board object </span>
+<span class="sd">  * chess.pgn.SkipVisitor delivers a boolean indicating whether a game could be successfully skipped </span>
+
+<span class="sd">The end of a game is determined by either</span>
+<span class="sd">   </span>
+<span class="sd">  * the game termination marker (1-0|0-1|1/2-1/2|*),</span>
+<span class="sd">  * the end of file (EOF) occured during parsing,</span>
+<span class="sd">  * or the start of a new header.</span>
+<span class="sd">   </span>
+<span class="sd">The last 2 alternatives are reported as an error, but parsing succeeds.</span>
+
+<span class="sd">:param f: file handle opened in text mode </span>
+<span class="sd">:param Visitor: Visitor object, i.e. chess.pgn.BaseVisitor and one of the derived classes </span>
+<span class="sd">    </span>
+<span class="sd">:returns: the expected *ResultT* object or ``None`` if parsing failed.</span>
+<span class="sd"> &quot;&quot;&quot;</span>
+ <span class="k">global</span> <span class="n">lexer</span>
+ <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">Visitor</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">BaseVisitor</span><span class="p">),</span> <span class="s1">&#39;Visitor (</span><span class="si">{}</span><span class="s1">) must a subclass of chess.pgn.BaseVisitor&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">Visitor</span><span class="p">))</span> 
+ <span class="k">try</span><span class="p">:</span>
+  <span class="n">tok</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">newGame</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+ <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+  <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;Lexer: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+ <span class="k">if</span> <span class="n">tok</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">return</span> <span class="kc">None</span>
+ <span class="n">visitor</span> <span class="o">=</span> <span class="n">Visitor</span><span class="p">()</span>
+ <span class="n">skipping_game</span> <span class="o">=</span> <span class="n">visitor</span><span class="o">.</span><span class="n">begin_game</span><span class="p">()</span> <span class="ow">is</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">SKIP</span>
+ <span class="n">headers</span> <span class="o">=</span> <span class="n">visitor</span><span class="o">.</span><span class="n">begin_headers</span><span class="p">()</span>
+ <span class="k">if</span> <span class="n">headers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="n">headers</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Headers</span><span class="p">()</span>
+ <span class="k">while</span> <span class="n">tok</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;TAGNAME&#39;</span><span class="p">:</span>
+  <span class="n">tagName</span> <span class="o">=</span> <span class="n">tok</span><span class="o">.</span><span class="n">value</span>
+  <span class="n">tok</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+  <span class="n">_checkToken</span><span class="p">(</span><span class="n">tok</span><span class="p">,</span> <span class="s1">&#39;TAGVALUE&#39;</span><span class="p">)</span>
+  <span class="n">visitor</span><span class="o">.</span><span class="n">visit_header</span><span class="p">(</span><span class="n">tagName</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+  <span class="n">tok</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+ <span class="n">skipping_game</span>  <span class="o">|=</span> <span class="n">visitor</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span> <span class="ow">is</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">SKIP</span>
+ <span class="n">tok</span> <span class="o">=</span> <span class="n">_readComments</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span> <span class="n">tok</span><span class="p">)</span>
+ <span class="k">if</span> <span class="n">skipping_game</span><span class="p">:</span>
+  <span class="k">try</span><span class="p">:</span>
+   <span class="n">_skipGameBody</span><span class="p">()</span>
+   <span class="n">lexer</span><span class="o">.</span><span class="n">endGame</span><span class="p">()</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+   <span class="n">visitor</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+  <span class="n">visitor</span><span class="o">.</span><span class="n">end_game</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">visitor</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+ <span class="k">try</span><span class="p">:</span>
+  <span class="n">board_stack</span> <span class="o">=</span> <span class="p">[</span><span class="n">headers</span><span class="o">.</span><span class="n">board</span><span class="p">()]</span>
+  <span class="n">visitor</span><span class="o">.</span><span class="n">visit_board</span><span class="p">(</span><span class="n">board_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+  <span class="n">tok</span><span class="p">,</span> <span class="n">semanticError</span> <span class="o">=</span> <span class="n">_read_gameNodes</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span><span class="n">board_stack</span><span class="p">,</span> <span class="n">tok</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="n">gameIsOver</span> <span class="o">=</span> <span class="n">board_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">is_game_over</span><span class="p">(</span><span class="n">claim_draw</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">gameIsOver</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">board_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">is_checkmate</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">board_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">turn</span><span class="p">:</span>
+     <span class="n">tok</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;0-1&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+     <span class="n">tok</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;1-0&#39;</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">tok</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;1/2-1/2&#39;</span>
+  <span class="k">if</span> <span class="n">tok</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tok</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;TAGNAME&#39;</span><span class="p">:</span>
+   <span class="n">lexer</span><span class="o">.</span><span class="n">lexer</span><span class="o">.</span><span class="n">lexpos</span> <span class="o">-=</span> <span class="mi">1</span>
+  <span class="k">elif</span> <span class="n">semanticError</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">tok</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;ENDOFGAME&#39;</span><span class="p">:</span>
+    <span class="n">visitor</span><span class="o">.</span><span class="n">visit_result</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+   <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="n">semanticError</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">tok</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">_checkToken</span><span class="p">(</span><span class="n">tok</span><span class="p">,</span> <span class="s1">&#39;ENDOFGAME&#39;</span><span class="p">)</span>
+   <span class="n">visitor</span><span class="o">.</span><span class="n">visit_result</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+   <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">gameIsOver</span><span class="p">)</span> <span class="ow">and</span> <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">tok</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;Parser: game.headers[&#39;Result&#39;] (</span><span class="si">{}</span><span class="s2">) != endOfGame (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">],</span> <span class="n">tok</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+ <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+  <span class="k">try</span><span class="p">:</span>
+   <span class="n">visitor</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+   <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+  <span class="n">visitor</span><span class="o">.</span><span class="n">end_game</span><span class="p">()</span>
+ <span class="n">lexer</span><span class="o">.</span><span class="n">endGame</span><span class="p">()</span>
+ <span class="k">return</span> <span class="n">visitor</span><span class="o">.</span><span class="n">result</span><span class="p">()</span></div>
+ 
+<div class="viewcode-block" id="read_headers"><a class="viewcode-back" href="../pgnParse.html#pgnParse.read_headers">[docs]</a><span class="k">def</span> <span class="nf">read_headers</span><span class="p">(</span><span class="n">handle</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Headers</span><span class="p">]:</span>
+ <span class="sd">&#39;&#39;&#39;Convenience function representing *read_game(handle, Visitor = chess.pgn.HeadersBuilder)*</span>
+
+<span class="sd"> :param f: file handle opened in text mode </span>
+<span class="sd"> :returns: a *chess.pgn.Headers* object or ``None`` if parsing failed.</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+ <span class="k">return</span> <span class="n">read_game</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">Visitor</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">HeadersBuilder</span><span class="p">)</span></div>
+ 
+<div class="viewcode-block" id="read_board"><a class="viewcode-back" href="../pgnParse.html#pgnParse.read_board">[docs]</a><span class="k">def</span> <span class="nf">read_board</span><span class="p">(</span><span class="n">handle</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">]:</span>
+ <span class="sd">&#39;&#39;&#39;Convenience function representing *read_game(handle, Visitor = chess.pgn.BoardBuilder)*</span>
+
+<span class="sd"> :param f: file handle opened in text mode </span>
+<span class="sd"> :returns: a *chess.Board* object or ``None`` if parsing failed.</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+ <span class="k">return</span> <span class="n">read_game</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">Visitor</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">BoardBuilder</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="skip_game"><a class="viewcode-back" href="../pgnParse.html#pgnParse.skip_game">[docs]</a><span class="k">def</span> <span class="nf">skip_game</span><span class="p">(</span><span class="n">handle</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+ <span class="sd">&#39;&#39;&#39;Convenience function representing *read_game(handle, Visitor = chess.pgn.SkipVisitor)*</span>
+
+<span class="sd"> :param f: file handle opened in text mode </span>
+<span class="sd"> :returns: a *bool* indicating whether parsing was successful.</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+ <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">read_game</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">Visitor</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">SkipVisitor</span><span class="p">))</span></div>
+
+<span class="c1"># ==================================================================</span>
+ 
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+ <span class="kn">import</span> <span class="nn">argparse</span>
+ <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+
+ <span class="n">fileDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+ <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;PGN Parser: test&#39;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;pgnFile&quot;</span><span class="p">,</span> <span class="n">help</span> <span class="o">=</span> <span class="s2">&quot;PGN-File (required)&quot;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--target&quot;</span><span class="p">,</span>  <span class="n">metavar</span> <span class="o">=</span> <span class="s1">&#39;target&#39;</span><span class="p">,</span>  <span class="n">default</span> <span class="o">=</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> 
+   <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;game&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span> <span class="p">,</span><span class="s1">&#39;headers&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;board&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;lex&#39;</span><span class="p">],</span> 
+   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;target of parsing (g - games, h - headers, s - skip every second game, b - board, l - lexical analysis only)&quot;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--encoding&quot;</span><span class="p">,</span>  <span class="n">metavar</span> <span class="o">=</span> <span class="s1">&#39;encoding&#39;</span><span class="p">,</span>  <span class="n">default</span> <span class="o">=</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> 
+   <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;iso-8859-1&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">],</span> 
+   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;target of parsing (g - games, h - headers, s - skip every second game, b - board, l - lexical analysis only)&quot;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-compare&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">help</span> <span class="o">=</span> <span class="s2">&quot;If True, compare with chess.pgn.read_game&quot;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-debug&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">help</span> <span class="o">=</span> <span class="s2">&quot;Enable Debugging&quot;</span><span class="p">)</span>
+ 
+ <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+ <span class="k">assert</span> <span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;pgnFile is required&#39;</span>
+ <span class="n">target</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+ <span class="n">encoding</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">encoding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+ <span class="k">if</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s1">&#39;u&#39;</span><span class="p">:</span>
+  <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8-sig&#39;</span>
+ <span class="k">elif</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s1">&#39;i&#39;</span><span class="p">:</span>
+  <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;iso-8859-1&#39;</span>
+ <span class="k">elif</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s1">&#39;a&#39;</span><span class="p">:</span>
+  <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;ascii&#39;</span>
+
+ <span class="k">def</span> <span class="nf">read_board2</span><span class="p">(</span><span class="n">handle</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">]:</span>
+  <span class="k">return</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">read_game</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">Visitor</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">BoardBuilder</span><span class="p">)</span>
+ 
+ <span class="k">def</span> <span class="nf">runBoard</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">node</span><span class="o">.</span><span class="n">board</span><span class="p">()</span>
+
+ <span class="k">def</span> <span class="nf">runNode</span><span class="p">(</span><span class="n">readFct</span> <span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">f</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>  <span class="n">gameID</span> <span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+  <span class="k">try</span><span class="p">:</span>
+   <span class="n">node</span> <span class="o">=</span> <span class="n">readFct</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;node #</span><span class="si">{}</span><span class="s1">, fct = </span><span class="si">{}</span><span class="s1"> -&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameID</span><span class="p">,</span> <span class="n">readFct</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">node</span><span class="p">)))</span>
+  <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+   <span class="n">node</span> <span class="o">=</span> <span class="kc">None</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;node #</span><span class="si">{}</span><span class="s1">: fct = </span><span class="si">{}</span><span class="s1"> failed -&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameID</span><span class="p">,</span><span class="n">readFct</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">node</span>
+
+ <span class="k">def</span> <span class="nf">cmpGameNodes</span><span class="p">(</span><span class="n">chessNode</span><span class="p">,</span> <span class="n">newNode</span><span class="p">):</span>
+  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chessNode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">newNode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+   <span class="n">context</span> <span class="o">=</span> <span class="s1">&#39;Skipped game: chess.pgn: </span><span class="si">{}</span><span class="s1">, new chess = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chessNode</span><span class="p">,</span> <span class="n">newNode</span><span class="p">)</span>
+   <span class="k">assert</span> <span class="n">chessNode</span> <span class="o">==</span> <span class="n">newNode</span><span class="p">,</span> <span class="n">context</span>
+  <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chessNode</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Headers</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">newNode</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Headers</span><span class="p">):</span>
+   <span class="n">context</span> <span class="o">=</span> <span class="s1">&#39;Headers: chess.pgn: </span><span class="si">{}</span><span class="s1">, new chess = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chessNode</span><span class="p">,</span> <span class="n">newNode</span><span class="p">)</span>
+   <span class="k">assert</span> <span class="n">chessNode</span> <span class="o">==</span> <span class="n">newNode</span><span class="p">,</span> <span class="n">context</span>
+  <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chessNode</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">newNode</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">):</span>
+   <span class="n">context</span> <span class="o">=</span> <span class="s1">&#39;Board: chess.pgn: </span><span class="si">{}</span><span class="s1">, new chess = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chessNode</span><span class="o">.</span><span class="n">fen</span><span class="p">(),</span> <span class="n">newNode</span><span class="o">.</span><span class="n">fen</span><span class="p">())</span>
+   <span class="k">assert</span> <span class="n">chessNode</span><span class="o">.</span><span class="n">fen</span><span class="p">()</span> <span class="o">==</span> <span class="n">newNode</span><span class="o">.</span><span class="n">fen</span><span class="p">(),</span> <span class="n">context</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chessNode</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">newNode</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">):</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="s1">&#39;Game Headers: chess.pgn: </span><span class="si">{}</span><span class="s1">, new chess = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chessNode</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">newNode</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">chessNode</span><span class="o">.</span><span class="n">headers</span> <span class="o">==</span> <span class="n">newNode</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span> <span class="n">context</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="s1">&#39;Move: chess.pgn: </span><span class="si">{}</span><span class="s1">, new chess = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">chessNode</span><span class="p">),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">newNode</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">chessNode</span><span class="o">.</span><span class="n">move</span><span class="o">.</span><span class="n">uci</span><span class="p">()</span> <span class="o">==</span> <span class="n">newNode</span><span class="o">.</span><span class="n">move</span><span class="o">.</span><span class="n">uci</span><span class="p">(),</span> <span class="n">context</span>
+   <span class="k">assert</span> <span class="n">chessNode</span><span class="o">.</span><span class="n">comment</span> <span class="o">==</span> <span class="n">newNode</span><span class="o">.</span><span class="n">comment</span><span class="p">,</span> <span class="s1">&#39;Comment: chess.pgn: &quot;</span><span class="si">{}</span><span class="s1">&quot;, new chess = &quot;</span><span class="si">{}</span><span class="s1">&quot; =&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chessNode</span><span class="o">.</span><span class="n">comment</span><span class="p">,</span> <span class="n">newNode</span><span class="o">.</span><span class="n">comment</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+   <span class="k">assert</span> <span class="n">chessNode</span><span class="o">.</span><span class="n">nags</span> <span class="o">==</span> <span class="n">newNode</span><span class="o">.</span><span class="n">nags</span><span class="p">,</span> <span class="s1">&#39;Nags: chess.pgn: </span><span class="si">{}</span><span class="s1">, new chess = </span><span class="si">{}</span><span class="s1"> =&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">chessNode</span><span class="o">.</span><span class="n">nags</span><span class="p">),</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">newNode</span><span class="o">.</span><span class="n">nags</span><span class="p">),</span> <span class="n">context</span><span class="p">)</span>
+   <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">chessNode</span><span class="o">.</span><span class="n">variations</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">newNode</span><span class="o">.</span><span class="n">variations</span><span class="p">),</span> <span class="s1">&#39;nVariations: chess.pgn: </span><span class="si">{}</span><span class="s1">, new chess = </span><span class="si">{}</span><span class="s1"> =&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chessNode</span><span class="o">.</span><span class="n">variations</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">newNode</span><span class="o">.</span><span class="n">variations</span><span class="p">),</span> <span class="n">context</span><span class="p">)</span>
+   <span class="k">for</span> <span class="n">subNode1</span><span class="p">,</span> <span class="n">subNode2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">chessNode</span><span class="o">.</span><span class="n">variations</span><span class="p">,</span> <span class="n">newNode</span><span class="o">.</span><span class="n">variations</span><span class="p">):</span>
+    <span class="n">cmpGameNodes</span><span class="p">(</span><span class="n">subNode1</span><span class="p">,</span> <span class="n">subNode2</span><span class="p">)</span>
+
+ <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;File: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">)))</span>
+ <span class="k">try</span><span class="p">:</span>
+  <span class="n">pgn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span><span class="p">)</span>
+ <span class="k">except</span><span class="p">:</span>
+  <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Cannot open file &#39;</span><span class="si">{}</span><span class="s2">&#39; for reading&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">))</span>
+ 
+ <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;l&#39;</span><span class="p">:</span>
+  <span class="n">lexer</span> <span class="o">=</span> <span class="n">PGNLexer</span><span class="p">(</span><span class="n">bufsize</span> <span class="o">=</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">debug</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span> <span class="n">optimize</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+  <span class="n">tok</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">newGame</span><span class="p">(</span><span class="n">pgn</span><span class="p">)</span>
+  <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+  <span class="n">lexer</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">tok</span> <span class="o">=</span> <span class="n">tok</span><span class="p">,</span> <span class="n">notify</span> <span class="o">=</span> <span class="nb">print</span><span class="p">)</span>
+  <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;PGNLex: </span><span class="si">{:.1f}</span><span class="s1"> msec&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1000</span><span class="o">*</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">)))</span>
+ <span class="k">else</span><span class="p">:</span>
+  <span class="n">newRead2</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="n">oldRead2</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;g&#39;</span><span class="p">:</span>
+   <span class="n">newRead1</span> <span class="o">=</span> <span class="n">read_game</span>
+   <span class="n">oldRead1</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">read_game</span>
+  <span class="k">elif</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;h&#39;</span><span class="p">:</span>
+   <span class="n">newRead1</span> <span class="o">=</span> <span class="n">read_headers</span>
+   <span class="n">oldRead1</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">read_headers</span>
+  <span class="k">elif</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span>
+   <span class="n">newRead1</span> <span class="o">=</span> <span class="n">read_board</span>
+   <span class="n">oldRead1</span> <span class="o">=</span> <span class="n">read_board2</span>
+  <span class="k">elif</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span>
+   <span class="n">newRead1</span> <span class="o">=</span> <span class="n">read_game</span>
+   <span class="n">oldRead1</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">read_game</span>
+   <span class="n">newRead2</span> <span class="o">=</span> <span class="n">skip_game</span>
+   <span class="n">oldRead2</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">skip_game</span>
+   
+  <span class="n">gameList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parse games using new read_game ----------------------------&#39;</span><span class="p">)</span>
+  <span class="n">gameID</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">log</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="n">node</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+  <span class="k">while</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">gameID</span> <span class="o">+=</span> <span class="mi">1</span>
+   <span class="n">node</span> <span class="o">=</span> <span class="n">runNode</span><span class="p">(</span><span class="n">newRead1</span><span class="p">,</span> <span class="n">pgn</span><span class="p">,</span> <span class="n">gameID</span><span class="p">)</span>
+   <span class="n">gameList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">newRead2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">runNode</span><span class="p">(</span><span class="n">newRead2</span><span class="p">,</span> <span class="n">pgn</span><span class="p">,</span> <span class="n">gameID</span><span class="p">)</span>
+  <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+  <span class="n">gameID</span> <span class="o">-=</span> <span class="mi">1</span>
+  <span class="k">if</span> <span class="n">newRead2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">gameID</span> <span class="o">*=</span> <span class="mi">2</span>
+  <span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;new read_game: </span><span class="si">{}</span><span class="s1"> games read, elapsed </span><span class="si">{:.1f}</span><span class="s1"> msec/game&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameID</span><span class="p">,</span> <span class="mi">1000</span><span class="o">*</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">)</span><span class="o">/</span><span class="nb">max</span><span class="p">(</span><span class="n">gameID</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+  <span class="k">del</span> <span class="n">gameList</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+  <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">compare</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">gameList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">pgn</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+   <span class="n">pgnGameList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parse games using chess.pgn.read_game ----------------------------&#39;</span><span class="p">)</span>
+   <span class="n">gameID</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="n">nErrors</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="n">node</span> <span class="o">=</span> <span class="kc">False</span>
+   <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+   <span class="k">while</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">gameID</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">runNode</span><span class="p">(</span><span class="n">oldRead1</span><span class="p">,</span> <span class="n">pgn</span><span class="p">,</span> <span class="n">gameID</span><span class="p">)</span>
+    <span class="n">pgnGameList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">oldRead2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+     <span class="n">runNode</span><span class="p">(</span><span class="n">oldRead2</span><span class="p">,</span> <span class="n">pgn</span><span class="p">,</span> <span class="n">gameID</span><span class="p">)</span>
+   <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+   <span class="n">gameID</span> <span class="o">-=</span> <span class="mi">1</span>
+   <span class="k">if</span> <span class="n">oldRead2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">gameID</span> <span class="o">*=</span> <span class="mi">2</span>
+   <span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;chess read_game: </span><span class="si">{}</span><span class="s1"> games read, elapsed </span><span class="si">{:.1f}</span><span class="s1"> msec/game&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameID</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="o">*</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">)</span><span class="o">/</span><span class="nb">max</span><span class="p">(</span><span class="n">gameID</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+   <span class="k">del</span> <span class="n">pgnGameList</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gameList</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pgnGameList</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;len(gameList) = </span><span class="si">{}</span><span class="s1"> != len(pgnGameList) = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gameList</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">pgnGameList</span><span class="p">)))</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Comparing games ----------------------------&#39;</span><span class="p">)</span>
+   <span class="n">gameID</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">chessNode</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gameList</span><span class="p">,</span> <span class="n">pgnGameList</span><span class="p">):</span>
+    <span class="n">gameID</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">txt</span> <span class="o">=</span> <span class="s1">&#39;game #</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameID</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+     <span class="n">cmpGameNodes</span><span class="p">(</span><span class="n">chessNode</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{}</span><span class="s1"> succeeded&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">txt</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">msg</span><span class="p">:</span>
+     <span class="n">nErrors</span> <span class="o">+=</span> <span class="mi">1</span>
+     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{}</span><span class="s1"> failed </span><span class="se">\n</span><span class="s1"> -&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">msg</span><span class="p">))</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Comparison failed for </span><span class="si">{}</span><span class="s1"> of </span><span class="si">{}</span><span class="s1"> games --------&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nErrors</span><span class="p">,</span> <span class="n">gameID</span><span class="p">))</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">log</span><span class="p">))</span> 
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;completed&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Reinhard März.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

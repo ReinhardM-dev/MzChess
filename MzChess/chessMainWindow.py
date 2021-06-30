@@ -374,7 +374,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    self.settings.remove_option(section, key)
    keys = [key]
   if len(valueList) == 0:
-   key += self.settings.options(section)
+   keys += self.settings.options(section)
   self.settings.remove_section(section)
   self.settings.add_section(section)
   for key in keys:
@@ -1070,13 +1070,17 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   
  # ---------------------------------------------------------------------------
 
-   
-if __name__ == "__main__":
- import os,  os.path
- import sys
+import os,  os.path
+import sys
+
+def runMzChess():
  os.chdir(os.path.expanduser('~'))
  qApp=PyQt5.QtWidgets.QApplication(sys.argv)   
  chessMainWindow = ChessMainWindow()
  chessMainWindow.show()
  chessMainWindow.setup()
  qApp.exec_()
+
+   
+if __name__ == "__main__":
+ runMzChess()

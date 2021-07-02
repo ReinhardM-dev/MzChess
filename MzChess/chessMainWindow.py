@@ -1081,6 +1081,8 @@ def runMzChess():
  chessMainWindow.setup()
  qApp.exec_()
 
-   
+def _runMzChess():
+ print('Hello, world')
+
 if __name__ == "__main__":
  runMzChess()

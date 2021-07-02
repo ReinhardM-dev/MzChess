@@ -1,6 +1,6 @@
 '''A Qt-compatible interface similar to `chess.engine`_ 
  
-.. _chess.engine: https://pypi.org/project/python-chess
+.. _chess.engine: https://pypi.org/project/chess
 '''
 
 import os,  os.path

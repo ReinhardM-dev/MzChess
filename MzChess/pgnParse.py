@@ -1,6 +1,6 @@
 '''A new-Parser for Portable Game Notation (`PGN`_) files for `chess.pgn`_ items
  
-.. _chess.pgn: https://pypi.org/project/python-chess
+.. _chess.pgn: https://pypi.org/project/chess
 .. _PGN: https://github.com/fsmosca/PGN-Standard
 '''
 

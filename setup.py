@@ -2,7 +2,6 @@ import subprocess
 import platform
 import shutil
 import glob
-import re
 import sys
 import os, os.path
 
@@ -12,9 +11,12 @@ from setuptools import setup
 package = 'MzChess'
 fileDirectory = os.path.dirname(os.path.abspath(__file__))
 packageDirectory = os.path.join(fileDirectory, package)
-os.chdir(fileDirectory)
+# os.chdir(fileDirectory)
 sys.path.insert(0, packageDirectory)
 
+with open(os.path.join(packageDirectory,'readme.rst'), 'r', encoding = 'utf-8') as f:
+ long_description = f.read()
+ 
 import MzChess
 pkgVersion = MzChess.__version__
 
@@ -27,21 +29,21 @@ setup(name = package,
   packages = [package],
   options={'bdist_wheel':{'universal':True}}, 
   package_data = {'': 
-    ['*.txt', '*.md', '*.ini', '*.ui', '*.gpl3', 
+    ['*.txt', '*.md', '*.ui', '*.gpl3', 
      'books/*.txt', 
      'eco/*.fsc', 'eco/*.tsv', 'eco/*.txt', 'eco/*.md', 'eco/bin/*',
      'pieces/*.svg', 'pieces/*.ttf', 
      'training/*/*.pgn'] }, 
   description = 'A Chess GUI using PyQt5',
-  long_description = 'file: readme.rst', 
+  long_description = long_description, 
   long_description_content_type="text/x-rst",
-  entry_points={ 'gui_scripts': ['mzChess = chessMainWindow:runMzChess'] }, 
+  entry_points={ 'gui_scripts': ['mzChess = {}.chessMainWindow:runMzChess'.format(package)] }, 
   author  ='Reinhard Maerz',
   python_requires = '>=3.7', 
-  install_requires = ['PyQt5>=5.7', 'PyQtChart>=5.7', 'chess>=1.4'],
+  install_requires = ['PyQt5>=5.7', 'PyQtChart>=5.7', 'chess>=1.4', 'ply>=3.11'],
   setup_requires=['wheel'], 
   classifiers = [
-    'Programming Language :: Python'
+    'Programming Language :: Python', 
     'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
     'Operating System :: OS Independent',
     'Programming Language :: Python :: 3 :: Only',

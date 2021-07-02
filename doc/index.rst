@@ -1,10 +1,26 @@
-.. MzChess documentation master file, created by
-   sphinx-quickstart on Mon May  3 15:10:50 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+MzChess: a chess GUI using PyQt5 and `chess`_ modules
+===============================================================
 
-Welcome to MzChess's documentation!
-===================================
+Installing
+----------
+
+Download and install the latest release:
+
+::
+
+    pip install mzChess
+    
+Running
+----------
+
+An executable is generated and installed in python's *Scripts* directory. 
+So, if this directory is in your search *PATH*, you type simply
+
+::
+
+    mzChess
+
+to start the GUI
 
 Contents
 -----------
@@ -21,3 +37,5 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. _chess: https://pypi.org/project/chess

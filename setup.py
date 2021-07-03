@@ -59,16 +59,16 @@ if platform.system() == 'Linux':
   import PyQt5.QtWidgets
   hasPyQt5 = True
  except:
-  print('Install PyQt5 Base package from your LINUX distribution')
+  print('Install PyQt5 base package using your Linux Package Manager')
  if hasPyQt5:
   try:
    import PyQt5.QtSvg
   except:
-   print('Install PyQt5.QtSvg from your LINUX distribution')
+   print('Install PyQt5.QtSvg using your Linux Package Manager')
   try:
    import PyQt5.QtChart
   except:
-   print('Install PyQt5.QtChart from your LINUX distribution')
+   print('Install PyQt5.QtChart using your Linux Package Manager')
  fontFileList = map(lambda x : x.split(':')[0], subprocess.getstatusoutput('fc-list')[1].split('\n'))
  hasLEIPFONT = False
  for fileName in fontFileList:

@@ -22,7 +22,9 @@ It supports the following game formats:
 Installing
 --------------
 
-Download and install the latest release:
+If you’re on Linux and installed using your OS package manager, you should install
+the binary packages *PyQt5*, *PyQt5.QtChart*, and if available *PyQt5.QtSvg* using
+the `Linux Package Manager`_. Then, download and install the latest release:
 
 ::
 
@@ -44,3 +46,4 @@ to start the GUI
 .. _UCI: http://wbec-ridderkerk.nl/html/UCIProtocol.html
 .. _PGN: https://github.com/fsmosca/PGN-Standard
 .. _ECO: https://github.com/niklasf/chess-openings
+.. _Linux Package Manager: https://packaging.python.org/guides/installing-using-linux-tools/

@@ -22,9 +22,10 @@ It supports the following game formats:
 Installing
 --------------
 
-If you’re on Linux and installed using your OS package manager, you should install
-the binary packages *PyQt5*, *PyQt5.QtChart*, and if available *PyQt5.QtSvg* using
-the `Linux Package Manager`_. Then, download and install the latest release:
+If you’re on Linux, you should install
+the binary packages *PyQt5*, *PyQt5.QtChart*, and - if available - *PyQt5.QtSvg* using
+the `Linux Package Manager`_ to avoid a compilation of the sources. 
+Then, download and install the latest release:
 
 ::
 

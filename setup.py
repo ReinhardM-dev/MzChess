@@ -7,6 +7,7 @@ import os, os.path
 
 # Try using setuptools first, if it's installed
 from setuptools import setup
+from packaging import version
 
 package = 'MzChess'
 fileDirectory = os.path.dirname(os.path.abspath(__file__))
@@ -21,6 +22,35 @@ import MzChess
 pkgVersion = MzChess.__version__
 
 leipfontFile = os.path.join(packageDirectory, 'pieces', 'LEIPFONT.ttf')
+
+pyQt5Version = '5.11.0'
+if platform.system() == 'Linux':
+ # this code helps, if the package manager does not create egg files (e.g. debian 10)
+ install_requires = list()
+ hasPyQt5 = False
+ try:
+  import PyQt5.QtCore
+  import PyQt5.QtGui
+  import PyQt5.QtWidgets
+  hasPyQt5 = True
+  foundPyQt5Version = PyQt5.QtCore.PYQT_VERSION_STR
+ except:
+  foundPyQt5Version = 0
+ if version.parse(pyQt5Version) > version.parse(foundPyQt5Version):
+  install_requires = ['PyQt5>={}'.format(pyQt5Version)]
+ try:
+  import PyQt5.QtSvg
+ except:
+  print('Install PyQt5.QtSvg using your Linux Package Manager')
+  quit()
+ try:
+  import PyQt5.QtChart
+ except:
+  install_requires.append('PyQtChart>={}'.format(pyQt5Version))
+else:
+ install_requires = ['PyQt5>={}'.format(pyQt5Version), 'PyQtChart>={}'.format(pyQt5Version)]
+
+install_requires += ['chess>=1.4', 'ply>=3.11']
 
 # Need to add all dependencies to setup as we go!
 setup(name = package,
@@ -40,7 +70,7 @@ setup(name = package,
   entry_points={ 'gui_scripts': ['mzChess = {}.chessMainWindow:runMzChess'.format(package)] }, 
   author  ='Reinhard Maerz',
   python_requires = '>=3.7', 
-  install_requires = ['PyQt5>=5.7', 'PyQtChart>=5.7', 'chess>=1.4', 'ply>=3.11'],
+  install_requires = install_requires,
   setup_requires=['wheel'], 
   classifiers = [
     'Programming Language :: Python', 
@@ -52,23 +82,6 @@ setup(name = package,
     'Topic :: Games/Entertainment :: Board Games'])
   
 if platform.system() == 'Linux':
- hasPyQt5 = False
- try:
-  import PyQt5.QtCore
-  import PyQt5.QtGui
-  import PyQt5.QtWidgets
-  hasPyQt5 = True
- except:
-  print('Install PyQt5 base package using your Linux Package Manager')
- if hasPyQt5:
-  try:
-   import PyQt5.QtSvg
-  except:
-   print('Install PyQt5.QtSvg using your Linux Package Manager')
-  try:
-   import PyQt5.QtChart
-  except:
-   print('Install PyQt5.QtChart using your Linux Package Manager')
  fontFileList = map(lambda x : x.split(':')[0], subprocess.getstatusoutput('fc-list')[1].split('\n'))
  hasLEIPFONT = False
  for fileName in fontFileList:

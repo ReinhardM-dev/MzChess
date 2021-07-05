@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>268</width>
-    <height>178</height>
+    <height>204</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -141,6 +141,20 @@
       <widget class="QLabel" name="pyqt5VersionLabel">
        <property name="text">
         <string>V?.?.?</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>ply</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLabel" name="plyVersionLabel">
+       <property name="text">
+        <string>V?.?</string>
        </property>
       </widget>
      </item>

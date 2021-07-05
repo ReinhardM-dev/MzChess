@@ -3,6 +3,7 @@ from sys import version_info
 from PyQt5.QtCore import QT_VERSION_STR, PYQT_VERSION_STR
 
 import chess
+import ply
 
 import Ui_AboutDialog
 class AboutDialog(PyQt5.QtWidgets.QDialog, Ui_AboutDialog.Ui_AboutDialog):
@@ -26,10 +27,11 @@ class AboutDialog(PyQt5.QtWidgets.QDialog, Ui_AboutDialog.Ui_AboutDialog):
   self.pgmLabel.setText(pgm)
   self.shoeboxVersionLabel.setText('V' + version)
   self.shoeboxDateLabel.setText(dateString)
-  self.chessVersionLabel.setText('V' + chess.__version__)
   self.pythonVersionLabel.setText('V' + str(version_info[0]) + '.' + str(version_info[1]) + '.' + str(version_info[2]) ) 
   self.qtVersionLabel.setText('V' + QT_VERSION_STR ) 
   self.pyqt5VersionLabel.setText('V' + PYQT_VERSION_STR )
+  self.chessVersionLabel.setText('V' + chess.__version__)
+  self.plyVersionLabel.setText('V' + ply.__version__)
 
 if __name__ == "__main__":
  import sys

@@ -110,7 +110,7 @@ In addition, several *standard* key strokes are supported:
 .. _UCI: http://wbec-ridderkerk.nl/html/UCIProtocol.html
 '''
 
-from typing import Dict, List, Tuple, Union, Optional, Any
+from typing import Dict, List, Tuple, Union, Any
 import configparser
 import os, os.path
 import pickle
@@ -125,8 +125,9 @@ import Ui_chessMainWindow
 import AboutDialog
 
 import chess, chess.pgn
-import chessengine, annotateEngine, configureEngine
-from pgnParse import read_game
+import MzChess
+from MzChess import chessengine, annotateEngine, configureEngine
+from MzChess.pgnParse import read_game
 import eco 
 from specialDialogs import ItemSelector
 
@@ -153,8 +154,8 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    PyQt5.QtGui.QFontDatabase.addApplicationFont(os.path.join(self.fileDirectory, 'pieces', 'LEIPFONT.TTF'))
 
   self.pgm = 'Mz Chess GUI'
-  self.version = '0.999'
-  self.dateString = 'June 23,2021'
+  self.version = MzChess.__version__
+  self.dateString = MzChess.__date__
   
   # self.helpIndex = PyQt5.QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(self.fileDirectory), 'docs', 'index.html'))
   self.helpIndex = PyQt5.QtCore.QUrl('https://reinhardm-dev.github.io/MzChess')

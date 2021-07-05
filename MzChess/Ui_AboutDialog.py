@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\Reinh\OneDrive\Dokumente\python\MzChess\AboutDialog.ui'
+# Form implementation generated from reading ui file 'C:\Users\Reinh\OneDrive\Dokumente\python\MzChess\MzChess\AboutDialog.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.1
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_AboutDialog(object):
     def setupUi(self, AboutDialog):
         AboutDialog.setObjectName("AboutDialog")
-        AboutDialog.resize(268, 178)
+        AboutDialog.resize(268, 204)
         AboutDialog.setSizeGripEnabled(False)
         self.verticalLayout = QtWidgets.QVBoxLayout(AboutDialog)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -75,6 +75,12 @@ class Ui_AboutDialog(object):
         self.pyqt5VersionLabel = QtWidgets.QLabel(AboutDialog)
         self.pyqt5VersionLabel.setObjectName("pyqt5VersionLabel")
         self.formLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.pyqt5VersionLabel)
+        self.label_8 = QtWidgets.QLabel(AboutDialog)
+        self.label_8.setObjectName("label_8")
+        self.formLayout.setWidget(7, QtWidgets.QFormLayout.LabelRole, self.label_8)
+        self.plyVersionLabel = QtWidgets.QLabel(AboutDialog)
+        self.plyVersionLabel.setObjectName("plyVersionLabel")
+        self.formLayout.setWidget(7, QtWidgets.QFormLayout.FieldRole, self.plyVersionLabel)
         self.verticalLayout.addLayout(self.formLayout)
 
         self.retranslateUi(AboutDialog)
@@ -98,6 +104,8 @@ class Ui_AboutDialog(object):
         self.chessVersionLabel.setText(_translate("AboutDialog", "V?.?"))
         self.label.setText(_translate("AboutDialog", "PyQT5 version"))
         self.pyqt5VersionLabel.setText(_translate("AboutDialog", "V?.?.?"))
+        self.label_8.setText(_translate("AboutDialog", "ply"))
+        self.plyVersionLabel.setText(_translate("AboutDialog", "V?.?"))
 
 
 if __name__ == "__main__":

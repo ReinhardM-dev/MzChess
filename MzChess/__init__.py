@@ -6,8 +6,8 @@ Versions:
  1.0.0      first version
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2021-06-30"
-__version__ = "1.0.2"
+__date__ = "2021-07-05"
+__version__ = "1.0.3"
 
 import os
 import sys

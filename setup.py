@@ -27,15 +27,13 @@ pyQt5Version = '5.11.0'
 if platform.system() == 'Linux':
  # this code helps, if the package manager does not create egg files (e.g. debian 10)
  install_requires = list()
- hasPyQt5 = False
  try:
   import PyQt5.QtCore
   import PyQt5.QtGui
   import PyQt5.QtWidgets
-  hasPyQt5 = True
   foundPyQt5Version = PyQt5.QtCore.PYQT_VERSION_STR
  except:
-  foundPyQt5Version = 0
+  foundPyQt5Version = '0.0.0'
  if version.parse(pyQt5Version) > version.parse(foundPyQt5Version):
   install_requires = ['PyQt5>={}'.format(pyQt5Version)]
  try:

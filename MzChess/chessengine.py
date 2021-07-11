@@ -107,7 +107,10 @@ class ChessEngine(PyQt5.QtCore.QObject):
  def _fromStdout(self) -> None:
   if 'stdout' not in vars(self):
    self.stdout = ''
-  self.stdout += bytes(self.p.readAllStandardOutput()).decode('utf-8')
+  try:
+   self.stdout += bytes(self.p.readAllStandardOutput()).decode('utf-8')
+  except:
+   return
   if not self.stdout.endswith('\n'):
    return
   self.stdoutLines += self.stdout.strip("\n").split("\n")

@@ -4,10 +4,12 @@ A PyQt5 based chess GUI
 
 Versions:
  1.0.0      first version
+ 1.0.3      installation running
+ 1.0.4      bug fixes + end-of-game handling completed
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2021-07-05"
-__version__ = "1.0.3"
+__date__ = "2021-07-11"
+__version__ = "1.0.4"
 
 import os
 import sys

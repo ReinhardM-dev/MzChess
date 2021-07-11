@@ -110,7 +110,7 @@ In addition, several *standard* key strokes are supported:
 .. _UCI: http://wbec-ridderkerk.nl/html/UCIProtocol.html
 '''
 
-from typing import Dict, List, Tuple, Union, Any
+from typing import Optional, Callable, Dict, List, Tuple, Union, Any
 import configparser
 import os, os.path
 import pickle
@@ -379,7 +379,8 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   self.settings.remove_section(section)
   self.settings.add_section(section)
   for key in keys:
-   value = newDict[key]
+   if key in newDict:
+    value = newDict[key]
    self.settings[section][key] = value
   for kv in valueList:
    if isinstance(kv, tuple):
@@ -405,8 +406,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
  def notify(self, str):
   self.infoLabel.setText(str)
   self.infoLabel.update()
-  app = PyQt5.QtCore.QCoreApplication.instance()
-  app.processEvents(PyQt5.QtCore.QEventLoop.ExcludeSocketNotifiers | PyQt5.QtCore.QEventLoop.ExcludeUserInputEvents, 10)
+  PyQt5.QtWidgets.QApplication.processEvents()
 
  @PyQt5.QtCore.pyqtSlot(str)
  def toLog(self, msg):
@@ -436,6 +436,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    self.ecoLabel.setToolTip(self.ecoDescription)
 
  def _allowNewGameList(self):
+  self.notify('')
   if self.gameListChanged:
    rc = PyQt5.QtWidgets.QMessageBox.warning(self, 
     'Game database not saved ...', 'Do you like to close anyway ?', 
@@ -451,6 +452,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   return True
 
  def _allowNewGame(self):
+  self.notify('')
   if self._gameChanged:
    rc = PyQt5.QtWidgets.QMessageBox.warning(self, 
     'Game not saved ...', 'Do you like to close anyway ?', 
@@ -531,6 +533,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
  
  @PyQt5.QtCore.pyqtSlot(PyQt5.QtWidgets.QAction)
  def on_menuEncoding_triggered(self, action):
+  self.notify('')
   for actAction in self.menuEncoding.actions():
    actAction.setChecked(False)
   action.setChecked(True)
@@ -539,10 +542,12 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionNew_PGN_triggered(self):
+  self.notify('')
   self.on_actionClose_PGN_triggered()
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionOpen_PGN_triggered(self):
+  self.notify('')
   pgnFile, _ = PyQt5.QtWidgets.QFileDialog.getOpenFileName(self,"Load Game Database ...", "",
         "Pickle Portable Game Notation Files (*.ppgn);;Portable Game Notation Files (*.pgn);;All Files (*)", options = self.fileDialogOptions)
   if pgnFile is not None and len(pgnFile) > 0:
@@ -550,11 +555,13 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    
  @PyQt5.QtCore.pyqtSlot(PyQt5.QtWidgets.QAction)
  def on_menuRecent_PGN_triggered(self, action):
+  self.notify('')
   fileName = action.text()
   self.openPGN(fileName, self.recentPGN[fileName])
  
  @PyQt5.QtCore.pyqtSlot()
  def on_actionClose_PGN_triggered(self):
+  self.notify('')
   if not self._allowNewGameList() or not self._allowNewGame():
    return
   self.gameListTableView.resetDB()
@@ -564,6 +571,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot(PyQt5.QtGui.QCloseEvent)
  def closeEvent(self, ev):
+  self.notify('')
   if not self._allowNewGameList() or not self._allowNewGame():
    ev.ignore()
   else:
@@ -571,11 +579,13 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionExit_triggered(self):
+  self.notify('')
   if self._allowNewGameList() and self._allowNewGame():
    self.close()
    
  @PyQt5.QtCore.pyqtSlot()
  def on_actionSave_PGN_triggered(self):
+  self.notify('')
   if len(self.gameList) == 0:
     self.notifyError('No Game Database available')
     return
@@ -617,6 +627,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    
  @PyQt5.QtCore.pyqtSlot()
  def on_actionAdd_Game_triggered(self):
+  self.notify('')
   if self.gameID is None:
    self.gameID = len(self.gameList)
    self.gameList.append(self.game)
@@ -627,6 +638,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    
  @PyQt5.QtCore.pyqtSlot()
  def on_actionRemove_Games_triggered(self):
+  self.notify('')
   selectedIndices = self.gameListTableView.selectedIndexes()
   if len(selectedIndices) != 0:
    removeList = list()
@@ -647,8 +659,20 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
  def on_actionNew_Game_triggered(self):
   self._allowNewGame()
   
+ @PyQt5.QtCore.pyqtSlot(PyQt5.QtWidgets.QAction)
+ def on_menuEnd_Game_triggered(self, action):
+  self.notify('')
+  endGame = self.game.end()
+  if endGame.board().is_game_over():
+   self.notifyError('You cannot change the game result any more')
+   return
+  self.game.headers['Result'] = action.text()
+  self.boardGraphicsView.setGameNode(self.gameNode)
+  self.gameChanged(self.game)
+  
  @PyQt5.QtCore.pyqtSlot()
  def on_actionSave_Game_triggered(self):
+  self.notify('')
   pgnFile, _ = PyQt5.QtWidgets.QFileDialog.getSaveFileName(self,
      "Save Game ...", self.gameFile,"Portable Game Notation Files (*.pgn);;All Files (*)", options = self.fileDialogOptions)
   if pgnFile is not None and len(pgnFile) > 0:
@@ -672,6 +696,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot(PyQt5.QtGui.QWheelEvent)
  def wheelEvent(self, ev):
+  self.notify('')
   numDegrees = ev.angleDelta()
   if numDegrees.y() < 0:
    self.on_actionNext_Move_triggered()
@@ -681,26 +706,31 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionNext_Move_triggered(self):
+  self.notify('')
   self.gameNode = self.boardGraphicsView.nextMove()
   self.gameTreeViewWidget.selectNodeItem(self.gameNode)
   self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionPrevious_Move_triggered(self):
+  self.notify('')
   self.gameNode = self.boardGraphicsView.previousMove()
   self.gameTreeViewWidget.selectNodeItem(self.gameNode)
   self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionNext_Variant_triggered(self):
+  self.notify('')
   self.gameTreeViewWidget.selectSubnodeItem(self.gameNode, next = True)
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionPrevious_Variant_triggered(self):
+  self.notify('')
   self.gameTreeViewWidget.selectSubnodeItem(self.gameNode, next = False)
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionPromote_Variant_triggered(self):
+  self.notify('')
   if self.gameNode.is_main_variation():
    self.notifyError('You cannot promote from main line nodes')
    return
@@ -708,6 +738,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionPromote_Variant_to_Main_triggered(self):
+  self.notify('')
   if self.gameNode.is_main_variation():
    self.notifyError('You cannot promote from main line nodes')
    return
@@ -715,6 +746,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionDemote_Variant_triggered(self):
+  self.notify('')
   if self.gameNode.is_main_variation():
    self.notifyError('You cannot promote from main line nodes')
    return
@@ -722,21 +754,29 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionDelete_Variant_triggered(self):
+  self.notify('')
   if self.gameNode.parent is None:
    self.notifyError('Use Game/New to remove a complete game')
    return
   self.gameTreeViewWidget.removeVariant()
-  self.boardGraphicsView.setGame(self.gameNode.parent)
+  self.gameNode = self.gameNode.parent
+  self.boardGraphicsView.setGameNode(self.gameNode)
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionUndo_Last_Move_triggered(self):
-  gameNode = self.game.next()
-  if gameNode is None:
+  self.notify('')
+  if self.gameNode is None or self.gameNode.parent is None:
    return
-  while gameNode is not None:
-   lastGameNode = gameNode
-   gameNode = gameNode
-  lastGameNode.parent.remove_variation(lastGameNode)
+  if not self.gameNode.is_end():
+   self.notifyError('Select the end of the mainline or a variant')
+   return
+  gameNode = self.gameNode
+  self.gameNode = self.gameNode.parent
+  self.boardGraphicsView.setGameNode(self.gameNode)
+  self.gameTreeViewWidget.removeGameNode(gameNode)
+  if gameNode.is_mainline():
+   self.scorePlotGraphicsView.removeLastNode()
+  self.gameNode.remove_variation(gameNode)
   self._gameChanged = True
 
  def setChessWindowTitle(self):
@@ -746,6 +786,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot(PyQt5.QtWidgets.QAction)
  def on_menuSelect_Engine_triggered(self, action):
+  self.notify('')
   oldValue = self.settings['Menu/Engine']['selectedEngine']
   for actAction in self.menuSelect_Engine.actions():
    actAction.setChecked(False)
@@ -757,6 +798,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   
  @PyQt5.QtCore.pyqtSlot(PyQt5.QtWidgets.QAction)
  def on_menuSearch_Depth_triggered(self, action):
+  self.notify('')
   for actAction in self.menuSearch_Depth.actions():
    actAction.setChecked(False)
   action.setChecked(True)
@@ -766,6 +808,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   
  @PyQt5.QtCore.pyqtSlot(PyQt5.QtWidgets.QAction)
  def on_menuNumber_of_Annotations_triggered(self, action):
+  self.notify('')
   for actAction in self.menuBlunder_Limit.actions():
    actAction.setChecked(False)
   action.setChecked(True)
@@ -775,6 +818,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot(PyQt5.QtWidgets.QAction)
  def on_menuBlunder_Limit_triggered(self, action):
+  self.notify('')
   for actAction in self.menuBlunder_Limit.actions():
    actAction.setChecked(False)
   action.setChecked(True)
@@ -788,6 +832,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    
  @PyQt5.QtCore.pyqtSlot(PyQt5.QtWidgets.QAction)
  def on_menuAnnotate_Variants_triggered(self, action):
+  self.notify('')
   for actAction in self.menuAnnotate_Variants.actions():
    actAction.setChecked(False)
   action.setChecked(True)
@@ -802,6 +847,10 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionAnnotate_Last_Move_triggered(self):
+  if self.settings['Menu/Engine']['selectedEngine'] is None:
+   self.notifyError('No engine selected')
+   return
+  self.notify('')
   if self.debugEngine:
    logFunction = self.logSignal.emit
   else:
@@ -834,6 +883,10 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionAnnotate_All_triggered(self):
+  if self.settings['Menu/Engine']['selectedEngine'] is None:
+   self.notifyError('No engine selected')
+   return
+  self.notify('')
   if self.debugEngine:
    logFunction = self.logSignal.emit
   else:
@@ -866,22 +919,26 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot(bool)
  def on_actionShow_Options_toggled(self, checked):
+  self.notify('')
   self.boardGraphicsView.setDrawOptions(checked)
   self.settings['Menu/Game']['showOptions'] = str(checked)
   self.saveSettings()
 
  @PyQt5.QtCore.pyqtSlot(bool)
  def on_actionWarn_of_Danger_toggled(self, checked):
+  self.notify('')
   self.boardGraphicsView.setWarnOfDanger(checked)
   self.settings['Menu/Game']['warnOfDanger'] = str(checked)
   self.saveSettings()
 
  @PyQt5.QtCore.pyqtSlot(bool)
  def on_actionFlip_Board_toggled(self, checked):
+  self.notify('')
   self.boardGraphicsView.setFlipped(checked)
   
  @PyQt5.QtCore.pyqtSlot()
  def on_actionSelect_Header_Elements_triggered(self):
+  self.notify('')
   headerElements = self.gameHeaderTableView.headerElements(withoutSevenTagRoster = True)
   self.itemSelector.setContent(headerElements, self.optionalHeaderItems)
   if not self.itemSelector.exec():
@@ -893,7 +950,9 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    
  def show_HintsScores(self):
   if self.settings['Menu/Engine']['selectedEngine'] is None:
+   self.notifyError('No engine selected')
    return
+  self.notify('')
   hintsChecked = self.actionShow_Hints.isChecked()
   scoresChecked = self.actionShow_Scores.isChecked()
   self.settings['Menu/Engine']['showHints'] = str(hintsChecked)
@@ -927,6 +986,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   
  @PyQt5.QtCore.pyqtSlot()
  def on_actionConfigureEngine_triggered(self):
+  self.notify('')
   configForm = configureEngine.ConfigureEngine()
   newEngineDict = configForm.run(engineDict = self.engineDict, log = self.debugEngine)
   if newEngineDict is not None:
@@ -937,6 +997,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    
  @PyQt5.QtCore.pyqtSlot(bool)
  def on_actionDebugEngine_toggled(self, checked):
+  self.notify('')
   self.debugEngine = checked
   if self.hintEngine is not None:
    if self.debugEngine:
@@ -947,21 +1008,25 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   
  @PyQt5.QtCore.pyqtSlot()
  def on_actionAbout_triggered(self):
+  self.notify('')
   self.aboutDialog.exec()
  
  @PyQt5.QtCore.pyqtSlot()
  def on_actionHelp_triggered(self):
+  self.notify('')
   PyQt5.QtGui.QDesktopServices.openUrl(self.helpIndex)
 
  # ---------------------------------------------------------------------------
 
  @PyQt5.QtCore.pyqtSlot() 
  def on_actionCopy_FEN_triggered(self):
+  self.notify('')
   fen = self.gameNode.board().fen()
   PyQt5.QtWidgets.QApplication.clipboard().setText(fen)
 
  @PyQt5.QtCore.pyqtSlot() 
  def on_actionPaste_FEN_triggered(self):
+  self.notify('')
   if not self._allowNewGame():
    return
   fen = PyQt5.QtWidgets.QApplication.clipboard().text()
@@ -982,12 +1047,14 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot() 
  def on_actionCopy_PGN_triggered(self):
+  self.notify('')
   exporter = chess.pgn.StringExporter(headers=True, variations=True, comments=True)
   pgnString = self.game.accept(exporter)
   PyQt5.QtWidgets.QApplication.clipboard().setText(pgnString)
 
  @PyQt5.QtCore.pyqtSlot() 
  def on_actionPaste_PGN_triggered(self):
+  self.notify('')
   if not self._allowNewGame():
    return
   self.gameID = None
@@ -1002,6 +1069,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   self.boardGraphicsView.setGame(self.game)
   self.gameTreeViewWidget.setGame(self.game)
   self.gameHeaderTableView.setGame(self.game)
+  self.scorePlotGraphicsView.setGame(self.game)
   
  # ---------------------------------------------------------------------------
 
@@ -1026,6 +1094,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot(chess.pgn.Headers)
  def gameHeadersChanged(self,  headers):
+  self.notify('')
   if 'Comment' in headers:
    self.game.comment = headers['Comment']
    del headers['Comment']
@@ -1045,19 +1114,35 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot(chess.pgn.GameNode)
  def newGameNode(self, gameNode):
+  self.notify('')
   self.gameNode = gameNode
   self._showEcoCode(self.game, fromBeginning = False)
+  if gameNode.is_mainline():
+   self.scorePlotGraphicsView.addGameNodes(gameNode)
+   self.scorePlotGraphicsView.selectNodeItem(gameNode)
+   if 'PlyCount' in self.game.headers:
+    self.game.headers['PlyCount'] = str(gameNode.board().ply())
+    self.gameHeaderTableView.setPlyCount(self.game.headers['PlyCount'])
+   board = self.gameNode.board()
+   if self.gameNode.is_end() and board.is_game_over():
+    if board.is_checkmate():
+     if board.turn == chess.WHITE:
+      self.game.headers['Result'] = '0-1'
+     else:
+      self.game.headers['Result'] = '1-0'
+    else:
+     self.game.headers['Result'] = '1/2-1/2'
+    self.gameChanged(self.game)
+
   if gameNode.is_main_variation():
    self.gameTreeViewWidget.addGameNodes(gameNode)
-   if gameNode.is_mainline():
-    self.game.headers['PlyCount'] = gameNode.board().ply()
-    self.gameHeaderTableView.setPlyCount(self.game.headers['PlyCount'])
   else:
    self.gameTreeViewWidget.addVariant(gameNode)
   self._gameChanged = True
    
  @PyQt5.QtCore.pyqtSlot(chess.pgn.GameNode)
  def gameNodeSelected(self, gameNode):
+  self.notify('')
   self.gameNode = gameNode
   self.boardGraphicsView.setGameNode(self.gameNode)
   self.gameTreeViewWidget.selectNodeItem(self.gameNode)
@@ -1065,18 +1150,33 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  @PyQt5.QtCore.pyqtSlot(chess.pgn.Game)
  def gameChanged(self, game):
+  self.notify('')
   self.gameHeaderTableView.setGameResult(game.headers['Result'])
+  self.gameTreeViewWidget.setGameResult(game.headers['Result'])
   self.game = game
   self._gameChanged = True
   
+class MzClassApplication(PyQt5.QtWidgets.QApplication):
+ def __init__(self, argv : List[str], notifyFct : Callable[[str], None] = print) -> None: 
+  super(MzClassApplication, self).__init__(argv)
+  self.notifyFct = notifyFct
+
+ def notify(self, rec, ev):
+  rc = super(MzClassApplication, self).notify(rec, ev)
+  self.notifyFct('{} -> Type(Event)= {}, handled = {}'.format(rec, ev.type(),  rc))
+  return rc
+
  # ---------------------------------------------------------------------------
 
 import os,  os.path
 import sys
 
-def runMzChess():
+def runMzChess(notifyFct : Optional[Callable[[str], None]] = None):
  os.chdir(os.path.expanduser('~'))
- qApp=PyQt5.QtWidgets.QApplication(sys.argv)   
+ if notifyFct is not None:
+  qApp = MzClassApplication(sys.argv)
+ else:
+  qApp = PyQt5.QtWidgets.QApplication(sys.argv)
  chessMainWindow = ChessMainWindow()
  chessMainWindow.show()
  chessMainWindow.setup()
@@ -1086,4 +1186,4 @@ def _runMzChess():
  print('Hello, world')
 
 if __name__ == "__main__":
- runMzChess()
+ runMzChess(print)

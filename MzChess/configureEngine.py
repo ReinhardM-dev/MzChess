@@ -10,7 +10,7 @@ Configuration of the Engine's Options
 ===========================================
 
 By pressing the *Details* button the *Configure Engine Options* dialog is started.
-Please consult the engine's documentation (e.g. `stockfish`_) before changing any options.
+Please consult the engine's documentation (e.g. `stockfish`_ or `here`_) before changing any options.
 
 |ConfigureEngineOptions| 
 
@@ -21,6 +21,7 @@ Please consult the engine's documentation (e.g. `stockfish`_) before changing an
   :width: 400
   :alt: Configure Engine Options
 .. _stockfish: https://github.com/official-stockfish/Stockfish
+.. _here: https://www.chessprogramming.org/Engines
 '''
 from typing import List, Dict, Callable, Union, Optional, Any
 import os, os.path

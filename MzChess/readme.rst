@@ -24,7 +24,7 @@ Installing
 
 If you’re on Linux, you should install
 the binary packages *PyQt5*, *PyQt5.QtChart*, and - if available - *PyQt5.QtSvg* using
-the `Linux Package Manager`_ to avoid a compilation of the sources. 
+the `Linux Package Manager`_ to avoid a compilation of the huge sources. 
 Then, download and install the latest release:
 
 ::

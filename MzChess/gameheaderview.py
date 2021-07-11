@@ -168,6 +168,7 @@ class GameHeaderView(PyQt5.QtWidgets.QTableWidget):
      date = PyQt5.QtCore.QDate.fromString(value, "yyyy.MM.dd")
     except:
      date = PyQt5.QtCore.QDate.currentDate()
+     self.gameHeaders[key] = date.toString('yyyy.MM.dd')
     item = PyQt5.QtWidgets.QDateEdit(date)
     item.dateChanged.connect(self.on_dateChanged)
    elif type == KeyType.TIME:

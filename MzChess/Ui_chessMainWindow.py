@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\Reinh\OneDrive\Dokumente\python\MzChess\chessMainWindow.ui'
+# Form implementation generated from reading ui file 'C:\Users\Reinh\OneDrive\Dokumente\python\MzChess\MzChess\chessMainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.1
 #
@@ -323,6 +323,8 @@ class Ui_MainWindow(object):
         self.actionPromote_Variant_to_Main.setObjectName("actionPromote_Variant_to_Main")
         self.actionSelect_Header_Elements = QtWidgets.QAction(MainWindow)
         self.actionSelect_Header_Elements.setObjectName("actionSelect_Header_Elements")
+        self.actionRunning_Game = QtWidgets.QAction(MainWindow)
+        self.actionRunning_Game.setObjectName("actionRunning_Game")
         self.menuRecent_PGN.addAction(self.actionbla)
         self.menuEncoding.addAction(self.actionUTF_8)
         self.menuEncoding.addAction(self.actionISO_8859_1)
@@ -352,6 +354,7 @@ class Ui_MainWindow(object):
         self.menuEdit.addAction(self.actionPromote_Variant_to_Main)
         self.menuEdit.addAction(self.actionDemote_Variant)
         self.menuEdit.addAction(self.actionDelete_Variant)
+        self.menuEnd_Game.addAction(self.actionRunning_Game)
         self.menuEnd_Game.addAction(self.actionWhite_wins)
         self.menuEnd_Game.addAction(self.action0_1)
         self.menuEnd_Game.addAction(self.action1_2_1_2)
@@ -520,6 +523,7 @@ class Ui_MainWindow(object):
         self.actionPromote_Variant_to_Main.setText(_translate("MainWindow", "Promote Variant to Main"))
         self.actionPromote_Variant_to_Main.setShortcut(_translate("MainWindow", "Ctrl+M"))
         self.actionSelect_Header_Elements.setText(_translate("MainWindow", "Select Header Elements ..."))
+        self.actionRunning_Game.setText(_translate("MainWindow", "*"))
 from gameheaderview import GameHeaderView
 from gamelisttableview import GameListTableView
 from gametreeview import GameTreeView

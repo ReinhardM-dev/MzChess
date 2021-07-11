@@ -272,8 +272,12 @@ class ScorePlot(PyQt5.QtChart.QChartView):
   
 :param gameNode: game node to be added (must be main_variation !!)
   '''
-  if not gameNode.is_mainline():
+  if gameNode is None or not gameNode.is_mainline():
    return
+  if 'chart' not in vars(self):
+   self._setupChart()
+   self.resetChart()
+  self.chart.show()
   ply = gameNode.ply()
   engineData = list()
   materialData = list()
@@ -317,22 +321,62 @@ class ScorePlot(PyQt5.QtChart.QChartView):
    if len(engineData) > 0:
     self.engineSeries.append(engineData)
 
-  self._setRange(self.xAxis, 1, ply / 2)
-  self._setRange(self.yAxis, self.minY, self.maxY)
+  self._setRange(self.xAxis, 1, max(ply / 2, 2))
+  if self.minY != self.maxY:
+   self._setRange(self.yAxis, self.minY, self.maxY)
+  else:
+   self._setRange(self.yAxis, self.minY - 0.5, self.minY + 0.5)
+  
+  self.update()
+
+ def removeLastNode(self) -> None:
+  if self.materialSeries.count() == 0:
+   return
+  
+  ply = self.materialSeries.count() - 1
+  mMove = self.materialSeries.at(ply).x()
+  self.materialSeries.remove(ply)
+  ply += 2
+  self.minY = float('inf')
+  self.maxY = -float('inf')
+  for n in range(self.materialSeries.count()):
+   pawnScore = self.materialSeries.at(n).y()
+   self.minY = min(self.minY, pawnScore)
+   self.maxY = max(self.maxY, pawnScore)
+  if self.engineSeries.count() > 0:
+   lastID = self.engineSeries.count() - 1
+   eMove = self.engineSeries.at(lastID).x()
+   if mMove == eMove:
+    self.engineSeries.remove(lastID)
+   for n in range(self.engineSeries.count()):
+    pawnScore = self.engineSeries.at(n).y()
+    self.minY = min(self.minY, pawnScore)
+    self.maxY = max(self.maxY, pawnScore)
+
+
+  self._setRange(self.xAxis, 1, max(ply / 2, 2))
+  if self.minY != self.maxY:
+   self._setRange(self.yAxis, self.minY, self.maxY)
+  else:
+   self._setRange(self.yAxis, self.minY - 0.5, self.minY + 0.5)
+
+  self.update()
   
  def setGame(self, game : chess.pgn.Game) -> None:
   '''Sets a new game
   
 :param game: game node to be set
   '''
-  self._setupChart()
-  self.resetChart()
+  gameNode = game.next()
+  if gameNode is None:
+   if 'chart' in vars(self):
+    self.chart.hide()
+   return
+  self.addGameNodes(gameNode)
   if 'Annotator' in game.headers:
    self.engineSeries.setName(game.headers['Annotator'])
   else:
    self.engineSeries.setName('Engine')
-  gameNode = game.next()
-  self.addGameNodes(gameNode)
   self.selectNodeItem(gameNode)
  
  @PyQt5.QtCore.pyqtSlot()
@@ -367,7 +411,7 @@ if __name__ == "__main__":
  from pgnParse import read_game
 
 
- class My(PyQt5.QtWidgets.QMainWindow):
+ class _My(PyQt5.QtWidgets.QMainWindow):
   def __init__(self, game):
    super().__init__()
    self.setWindowTitle('self.chart Formatting Demo')
@@ -391,7 +435,7 @@ if __name__ == "__main__":
  pgn = io.StringIO(newData)
  game = read_game(pgn)
  app = PyQt5.QtWidgets.QApplication([])
- plotWindow = My(game)
+ plotWindow = _My(game)
  plotWindow.show()
  plotWindow.setup()
  sys.exit(app.exec_())

@@ -177,7 +177,8 @@ class Annotator():
    gameNode = game
   lastWsc = 0
   for plyID, scoreList in enumerate(scoreListList):
-   assert gameNode is not None, 'No gameNode for plyID = {}'.format(plyID)
+   if gameNode is None:
+    break
    if pvListList is not None:
     pvList = pvListList[plyID]
    else:

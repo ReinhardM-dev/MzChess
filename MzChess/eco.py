@@ -1,6 +1,8 @@
-'''A Wrapper for Encyclopaedia of Chess Openings (ECO) (see `fiekas.eco`_) 
+'''A Wrapper for Encyclopaedia of Chess Openings (ECO) (see `fiekas.eco`_)
+It makes use of `polyglot`_ books to arrange the games.
  
 .. _fiekas.eco: https://github.com/niklasf/eco
+.. _polyglot: https://sourceforge.net/projects/codekiddy-chess/files/Books/Polyglot%20books/
 '''
 
 from typing import Optional, Union, Dict, List, Any

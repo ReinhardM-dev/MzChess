@@ -271,6 +271,7 @@
      <property name="title">
       <string>End Game</string>
      </property>
+     <addaction name="actionRunning_Game"/>
      <addaction name="actionWhite_wins"/>
      <addaction name="action0_1"/>
      <addaction name="action1_2_1_2"/>
@@ -847,6 +848,11 @@
   <action name="actionSelect_Header_Elements">
    <property name="text">
     <string>Select Header Elements ...</string>
+   </property>
+  </action>
+  <action name="actionRunning_Game">
+   <property name="text">
+    <string>*</string>
    </property>
   </action>
  </widget>

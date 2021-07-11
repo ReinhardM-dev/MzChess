@@ -183,10 +183,12 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   if parentItem is None:
    if gameNode in self.gameNodeList:
     return
-   if not gameNode.is_main_variation():
+   if False and not gameNode.is_main_variation():
     raise ValueError('Node {} is not in the main variation'.format(gameNode))
    parentIndex = self.gameNodeList.index(parent)
    parentItem = self.gameItemList[parentIndex]
+   if parent.is_main_variation() and parentItem != self.gameItemList[0]:
+    parentItem = parentItem.parent()
   board = gameNode.parent.board()
   while gameNode is not None: 
    newNode = PyQt5.QtWidgets.QTreeWidgetItem()
@@ -237,6 +239,26 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
    board.push(gameNode.move)
    gameNode = gameNode.next()
    
+ def removeGameNode(self, gameNode : chess.pgn.GameNode) -> None: 
+  if not gameNode.is_end() or gameNode.parent is None or gameNode not in self.gameNodeList:
+   return
+  index = self.gameNodeList.index(gameNode)
+  self.gameItemList[index].parent().removeChild(self.gameItemList[index])
+  self.gameNodeList.pop(index)
+  self.gameItemList.pop(index)
+  
+ def setGameResult(self, result : str) -> None:
+  '''Sets the 'Result' header element
+
+:param result: one out of *1-0*, *0-1*, *1/2-1/2*, *\**
+  '''
+  gameResult = ["1-0", "0-1", "1/2-1/2", "*"]
+  if result not in gameResult:
+   result = gameResult[3]
+  if len(self.gameItemList) > 0:
+   self.gameItemList[0].setText(0, 'Result: {}'.format(result))
+
+   
  def setGame(self, game : chess.pgn.Game) -> None:
   '''Clears the editor and sets new game
   
@@ -250,13 +272,8 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   self.addTopLevelItem(master)
   self.gameNodeList = [self.game]
   self.gameItemList = [master]
-  self.addGameNodes(self.game.next())
-  resultItem = PyQt5.QtWidgets.QTreeWidgetItem()
-  resultItem.setFlags(PyQt5.QtCore.Qt.NoItemFlags)
-  resultItem.setText(0, self.game.headers['Result'])
-  self.gameNodeList.append(None)
-  self.gameItemList.append(resultItem)
-  master.addChild(resultItem)
+  self.setGameResult(self.game.headers['Result'])
+  self.addGameNodes(self.game.next(), master)
   master.setExpanded(True)
 
  def selectNodeItem(self, gameNode : chess.pgn.GameNode) -> None:
@@ -550,7 +567,7 @@ if __name__ == "__main__":
  tree.setGame(game)
  if isNewGame:
   newVariant = game.add_variation(chess.Move.from_uci('a2a3'), comment = 'move #1', starting_comment = 'variant', nags = [2, 17]) 
-  tree.addVariant(newVariant)
+  tree.addGameNodes(newVariant)
   gameNode = newVariant.add_variation(chess.Move.from_uci('a7a6'), comment = 'move #2', starting_comment = '???', nags = [3, 20]) 
   tree.addGameNodes(gameNode)
  tree.resize(500,400)

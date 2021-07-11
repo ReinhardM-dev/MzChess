@@ -295,6 +295,7 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
   self.draw_board()
   board = self.gameNode.board()
   self.showMaterial(board)
+  self.isGameOver = False
   self.showTurn(board)
   if self.hint:
    self.requestHint.emit(self.fen())
@@ -337,13 +338,20 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
  def showTurn(self, board : chess.Board) -> None:
   if self.turnFrame is None:
    return
-  if board.is_game_over():
-   game = self.gameNode.game()
-   game.headers['Result'] = board.result()
-   if board.is_checkmate():
-    self.turnFrame.setStyleSheet('background-color: red')
-   else:
+  self.gameIsOver = board.is_game_over()
+  game = self.gameNode.game()
+  if self.gameIsOver or (game.headers['Result'] != '*' and self.gameNode.is_end()):
+   if self.gameIsOver:
+    game.headers['Result'] = board.result()
+    if board.is_checkmate():
+     self.turnFrame.setStyleSheet('background-color: red')
+    else:
+     self.turnFrame.setStyleSheet('background-color: yellow')
+   elif game.headers['Result'] == '1/2-1/2':
     self.turnFrame.setStyleSheet('background-color: yellow')
+   else:
+    self.turnFrame.setStyleSheet('background-color: red')
+   self.gameIsOver = True
   elif board.turn:
    self.turnFrame.setStyleSheet('background-color: white')
   else:
@@ -447,7 +455,7 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
    self.warnOfDangerGroup[n].setCacheMode(PyQt5.QtWidgets.QGraphicsItem.NoCache)
    if score > 0:
     self.warnOfDangerGroup[n].setBrush(self.badSquareBrush)
-   elif score >= -3:
+   elif score == 0:
     self.warnOfDangerGroup[n].setBrush(self.intermediateSquareBrush)
    else:
     self.warnOfDangerGroup[n].setBrush(self.goodSquareBrush)
@@ -545,29 +553,33 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
  def mousePressEvent(self, qGraphicsSceneMouseEvent : PyQt5.QtWidgets.QGraphicsSceneMouseEvent) -> None:
   self.pressedPiece = None
   self.remove_warnOfDanger()
+  self.pressedSquareId = self.getChessSquareAt(qGraphicsSceneMouseEvent.scenePos())
+  if self.pressedSquareId is not None:
+   self.pressedPiece = self.itemAt(self.getScenePos(self.pressedSquareId), PyQt5.QtGui.QTransform())
+   if isinstance(self.pressedPiece,PyQt5.QtWidgets.QGraphicsRectItem):
+    self.pressedPiece = None # empty field hitten
   board = self.gameNode.board()
-  if not board.is_game_over():
+  if not self.gameIsOver:
    self.pressedSquareId = self.getChessSquareAt(qGraphicsSceneMouseEvent.scenePos())
-   if self.pressedSquareId is not None:
+   if self.pressedPiece is not None:
     self.pressedPiece = self.itemAt(self.getScenePos(self.pressedSquareId), PyQt5.QtGui.QTransform())
-    if isinstance(self.pressedPiece,PyQt5.QtWidgets.QGraphicsRectItem):
-     self.pressedPiece = None # empty field hitten
-    else:
-     self.legal_targets = list()
-     for move in list(board.legal_moves):
-      if move.from_square == self.pressedSquareId:
-       self.legal_targets.append(move.to_square)
-     self.attackedPieceDict = dict()
-     for pieceID in board.attacks(self.pressedSquareId): 
-      actPiece = self.itemAt(self.getScenePos(pieceID), PyQt5.QtGui.QTransform())
-      if not isinstance(actPiece,PyQt5.QtWidgets.QGraphicsRectItem):
-       self.attackedPieceDict[pieceID] = actPiece
-     self.draw_drawOptions()
+    self.legal_targets = list()
+    for move in list(board.legal_moves):
+     if move.from_square == self.pressedSquareId:
+      self.legal_targets.append(move.to_square)
+    self.attackedPieceDict = dict()
+    for pieceID in board.attacks(self.pressedSquareId): 
+     actPiece = self.itemAt(self.getScenePos(pieceID), PyQt5.QtGui.QTransform())
+     if not isinstance(actPiece,PyQt5.QtWidgets.QGraphicsRectItem):
+      self.attackedPieceDict[pieceID] = actPiece
+    self.draw_drawOptions()
   PyQt5.QtWidgets.QGraphicsScene.mousePressEvent(self, qGraphicsSceneMouseEvent)
 
  def mouseReleaseEvent(self, qGraphicsSceneMouseEvent : PyQt5.QtWidgets.QGraphicsSceneMouseEvent) -> None:
   PyQt5.QtWidgets.QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
-  if self.pressedPiece is None:
+  if self.pressedPiece is None or self.gameIsOver:
+   if self.pressedPiece is not None:
+    self.pressedPiece.setPos(self.getScenePos(self.pressedSquareId))
    return
   self.remove_drawOptions()
   releasedSquareId = self.getChessSquareAt(qGraphicsSceneMouseEvent.scenePos())

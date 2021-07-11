@@ -12,18 +12,17 @@
 #
 import os
 import sys
-import MzChess
 sys.path.insert(0, os.path.abspath('../MzChess'))
 # sys.setrecursionlimit(15000)
 
 # -- Project information -----------------------------------------------------
 
-project = MzChess.__name__
+project = 'MzChess'
 copyright = '2021, Reinhard März'
 author = 'Reinhard März'
 
 # The full version, including alpha/beta/rc tags
-release = MzChess.__version__
+# release = MzChess.__version__
 
 # -- General configuration ---------------------------------------------------
 master_doc = 'index'

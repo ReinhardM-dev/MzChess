@@ -2,7 +2,7 @@
 version: 2
 
 sphinx:
-  configuration: conf.py
+  configuration: doc/conf.py
 
 # Build PDF & ePub
 formats:

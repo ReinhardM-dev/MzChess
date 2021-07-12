@@ -158,7 +158,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   self.dateString = MzChess.__date__
   
   # self.helpIndex = PyQt5.QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(self.fileDirectory), 'docs', 'index.html'))
-  self.helpIndex = PyQt5.QtCore.QUrl('https://reinhardm-dev.github.io/MzChess')
+  self.helpIndex = PyQt5.QtCore.QUrl('https://mzchess.readthedocs.io/')
 
   self.ecoDB = eco.ECODatabase()
   self.ecoFen2IdDict = self.ecoDB.fen2Id()

@@ -10,9 +10,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
 import sys
-# Import the MzChess module.
+import os
+
 sys.path.insert(0, os.path.abspath('..'))
 import MzChess
 
@@ -25,7 +25,8 @@ copyright = '2021, Reinhard März'
 author = 'Reinhard März'
 
 # The full version, including alpha/beta/rc tags
-release = MzChess.__version__
+release = 'V' + MzChess.__version__
+version = 'V' + '.'.join(MzChess.__version__.split('.')[:2])
 
 # -- General configuration ---------------------------------------------------
 master_doc = 'index'
@@ -43,7 +44,7 @@ extensions = [
 ]
 autosummary_generate = True
 autodoc_typehints = 'signature'
-autodoc_mock_imports = ['sip', 'PyQt5', 'PyQt5.QtGui', 'PyQt5.QtCore', 'PyQt5.QtWidgets', 'PyQt5.QtSvg', 'PyQt5.QtChart']
+# autodoc_mock_imports = ['sip', 'PyQt5', 'PyQt5.QtGui', 'PyQt5.QtCore', 'PyQt5.QtWidgets', 'PyQt5.QtSvg', 'PyQt5.QtChart']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

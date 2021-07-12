@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>gametreeview &mdash; MzChess 0.9 documentation</title>
+  <title>gametreeview &mdash; MzChess V1.0.5 documentation</title>
   
 
   
@@ -59,6 +59,10 @@
 
           
             
+            
+              <div class="version">
+                V1.0
+              </div>
             
           
 
@@ -336,10 +340,12 @@
   <span class="k">if</span> <span class="n">parentItem</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
    <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">:</span>
     <span class="k">return</span>
-   <span class="k">if</span> <span class="ow">not</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">is_main_variation</span><span class="p">():</span>
+   <span class="k">if</span> <span class="kc">False</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">is_main_variation</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Node </span><span class="si">{}</span><span class="s1"> is not in the main variation&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameNode</span><span class="p">))</span>
    <span class="n">parentIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
    <span class="n">parentItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">[</span><span class="n">parentIndex</span><span class="p">]</span>
+   <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="n">is_main_variation</span><span class="p">()</span> <span class="ow">and</span> <span class="n">parentItem</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+    <span class="n">parentItem</span> <span class="o">=</span> <span class="n">parentItem</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
   <span class="n">board</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">board</span><span class="p">()</span>
   <span class="k">while</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
    <span class="n">newNode</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">()</span>
@@ -390,6 +396,26 @@
    <span class="n">board</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">move</span><span class="p">)</span>
    <span class="n">gameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span></div>
    
+ <span class="k">def</span> <span class="nf">removeGameNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameNode</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">is_end</span><span class="p">()</span> <span class="ow">or</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">gameNode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">:</span>
+   <span class="k">return</span>
+  <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">removeChild</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+  
+<div class="viewcode-block" id="GameTreeView.setGameResult"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.setGameResult">[docs]</a> <span class="k">def</span> <span class="nf">setGameResult</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Sets the &#39;Result&#39; header element</span>
+
+<span class="sd">:param result: one out of *1-0*, *0-1*, *1/2-1/2*, *\**</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">gameResult</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;1-0&quot;</span><span class="p">,</span> <span class="s2">&quot;0-1&quot;</span><span class="p">,</span> <span class="s2">&quot;1/2-1/2&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">]</span>
+  <span class="k">if</span> <span class="n">result</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">gameResult</span><span class="p">:</span>
+   <span class="n">result</span> <span class="o">=</span> <span class="n">gameResult</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Result: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">))</span></div>
+
+   
 <div class="viewcode-block" id="GameTreeView.setGame"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.setGame">[docs]</a> <span class="k">def</span> <span class="nf">setGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="sd">&#39;&#39;&#39;Clears the editor and sets new game</span>
 <span class="sd">  </span>
@@ -403,13 +429,8 @@
   <span class="bp">self</span><span class="o">.</span><span class="n">addTopLevelItem</span><span class="p">(</span><span class="n">master</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">]</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span> <span class="o">=</span> <span class="p">[</span><span class="n">master</span><span class="p">]</span>
-  <span class="bp">self</span><span class="o">.</span><span class="n">addGameNodes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
-  <span class="n">resultItem</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">()</span>
-  <span class="n">resultItem</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">NoItemFlags</span><span class="p">)</span>
-  <span class="n">resultItem</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">])</span>
-  <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-  <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resultItem</span><span class="p">)</span>
-  <span class="n">master</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">resultItem</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setGameResult</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">])</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">addGameNodes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">next</span><span class="p">(),</span> <span class="n">master</span><span class="p">)</span>
   <span class="n">master</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GameTreeView.selectNodeItem"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.selectNodeItem">[docs]</a> <span class="k">def</span> <span class="nf">selectNodeItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameNode</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -703,7 +724,7 @@
  <span class="n">tree</span><span class="o">.</span><span class="n">setGame</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
  <span class="k">if</span> <span class="n">isNewGame</span><span class="p">:</span>
   <span class="n">newVariant</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">add_variation</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;a2a3&#39;</span><span class="p">),</span> <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;move #1&#39;</span><span class="p">,</span> <span class="n">starting_comment</span> <span class="o">=</span> <span class="s1">&#39;variant&#39;</span><span class="p">,</span> <span class="n">nags</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">17</span><span class="p">])</span> 
-  <span class="n">tree</span><span class="o">.</span><span class="n">addVariant</span><span class="p">(</span><span class="n">newVariant</span><span class="p">)</span>
+  <span class="n">tree</span><span class="o">.</span><span class="n">addGameNodes</span><span class="p">(</span><span class="n">newVariant</span><span class="p">)</span>
   <span class="n">gameNode</span> <span class="o">=</span> <span class="n">newVariant</span><span class="o">.</span><span class="n">add_variation</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;a7a6&#39;</span><span class="p">),</span> <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;move #2&#39;</span><span class="p">,</span> <span class="n">starting_comment</span> <span class="o">=</span> <span class="s1">&#39;???&#39;</span><span class="p">,</span> <span class="n">nags</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span> 
   <span class="n">tree</span><span class="o">.</span><span class="n">addGameNodes</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
  <span class="n">tree</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">400</span><span class="p">)</span>

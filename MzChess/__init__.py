@@ -9,7 +9,7 @@ Versions:
 """
 __author__ = "Reinhard Maerz"
 __date__ = "2021-07-11"
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 
 import os
 import sys

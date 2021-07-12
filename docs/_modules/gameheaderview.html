@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>gameheaderview &mdash; MzChess 0.9 documentation</title>
+  <title>gameheaderview &mdash; MzChess V1.0.5 documentation</title>
   
 
   
@@ -59,6 +59,10 @@
 
           
             
+            
+              <div class="version">
+                V1.0
+              </div>
             
           
 
@@ -321,6 +325,7 @@
      <span class="n">date</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;yyyy.MM.dd&quot;</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
      <span class="n">date</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="o">.</span><span class="n">currentDate</span><span class="p">()</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="s1">&#39;yyyy.MM.dd&#39;</span><span class="p">)</span>
     <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDateEdit</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
     <span class="n">item</span><span class="o">.</span><span class="n">dateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_dateChanged</span><span class="p">)</span>
    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span>

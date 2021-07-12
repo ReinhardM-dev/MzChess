@@ -2,7 +2,7 @@
   "header": {
     "comment": "eric project file for project MzChess",
     "copyright": "Copyright (C) 2021 Reinhard M\u00e4rz, ",
-    "saved": "2021-06-24, 16:33:39"
+    "saved": "2021-07-12, 08:39:53"
   },
   "project": {
     "AUTHOR": "Reinhard M\u00e4rz",
@@ -21,6 +21,7 @@
       "*.proto": "PROTOCOLS",
       "*.py": "SOURCES",
       "*.pyw": "SOURCES",
+      "*.qm": "TRANSLATIONS",
       "*.qrc": "RESOURCES",
       "*.rst": "OTHERS",
       "*.ts": "TRANSLATIONS",
@@ -37,8 +38,7 @@
       "MzChess/chessMainWindow.ui",
       "MzChess/configureEngine.ui",
       "MzChess/configureEngineOptions.ui",
-      "MzChess/propagatePawn.ui",
-      "textEdit.ui"
+      "MzChess/propagatePawn.ui"
     ],
     "HASH": "bed6ae81d29022141adf17229cf9b6c26f92c8fb",
     "IDLPARAMS": {
@@ -48,7 +48,7 @@
     },
     "INTERFACES": [],
     "LEXERASSOCS": {},
-    "MAINSCRIPT": "",
+    "MAINSCRIPT": "MzChess/chessMainWindow.py",
     "MAKEPARAMS": {
       "MakeEnabled": false,
       "MakeExecutable": "",
@@ -61,7 +61,6 @@
     "OTHERS": [
       "doc/make.bat",
       "MzChess/eco/README.md",
-      "MzChess/README.md",
       "doc/annotator.rst",
       "doc/chessengine.rst",
       "doc/chessMainWindow.rst",
@@ -80,7 +79,12 @@
       "MzChess/credits.txt",
       "MzChess/eco/bin/requirements.txt",
       "MzChess/eco/COPYING.txt",
-      "doc/Makefile"
+      "doc/Makefile",
+      ".gitignore",
+      "license.gpl3",
+      "MzChess/readme.rst",
+      "pyproject.toml",
+      "doc/requirements.txt"
     ],
     "OTHERTOOLSPARMS": {},
     "PACKAGERSPARMS": {},
@@ -97,7 +101,6 @@
     "RESOURCES": [],
     "SOURCES": [
       "doc/conf.py",
-      "install.py",
       "MzChess/AboutDialog.py",
       "MzChess/annotateEngine.py",
       "MzChess/chessengine.py",
@@ -123,7 +126,6 @@
       "MzChess/Ui_propagatePawn.py",
       "MzChess/Ui_textEdit.py",
       "MzChess/warnOfDanger.py",
-      "__init__.py",
       "doc/Makefile",
       "doc/utilities.rst",
       "doc/warnOfDanger.rst",
@@ -139,7 +141,16 @@
       "doc/pgnParse.rst",
       "doc/make.bat",
       "doc/eco.rst",
-      "doc/chessengine.rst"
+      "doc/chessengine.rst",
+      "MzChess/__init__.py",
+      "setup.py",
+      "MzChess/credits.txt",
+      "MzChess/readme.rst",
+      "pyproject.toml",
+      "license.gpl3",
+      "MzChess/settings.ini",
+      "doc/requirements.txt",
+      ".readthedocs.yaml"
     ],
     "SPELLEXCLUDES": "",
     "SPELLLANGUAGE": "en_US",

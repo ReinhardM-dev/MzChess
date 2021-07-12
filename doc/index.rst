@@ -1,5 +1,6 @@
-MzChess: a chess GUI using PyQt5 and `chess`_ modules
-===============================================================
+MzChess
+===========================
+A chess GUI using PyQt5 and `chess`_ modules.
 
 Installing
 ----------
@@ -42,3 +43,4 @@ Indices and tables
 * :ref:`search`
 
 .. _chess: https://pypi.org/project/chess
+.. _Linux Package Manager: https://en.wikipedia.org/wiki/List_of_software_package_management_systems

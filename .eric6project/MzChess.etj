@@ -2,7 +2,7 @@
   "header": {
     "comment": "eric tasks file for project MzChess",
     "warning": "This file was generated automatically, do not edit.",
-    "saved": "2021-06-24, 16:34:50"
+    "saved": "2021-07-12, 13:48:01"
   },
   "ProjectScanFilter": "",
   "Tasks": [
@@ -12,22 +12,9 @@
       "priority": 1,
       "lineno": 7,
       "completed": false,
-      "created": 1624545287.148822,
+      "created": 1626071680.9543223,
       "type": 2,
-      "uid": "{b92e0fa6-03a9-4393-a198-7b8581bdd4f0}",
-      "parent_uid": "",
-      "expanded": false,
-      "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_AboutDialog.py"
-    },
-    {
-      "summary": "WARNING: Any manual changes made to this file will be lost when pyuic5 is",
-      "description": "",
-      "priority": 1,
-      "lineno": 7,
-      "completed": false,
-      "created": 1624545287.148822,
-      "type": 2,
-      "uid": "{bd750812-0b58-4011-9995-9c584ec1e730}",
+      "uid": "{b74f4b12-85ef-45da-b96b-674469c7fc4a}",
       "parent_uid": "",
       "expanded": false,
       "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_chessMainWindow.py"
@@ -38,9 +25,9 @@
       "priority": 1,
       "lineno": 7,
       "completed": false,
-      "created": 1624545287.1588228,
+      "created": 1626071680.9543223,
       "type": 2,
-      "uid": "{34b7a945-6b6c-4490-adad-62b695ff9ad6}",
+      "uid": "{53278332-3dbb-4ec1-9a5b-809a3b31d6c3}",
       "parent_uid": "",
       "expanded": false,
       "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_configureEngine.py"
@@ -51,9 +38,9 @@
       "priority": 1,
       "lineno": 7,
       "completed": false,
-      "created": 1624545287.1588228,
+      "created": 1626071681.1043205,
       "type": 2,
-      "uid": "{d6ce2835-4e46-4a1d-80a2-12f557915646}",
+      "uid": "{25e33d3d-0d7b-489e-a9ee-f145064e4fe0}",
       "parent_uid": "",
       "expanded": false,
       "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_configureEngineOptions.py"
@@ -64,9 +51,9 @@
       "priority": 1,
       "lineno": 7,
       "completed": false,
-      "created": 1624545287.1588228,
+      "created": 1626071681.1043205,
       "type": 2,
-      "uid": "{2e678ffa-6de7-4496-bb3a-be0967afec9d}",
+      "uid": "{c02f931c-0c8d-45f3-83aa-f415a3248e09}",
       "parent_uid": "",
       "expanded": false,
       "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_propagatePawn.py"
@@ -77,9 +64,9 @@
       "priority": 1,
       "lineno": 7,
       "completed": false,
-      "created": 1624545287.1688237,
+      "created": 1626071681.1043205,
       "type": 2,
-      "uid": "{e39baec1-82a0-42c7-bd38-fc2a9f0023c4}",
+      "uid": "{2f71b004-c5f0-4b90-9756-a66cad0ba340}",
       "parent_uid": "",
       "expanded": false,
       "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_textEdit.py"

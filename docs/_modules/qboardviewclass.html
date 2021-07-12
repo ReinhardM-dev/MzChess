@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>qboardviewclass &mdash; MzChess 0.9 documentation</title>
+  <title>qboardviewclass &mdash; MzChess V1.0.5 documentation</title>
   
 
   
@@ -59,6 +59,10 @@
 
           
             
+            
+              <div class="version">
+                V1.0
+              </div>
             
           
 
@@ -448,6 +452,7 @@
   <span class="bp">self</span><span class="o">.</span><span class="n">draw_board</span><span class="p">()</span>
   <span class="n">board</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">showMaterial</span><span class="p">(</span><span class="n">board</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">isGameOver</span> <span class="o">=</span> <span class="kc">False</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">showTurn</span><span class="p">(</span><span class="n">board</span><span class="p">)</span>
   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hint</span><span class="p">:</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">requestHint</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fen</span><span class="p">())</span>
@@ -490,13 +495,20 @@
  <span class="k">def</span> <span class="nf">showTurn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">board</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
    <span class="k">return</span>
-  <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">is_game_over</span><span class="p">():</span>
-   <span class="n">game</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">game</span><span class="p">()</span>
-   <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-   <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">is_checkmate</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: red&#39;</span><span class="p">)</span>
-   <span class="k">else</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">is_game_over</span><span class="p">()</span>
+  <span class="n">game</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">game</span><span class="p">()</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span> <span class="ow">or</span> <span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">is_end</span><span class="p">()):</span>
+   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span><span class="p">:</span>
+    <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">is_checkmate</span><span class="p">():</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: red&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: yellow&#39;</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;1/2-1/2&#39;</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: yellow&#39;</span><span class="p">)</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: red&#39;</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span> <span class="o">=</span> <span class="kc">True</span>
   <span class="k">elif</span> <span class="n">board</span><span class="o">.</span><span class="n">turn</span><span class="p">:</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: white&#39;</span><span class="p">)</span>
   <span class="k">else</span><span class="p">:</span>
@@ -600,7 +612,7 @@
    <span class="bp">self</span><span class="o">.</span><span class="n">warnOfDangerGroup</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">setCacheMode</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsItem</span><span class="o">.</span><span class="n">NoCache</span><span class="p">)</span>
    <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">warnOfDangerGroup</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">badSquareBrush</span><span class="p">)</span>
-   <span class="k">elif</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mi">3</span><span class="p">:</span>
+   <span class="k">elif</span> <span class="n">score</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">warnOfDangerGroup</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intermediateSquareBrush</span><span class="p">)</span>
    <span class="k">else</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">warnOfDangerGroup</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">goodSquareBrush</span><span class="p">)</span>
@@ -698,29 +710,33 @@
 <div class="viewcode-block" id="Game.mousePressEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mousePressEvent">[docs]</a> <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsSceneMouseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">remove_warnOfDanger</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getChessSquareAt</span><span class="p">(</span><span class="n">qGraphicsSceneMouseEvent</span><span class="o">.</span><span class="n">scenePos</span><span class="p">())</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">),</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QTransform</span><span class="p">())</span>
+   <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span><span class="p">,</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsRectItem</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># empty field hitten</span>
   <span class="n">board</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">board</span><span class="o">.</span><span class="n">is_game_over</span><span class="p">():</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span><span class="p">:</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getChessSquareAt</span><span class="p">(</span><span class="n">qGraphicsSceneMouseEvent</span><span class="o">.</span><span class="n">scenePos</span><span class="p">())</span>
-   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">),</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QTransform</span><span class="p">())</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span><span class="p">,</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsRectItem</span><span class="p">):</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># empty field hitten</span>
-    <span class="k">else</span><span class="p">:</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">legal_targets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-     <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">legal_moves</span><span class="p">):</span>
-      <span class="k">if</span> <span class="n">move</span><span class="o">.</span><span class="n">from_square</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">:</span>
-       <span class="bp">self</span><span class="o">.</span><span class="n">legal_targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move</span><span class="o">.</span><span class="n">to_square</span><span class="p">)</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">attackedPieceDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-     <span class="k">for</span> <span class="n">pieceID</span> <span class="ow">in</span> <span class="n">board</span><span class="o">.</span><span class="n">attacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">):</span> 
-      <span class="n">actPiece</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="n">pieceID</span><span class="p">),</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QTransform</span><span class="p">())</span>
-      <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">actPiece</span><span class="p">,</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsRectItem</span><span class="p">):</span>
-       <span class="bp">self</span><span class="o">.</span><span class="n">attackedPieceDict</span><span class="p">[</span><span class="n">pieceID</span><span class="p">]</span> <span class="o">=</span> <span class="n">actPiece</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">draw_drawOptions</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">legal_targets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">legal_moves</span><span class="p">):</span>
+     <span class="k">if</span> <span class="n">move</span><span class="o">.</span><span class="n">from_square</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">legal_targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move</span><span class="o">.</span><span class="n">to_square</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">attackedPieceDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">pieceID</span> <span class="ow">in</span> <span class="n">board</span><span class="o">.</span><span class="n">attacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">):</span> 
+     <span class="n">actPiece</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="n">pieceID</span><span class="p">),</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QTransform</span><span class="p">())</span>
+     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">actPiece</span><span class="p">,</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsRectItem</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">attackedPieceDict</span><span class="p">[</span><span class="n">pieceID</span><span class="p">]</span> <span class="o">=</span> <span class="n">actPiece</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">draw_drawOptions</span><span class="p">()</span>
   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsScene</span><span class="o">.</span><span class="n">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Game.mouseReleaseEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mouseReleaseEvent">[docs]</a> <span class="k">def</span> <span class="nf">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsSceneMouseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsScene</span><span class="o">.</span><span class="n">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span><span class="p">)</span>
-  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span><span class="p">:</span>
+   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">))</span>
    <span class="k">return</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">remove_drawOptions</span><span class="p">()</span>
   <span class="n">releasedSquareId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getChessSquareAt</span><span class="p">(</span><span class="n">qGraphicsSceneMouseEvent</span><span class="o">.</span><span class="n">scenePos</span><span class="p">())</span>

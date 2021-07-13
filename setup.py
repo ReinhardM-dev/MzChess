@@ -55,9 +55,9 @@ setup(name = package,
   url = 'https://github.com/ReinhardM-dev/MzChess', 
   version = pkgVersion,
   packages = [package],
-  options={'bdist_wheel':{'universal':True}}, 
-  package_data = {'': 
-    ['*.txt', '*.md', '*.ui', '*.gpl3', 
+  options={'bdist_wheel':{'universal':True}},
+  package_data = {package: 
+    ['*.txt', '*.ui', '*.gpl3', '*.rst', '*.png',  
      'books/*.txt', 
      'eco/*.fsc', 'eco/*.tsv', 'eco/*.txt', 'eco/*.md', 'eco/bin/*',
      'pieces/*.svg', 'pieces/*.ttf', 

@@ -148,6 +148,10 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
  def __init__(self, parent = None) -> None:
   super(ChessMainWindow, self).__init__(parent)
   self.setupUi(self)
+
+  icon = PyQt5.QtGui.QIcon()
+  icon.addPixmap(PyQt5.QtGui.QPixmap(os.path.join(self.fileDirectory,'schach.png')), PyQt5.QtGui.QIcon.Normal, PyQt5.QtGui.QIcon.Off)
+  self.setWindowIcon(icon)
   
   fDB = PyQt5.QtGui.QFontDatabase()
   if 'Chess Leipzig' not in fDB.families():

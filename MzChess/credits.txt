@@ -6,3 +6,4 @@ content of training/matein from ScidVsPC, see http://scidvspc.sourceforge.net
 content of training/tactics from scid, see http://scid.sourceforge.net
 chess pieces by Colin M.L. Burnett, see https://en.wikipedia.org/wiki/User:Cburnett
 leipfont.ttf by Armando Hernandez Marroquin, see https://www.chessvariants.com/who/ArmandoMarroquin
+Icon by Freepik, see https://www.freepik.com

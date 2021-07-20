@@ -12,7 +12,6 @@ from packaging import version
 package = 'MzChess'
 fileDirectory = os.path.dirname(os.path.abspath(__file__))
 packageDirectory = os.path.join(fileDirectory, package)
-# os.chdir(fileDirectory)
 sys.path.insert(0, packageDirectory)
 
 with open(os.path.join(packageDirectory,'readme.rst'), 'r', encoding = 'utf-8') as f:
@@ -25,7 +24,7 @@ leipfontFile = os.path.join(packageDirectory, 'pieces', 'LEIPFONT.ttf')
 
 pyQt5Version = '5.11.0'
 if platform.system() == 'Linux':
- # this code helps, if the package manager does not create egg files (e.g. debian 10)
+ # this code helps, if the package manager does not create egg files (e.g. debianos.rename('a.txt', 'b.kml') 10)
  install_requires = list()
  try:
   import PyQt5.QtCore
@@ -49,6 +48,9 @@ else:
  install_requires = ['PyQt5>={}'.format(pyQt5Version), 'PyQtChart>={}'.format(pyQt5Version)]
 
 install_requires += ['chess>=1.4', 'ply>=3.11']
+
+# Required to ensure a clean environment
+shutil.rmtree(os.path.join(fileDirectory, 'build'), ignore_errors = True)
 
 # Need to add all dependencies to setup as we go!
 setup(name = package,
@@ -78,7 +80,7 @@ setup(name = package,
     'Development Status :: 4 - Beta', 
     'Natural Language :: English', 
     'Topic :: Games/Entertainment :: Board Games'])
-  
+
 if platform.system() == 'Linux':
  fontFileList = map(lambda x : x.split(':')[0], subprocess.getstatusoutput('fc-list')[1].split('\n'))
  hasLEIPFONT = False

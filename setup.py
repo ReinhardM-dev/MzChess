@@ -12,7 +12,7 @@ from packaging import version
 package = 'MzChess'
 fileDirectory = os.path.dirname(os.path.abspath(__file__))
 packageDirectory = os.path.join(fileDirectory, package)
-sys.path.insert(0, packageDirectory)
+sys.path.insert(0, fileDirectory)
 
 with open(os.path.join(packageDirectory,'readme.rst'), 'r', encoding = 'utf-8') as f:
  long_description = f.read()

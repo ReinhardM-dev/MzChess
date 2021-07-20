@@ -31,6 +31,7 @@ Then, download and install the latest release:
 
     pip install mzChess
     
+        
 Running the GUI
 -----------------------
 

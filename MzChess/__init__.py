@@ -7,10 +7,11 @@ Versions:
  1.0.3      installation running
  1.0.4      bug fixes + end-of-game handling completed
  1.0.6      documentation on github.io + ico added
+ 1.0.8      setup corrected
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2021-07-13"
-__version__ = "1.0.7"
+__date__ = "2021-07-21"
+__version__ = "1.0.8"
 
 import os
 import sys

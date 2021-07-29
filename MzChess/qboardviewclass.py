@@ -550,7 +550,13 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
     self.squareLabel.setText('--')
   PyQt5.QtWidgets.QGraphicsScene.mouseMoveEvent(self, qGraphicsSceneMouseEvent)
 
+ def mouseDoubleClickEvent(self, mouseEvent):
+  self.mousePressed = False
+  print('mouseDoubleClickEvent')
+  
  def mousePressEvent(self, qGraphicsSceneMouseEvent : PyQt5.QtWidgets.QGraphicsSceneMouseEvent) -> None:
+  self.mousePressed = True
+  print('mousePressEvent')
   self.pressedPiece = None
   self.remove_warnOfDanger()
   self.pressedSquareId = self.getChessSquareAt(qGraphicsSceneMouseEvent.scenePos())
@@ -576,8 +582,9 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
   PyQt5.QtWidgets.QGraphicsScene.mousePressEvent(self, qGraphicsSceneMouseEvent)
 
  def mouseReleaseEvent(self, qGraphicsSceneMouseEvent : PyQt5.QtWidgets.QGraphicsSceneMouseEvent) -> None:
+  print('mouseReleaseEvent: mousePressed = {}'.format(self.mousePressed))
   PyQt5.QtWidgets.QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
-  if self.pressedPiece is None or self.gameIsOver:
+  if self.pressedPiece is None or not self.mousePressed or self.gameIsOver:
    if self.pressedPiece is not None:
     self.pressedPiece.setPos(self.getScenePos(self.pressedSquareId))
    return

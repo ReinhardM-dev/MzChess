@@ -246,6 +246,7 @@
     <property name="title">
      <string>Edit</string>
     </property>
+    <addaction name="actionFEN_Builder"/>
     <addaction name="actionCopy_PGN"/>
     <addaction name="actionPaste_PGN"/>
     <addaction name="separator"/>
@@ -853,6 +854,11 @@
   <action name="actionRunning_Game">
    <property name="text">
     <string>*</string>
+   </property>
+  </action>
+  <action name="actionFEN_Builder">
+   <property name="text">
+    <string>FEN Builder ...</string>
    </property>
   </action>
  </widget>

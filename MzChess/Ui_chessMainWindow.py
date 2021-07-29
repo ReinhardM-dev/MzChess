@@ -15,9 +15,6 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(973, 753)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("schach.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        MainWindow.setWindowIcon(icon)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralWidget)
@@ -328,6 +325,8 @@ class Ui_MainWindow(object):
         self.actionSelect_Header_Elements.setObjectName("actionSelect_Header_Elements")
         self.actionRunning_Game = QtWidgets.QAction(MainWindow)
         self.actionRunning_Game.setObjectName("actionRunning_Game")
+        self.actionFEN_Builder = QtWidgets.QAction(MainWindow)
+        self.actionFEN_Builder.setObjectName("actionFEN_Builder")
         self.menuRecent_PGN.addAction(self.actionbla)
         self.menuEncoding.addAction(self.actionUTF_8)
         self.menuEncoding.addAction(self.actionISO_8859_1)
@@ -341,6 +340,7 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionSave_Game)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExit)
+        self.menuEdit.addAction(self.actionFEN_Builder)
         self.menuEdit.addAction(self.actionCopy_PGN)
         self.menuEdit.addAction(self.actionPaste_PGN)
         self.menuEdit.addSeparator()
@@ -527,6 +527,7 @@ class Ui_MainWindow(object):
         self.actionPromote_Variant_to_Main.setShortcut(_translate("MainWindow", "Ctrl+M"))
         self.actionSelect_Header_Elements.setText(_translate("MainWindow", "Select Header Elements ..."))
         self.actionRunning_Game.setText(_translate("MainWindow", "*"))
+        self.actionFEN_Builder.setText(_translate("MainWindow", "FEN Builder ..."))
 from gameheaderview import GameHeaderView
 from gamelisttableview import GameListTableView
 from gametreeview import GameTreeView

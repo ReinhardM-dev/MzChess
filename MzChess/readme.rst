@@ -42,10 +42,18 @@ So, if this directory is in your search *PATH*, you type simply
 
     mzChess
 
-to start the GUI
+to start the GUI. A little helper
+
+::
+
+   buildFen
+   
+allows to build position strings using the Forsyth-Edwards Notation (`FEN`_)
+and copy them to the clipboard.
 
 .. _chess: https://pypi.org/project/chess
 .. _UCI: http://wbec-ridderkerk.nl/html/UCIProtocol.html
 .. _PGN: https://github.com/fsmosca/PGN-Standard
 .. _ECO: https://github.com/niklasf/chess-openings
 .. _Linux Package Manager: https://packaging.python.org/guides/installing-using-linux-tools/
+.. _FEN: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation

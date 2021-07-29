@@ -116,6 +116,7 @@ import os, os.path
 import pickle
 import io
 import re
+import sys, subprocess
 
 import PyQt5.QtCore
 import PyQt5.QtGui
@@ -130,6 +131,7 @@ from MzChess import chessengine, annotateEngine, configureEngine
 from MzChess.pgnParse import read_game
 import eco 
 from specialDialogs import ItemSelector
+from installLeipFont import installLeipFont
 
 class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWindow):
  logSignal = PyQt5.QtCore.pyqtSignal(str)
@@ -153,9 +155,8 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   icon.addPixmap(PyQt5.QtGui.QPixmap(os.path.join(self.fileDirectory,'schach.png')), PyQt5.QtGui.QIcon.Normal, PyQt5.QtGui.QIcon.Off)
   self.setWindowIcon(icon)
   
+  installLeipFont()
   fDB = PyQt5.QtGui.QFontDatabase()
-  if 'Chess Leipzig' not in fDB.families():
-   PyQt5.QtGui.QFontDatabase.addApplicationFont(os.path.join(self.fileDirectory, 'pieces', 'LEIPFONT.TTF'))
 
   self.pgm = 'Mz Chess GUI'
   self.version = MzChess.__version__
@@ -166,15 +167,26 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
   self.ecoDB = eco.ECODatabase()
   self.ecoFen2IdDict = self.ecoDB.fen2Id()
-  self.actionNew_PGN.setIcon(self.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_FileDialogNewFolder))
-  self.actionOpen_PGN.setIcon(self.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DirOpenIcon))
-  self.actionSave_PGN.setIcon(self.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DirHomeIcon))
-  self.actionNew_Game.setIcon(self.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_FileIcon))
-  self.actionSave_Game.setIcon(self.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogSaveButton))
-  self.actionFlip_Board.setIcon(self.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_BrowserReload))
-  self.actionNext_Move.setIcon(self.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowRight))
-  self.actionPrevious_Move.setIcon(self.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowLeft))
-
+  self.toolBar = PyQt5.QtWidgets.QToolBar()
+  self._setIcon(self.actionNew_PGN, PyQt5.QtWidgets.QStyle.SP_FileDialogNewFolder)
+  self._setIcon(self.actionOpen_PGN, PyQt5.QtWidgets.QStyle.SP_DirOpenIcon)
+  self._setIcon(self.actionSave_PGN, PyQt5.QtWidgets.QStyle.SP_DirHomeIcon)
+  self._setIcon(self.actionSave_Game, PyQt5.QtWidgets.QStyle.SP_DialogSaveButton)
+  self.toolBar.addSeparator()
+  self._setIcon(self.actionNew_Game, PyQt5.QtWidgets.QStyle.SP_FileIcon)
+  self._setIcon(self.actionFlip_Board, PyQt5.QtWidgets.QStyle.SP_BrowserReload)
+  self.toolBar.addSeparator()
+  self._setIcon(self.actionNext_Move, PyQt5.QtWidgets.QStyle.SP_ArrowDown)
+  self._setIcon(self.actionPrevious_Move, PyQt5.QtWidgets.QStyle.SP_ArrowUp)
+  self._setIcon(self.actionUndo_Last_Move, PyQt5.QtWidgets.QStyle.SP_BrowserStop)
+  self._setIcon(self.actionNext_Variant, PyQt5.QtWidgets.QStyle.SP_ArrowForward)
+  self._setIcon(self.actionPrevious_Variant, PyQt5.QtWidgets.QStyle.SP_ArrowBack)
+  self._setIcon(self.actionPromote_Variant, PyQt5.QtWidgets.QStyle.SP_MediaSeekBackward)
+  self._setIcon(self.actionDemote_Variant, PyQt5.QtWidgets.QStyle.SP_MediaSeekForward)
+  self._setIcon(self.actionPromote_Variant_to_Main, PyQt5.QtWidgets.QStyle.SP_MediaSkipBackward)
+  self._setIcon(self.actionDelete_Variant, PyQt5.QtWidgets.QStyle.SP_DialogCloseButton)
+  self.addToolBar(self.toolBar)
+  
   self.gameOptions = { 
    'showOptions' : (self.actionShow_Options, False), 
    'warnOfDanger' : (self.actionWarn_of_Danger, False), 
@@ -417,6 +429,11 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   self.uciTextEdit.moveCursor (PyQt5.QtGui.QTextCursor.End)
   self.uciTextEdit.insertPlainText (msg)
   self.uciTextEdit.moveCursor(PyQt5.QtGui.QTextCursor.End)
+
+ def _setIcon(self, action, stdIcon, toToolbar = True):
+  action.setIcon(self.style().standardIcon(stdIcon))
+  if toToolbar:
+   self.toolBar.addAction(action)
 
  def _showEcoCode(self, gameNode, fromBeginning = False):
   if fromBeginning:
@@ -1050,6 +1067,11 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   self.gameHeaderTableView.setGame(self.game)
 
  @PyQt5.QtCore.pyqtSlot() 
+ def on_actionFEN_Builder_triggered(self):
+  self.fenBuilder = PyQt5.QtCore.QProcess()
+  self.fenBuilder.start(sys.executable, [os.path.join(self.fileDirectory,'qbuildfen.py')], PyQt5.QtCore.QIODevice.NotOpen)
+  
+ @PyQt5.QtCore.pyqtSlot() 
  def on_actionCopy_PGN_triggered(self):
   self.notify('')
   exporter = chess.pgn.StringExporter(headers=True, variations=True, comments=True)
@@ -1173,7 +1195,6 @@ class MzClassApplication(PyQt5.QtWidgets.QApplication):
  # ---------------------------------------------------------------------------
 
 import os,  os.path
-import sys
 
 def runMzChess(notifyFct : Optional[Callable[[str], None]] = None):
  os.chdir(os.path.expanduser('~'))
@@ -1190,4 +1211,4 @@ def _runMzChess():
  print('Hello, world')
 
 if __name__ == "__main__":
- runMzChess(print)
+ runMzChess(None)

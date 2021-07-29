@@ -2,7 +2,7 @@
   "header": {
     "comment": "eric project file for project MzChess",
     "copyright": "Copyright (C) 2021 Reinhard M\u00e4rz, ",
-    "saved": "2021-07-12, 08:39:53"
+    "saved": "2021-07-23, 17:23:14"
   },
   "project": {
     "AUTHOR": "Reinhard M\u00e4rz",
@@ -38,7 +38,8 @@
       "MzChess/chessMainWindow.ui",
       "MzChess/configureEngine.ui",
       "MzChess/configureEngineOptions.ui",
-      "MzChess/propagatePawn.ui"
+      "MzChess/propagatePawn.ui",
+      "MzChess/buildFen.ui"
     ],
     "HASH": "bed6ae81d29022141adf17229cf9b6c26f92c8fb",
     "IDLPARAMS": {
@@ -150,7 +151,9 @@
       "license.gpl3",
       "MzChess/settings.ini",
       "doc/requirements.txt",
-      ".readthedocs.yaml"
+      ".readthedocs.yaml",
+      "MzChess/qbuildfen.py",
+      "MzChess/Ui_buildFen.py"
     ],
     "SPELLEXCLUDES": "",
     "SPELLLANGUAGE": "en_US",

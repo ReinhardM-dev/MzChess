@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>qboardviewclass &mdash; MzChess V1.0.5 documentation</title>
+  <title>qboardviewclass &mdash; MzChess V1.1.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                V1.0
+                V1.1
               </div>
             
           
@@ -707,7 +707,13 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">squareLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsScene</span><span class="o">.</span><span class="n">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Game.mouseDoubleClickEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mouseDoubleClickEvent">[docs]</a> <span class="k">def</span> <span class="nf">mouseDoubleClickEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouseEvent</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">mousePressed</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mouseDoubleClickEvent&#39;</span><span class="p">)</span></div>
+  
 <div class="viewcode-block" id="Game.mousePressEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mousePressEvent">[docs]</a> <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsSceneMouseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">mousePressed</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mousePressEvent&#39;</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">remove_warnOfDanger</span><span class="p">()</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getChessSquareAt</span><span class="p">(</span><span class="n">qGraphicsSceneMouseEvent</span><span class="o">.</span><span class="n">scenePos</span><span class="p">())</span>
@@ -733,8 +739,9 @@
   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsScene</span><span class="o">.</span><span class="n">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Game.mouseReleaseEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mouseReleaseEvent">[docs]</a> <span class="k">def</span> <span class="nf">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsSceneMouseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mouseReleaseEvent: mousePressed = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mousePressed</span><span class="p">))</span>
   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsScene</span><span class="o">.</span><span class="n">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span><span class="p">)</span>
-  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span><span class="p">:</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mousePressed</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span><span class="p">:</span>
    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">))</span>
    <span class="k">return</span>

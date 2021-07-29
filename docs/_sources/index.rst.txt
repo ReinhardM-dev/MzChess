@@ -24,7 +24,14 @@ So, if this directory is in your search *PATH*, you type simply
 
     mzChess
 
-to start the GUI
+to start the GUI. A little helper
+
+::
+
+   buildFen
+   
+allows to build position strings using the Forsyth-Edwards Notation (`FEN`_)
+and copy them to the clipboard.
 
 Contents
 -----------
@@ -44,3 +51,4 @@ Indices and tables
 
 .. _chess: https://pypi.org/project/chess
 .. _Linux Package Manager: https://en.wikipedia.org/wiki/List_of_software_package_management_systems
+.. _FEN: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation

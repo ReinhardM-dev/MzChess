@@ -67,7 +67,9 @@ setup(name = package,
   description = 'A Chess GUI using PyQt5',
   long_description = long_description, 
   long_description_content_type="text/x-rst",
-  entry_points={ 'gui_scripts': ['mzChess = {}.chessMainWindow:runMzChess'.format(package)] }, 
+  entry_points={ 'gui_scripts': 
+                         ['buildFen = {}:runFenBuilder'.format(package),
+                          'mzChess = {}:runMzChess'.format(package)] }, 
   author  ='Reinhard Maerz',
   python_requires = '>=3.7', 
   install_requires = install_requires,
@@ -81,32 +83,9 @@ setup(name = package,
     'Natural Language :: English', 
     'Topic :: Games/Entertainment :: Board Games'])
 
-if platform.system() == 'Linux':
- fontFileList = map(lambda x : x.split(':')[0], subprocess.getstatusoutput('fc-list')[1].split('\n'))
- hasLEIPFONT = False
- for fileName in fontFileList:
-  if os.path.basename(leipfontFile) in fileName:
-   hasLEIPFONT = True
- if not hasLEIPFONT:
-  fontDir = os.path.join(os.path.expanduser('~'), '.local', 'share', 'fonts')
-  if not os.path.isdir(fontDir):
-   os.mkdir(fontDir)
-  for file in glob.glob(leipfontFile):
-   shutil.copyfile(file, os.path.join(fontDir, file))
-  os.system('fc-cache -f -v')
-  print('Chess font {} installed'.format(leipfontFile))
- else:
-  print('Chess font {} already installed'.format(leipfontFile))
-else:
- import PyQt5.QtGui
- app = PyQt5.QtGui.QGuiApplication([])
- fDB = PyQt5.QtGui.QFontDatabase()
- if 'Chess Leipzig' not in fDB.families():
-  PyQt5.QtGui.QFontDatabase.addApplicationFont(leipfontFile)
-  print('Chess font {} installed'.format(leipfontFile))
- else:
-  print('Chess font {} already installed'.format(leipfontFile))
- 
+app = PyQt5.QtGui.QGuiApplication([])
+MzChess.installLeipFont(print)
+
 settingsFile = os.path.join(fileDirectory, 'settings.ini')
 if os.path.exists(settingsFile):
  os.remove(settingsFile) 

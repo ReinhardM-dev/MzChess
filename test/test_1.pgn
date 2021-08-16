@@ -1,0 +1,19 @@
+[Event ; line comment in TAG
+"Whatever"] ; NL in comment
+[ Site  "Whereever" ] ; extra blanks in comment
+[Date "1970.01.01"]
+[Round "Whichever"]
+[White "Foo"][Black "Bla"] ; 2 tag pairs in 1 line
+[Result "*"]
+1. d4 ; multiline comment
+{ [%eval ; line comment in comment
++0.
+16] } { bla } ; empty line in Movetext section
+
+1... c5?? $20 ; 2 nags
+{ [%eval +0.52] (Benoni-Verteidigung) } 2. Nf3
+{ [%eval +0.18] } 2... c4 $6 $14 { [%eval +1.53] } 3. e4 { [%eval +1.72] } 3...
+d5 { [%eval +1.90] } 4. Nc3$6 { [%eval +0.97] } 4... Bg4 $2 { [%eval +2.67] }
+Be2 $6 { [%eval +1.66] } (Nc6 $16 { [%eval +2.30] } ; missing movenumber
+6. exd5 { [%eval +2.30] }  { bla } ) ; double comment
+1-0 ; [Result "*"] and Game Termination Marker differ

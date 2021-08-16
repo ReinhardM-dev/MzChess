@@ -1,0 +1,18 @@
+[Event "Whatever"]
+[Site "Wherever"]
+[Date "1970.01.01"]
+[Round "5"]
+[White "Foo"]
+[Black "Bla"]
+[Result "*"]
+
+1. d4 { [%eval +0.16] } 1... d5 *
+[Event "Whatever"]
+[Site "?"]
+[Date "1970.01.01"]
+[Round "13"]
+[White "Foo"]
+[Black "Bla"]
+[Result "*"]
+
+1. d4 { [%eval +0.16] } 1... c5 { [%eval +0.52] (Benoni-Verteidigung) } *

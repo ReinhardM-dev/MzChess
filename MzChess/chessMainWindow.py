@@ -156,9 +156,9 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   self.setWindowIcon(icon)
   
   installLeipFont()
-  fDB = PyQt5.QtGui.QFontDatabase()
 
-  self.pgm = 'Mz Chess GUI'
+
+  self.pgm = MzChess.__name__
   self.version = MzChess.__version__
   self.dateString = MzChess.__date__
   
@@ -411,13 +411,12 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
  # --------------------------------------------------------------------------------------------------
  
  @PyQt5.QtCore.pyqtSlot(str)
- def notifyError(self, msg):
-  msgList = msg.split('\n')
-  dispMsg  = msgList[0]
-  if len(msgList) > 1:
-   dispMsg += ' ...' 
-  self.notify(dispMsg)
-  PyQt5.QtWidgets.QApplication.beep()
+ def notifyError(self, str : str) -> None:
+  msgBox = PyQt5.QtWidgets.QMessageBox()
+  msgBox.setIcon(PyQt5.QtWidgets.QMessageBox.Critical)
+  msgBox.setText(str)
+  msgBox.setWindowTitle("Error ...")
+  msgBox.exec()
 
  def notify(self, str):
   self.infoLabel.setText(str)
@@ -596,6 +595,8 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   if not self._allowNewGameList() or not self._allowNewGame():
    ev.ignore()
   else:
+   if self.hintEngine is not None:
+    self.hintEngine.kill(True)
    ev.accept()
 
  @PyQt5.QtCore.pyqtSlot()
@@ -1052,17 +1053,16 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    return
   fen = PyQt5.QtWidgets.QApplication.clipboard().text()
   try:
-   board = chess.Board()
-   board.set_fen(fen)
-  except:
-   self.notifyError('Improper FEN')
+   MzChess.checkFEN(fen)
+  except ValueError as err:
+   self.notifyError('Improper FEN {}:\n{}'.format(fen, str(err)))
    return
   self.gameID = None
   self.game = chess.pgn.Game()
+  self.game.setup(fen)
   self.gameNode = self.game
-  self.game.headers['FEN'] = fen
   self._showEcoCode(self.game, fromBeginning = True)
-  self.boardGraphicsView.setGame(self.game)
+  self.boardGraphicsView.setGameNode(self.game)
   self.gameTreeViewWidget.setGame(self.game)
   self.gameHeaderTableView.setGame(self.game)
 
@@ -1092,7 +1092,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    self.notifyError('Improper PGN')
    self.game = chess.pgn.Game()
   self._showEcoCode(self.game, fromBeginning = True)
-  self.boardGraphicsView.setGame(self.game)
+  self.boardGraphicsView.setGameNode(self.game)
   self.gameTreeViewWidget.setGame(self.game)
   self.gameHeaderTableView.setGame(self.game)
   self.scorePlotGraphicsView.setGame(self.game)
@@ -1115,7 +1115,10 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    self.scorePlotGraphicsView.setGame(self.game)
    self.setChessWindowTitle()
    self.notify('')
+   err = False
   except:
+   err = True
+  if err:
    self.notifyError('UIE: Improper game ="{}"'.format(self.game))
 
  @PyQt5.QtCore.pyqtSlot(chess.pgn.Headers)

@@ -45,6 +45,8 @@ It is possible to control the zoom of the *Score* axis. The GUI with an ongoing 
 '''
 
 from typing import Optional
+
+import math
 import PyQt5.QtCore
 import PyQt5.QtGui
 import PyQt5.QtWidgets
@@ -186,7 +188,7 @@ class ScorePlot(PyQt5.QtChart.QChartView):
   return axis
   
  def _setRange(self, axis : PyQt5.QtChart.QValueAxis, minV : float, maxV : float ) -> None:
-  assert maxV > minV
+  assert maxV > minV, '{} > {} required'.format(maxV, minV)
   if maxV - minV < 5:
    delta = 1
   elif maxV - minV < 10:
@@ -303,10 +305,7 @@ class ScorePlot(PyQt5.QtChart.QChartView):
       engineScore = float(engineScore)
      except:
       engineScore = float(engineScore[1:])
-      if engineScore < 0:
-       engineScore += self.mateScore
-      else:
-       engineScore -= self.mateScore
+      engineScore = math.copysign(1,engineScore) * (self.mateScore - abs(engineScore))
      engineData.append(PyQt5.QtCore.QPointF((ply +1)/2, engineScore))
      self.engineDict[nMaterial] = nEngine
      self.minY = min(self.minY, engineScore)
@@ -315,6 +314,9 @@ class ScorePlot(PyQt5.QtChart.QChartView):
    gameNode = gameNode.next()
    nMaterial += 1
    ply += 1
+
+  if self.minY > self.maxY:
+   return
    
   if len(materialData) > 0:
    self.materialSeries.append(materialData)
@@ -322,7 +324,7 @@ class ScorePlot(PyQt5.QtChart.QChartView):
     self.engineSeries.append(engineData)
 
   self._setRange(self.xAxis, 1, max(ply / 2, 2))
-  if self.minY != self.maxY:
+  if self.minY < self.maxY:
    self._setRange(self.yAxis, self.minY, self.maxY)
   else:
    self._setRange(self.yAxis, self.minY - 0.5, self.minY + 0.5)
@@ -353,6 +355,8 @@ class ScorePlot(PyQt5.QtChart.QChartView):
     self.minY = min(self.minY, pawnScore)
     self.maxY = max(self.maxY, pawnScore)
 
+  if self.minY > self.maxY:
+   return
 
   self._setRange(self.xAxis, 1, max(ply / 2, 2))
   if self.minY != self.maxY:

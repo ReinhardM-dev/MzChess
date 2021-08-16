@@ -9,10 +9,11 @@ Versions:
  1.0.6      documentation on github.io + ico added
  1.0.8      setup corrected
  1.1.0      FEN-builder added and bug fixes
+ 1.2.0      tests established and bug fixes
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2021-07-29"
-__version__ = "1.1.0"
+__date__ = "2021-08-16"
+__version__ = "1.2.0"
 
 import os
 import sys
@@ -32,7 +33,8 @@ __all__ = [
  'GameHeaderView', 'KeyType', 
  'GameListTableModel', 'GameListTableView', 
  'HelpBrowser', 
- 'read_game', 'read_board', 'read_headers', 'skip_game', 'PGNLexer', 
+ 'checkFEN','read_game', 'read_board', 'read_headers', 'skip_game', 'PGNLexer', 
+ 'QBoardViewClass', 'Piece', 'Game', 
  'ScorePlot', 
  'ButtonLine', 'ItemSelector', 'treeWidgetItemPos', 
  'QUCIEdit', 'UCIHighlighter', 
@@ -42,7 +44,7 @@ __all__ = [
 from .AboutDialog import AboutDialog
 from .annotateEngine import AnnotateEngine,  Annotator
 from .chessMainWindow import ChessMainWindow, runMzChess
-from .qbuildfen import BuildFenClass, runFenBuilder
+from .qbuildfen import BuildFenClass, SelectionBox, PlacementBoard, runFenBuilder
 from .installLeipFont import installLeipFont
 from .chessengine import ChessEngine
 from .configureEngine import ConfigureEngine, loadEngineSettings, saveEngineSettings
@@ -51,7 +53,7 @@ from .eco import ECODatabase, TSVType
 from .gameheaderview import GameHeaderView, KeyType
 from .gamelisttableview import GameListTableModel, GameListTableView
 from .helpDialog import HelpBrowser
-from .pgnParse import read_game, read_board, read_headers, skip_game, PGNLexer
+from .pgnParse import checkFEN, read_game, read_board, read_headers, skip_game, PGNLexer
 from .qboardviewclass import QBoardViewClass, Piece, Game
 from .scoreplotgraphicsview import ScorePlot
 from .specialDialogs import ButtonLine, ItemSelector, treeWidgetItemPos

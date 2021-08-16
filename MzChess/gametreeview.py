@@ -83,13 +83,6 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   super(GameTreeView, self).__init__(parent)
   self.setSelectionBehavior(PyQt5.QtWidgets.QAbstractItemView.SelectRows)
   self.setSelectionMode(PyQt5.QtWidgets.QAbstractItemView.SingleSelection)
-  self.setFocusPolicy(PyQt5.QtCore.Qt.StrongFocus)
-  scUp = PyQt5.QtWidgets.QShortcut(self)
-  scUp.setKey(PyQt5.QtCore.Qt.Key_Up)
-  scUp.activated.connect(self.on_sc_activated)
-  scDown = PyQt5.QtWidgets.QShortcut(self)
-  scDown.setKey(PyQt5.QtCore.Qt.Key_Down)
-  scDown.activated.connect(self.on_sc_activated)
   self.notifyGameNodeSelectedSignal = None
   self.notifyGameChangedSignal = None
   self._clear()
@@ -103,6 +96,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   headerItem.setToolTip(4, 'Comment of move or variation')
   self._resetColumnWidth()
   self.clicked.connect(self.on_clicked)
+  self.itemExpanded.connect(self.on_itemExpanded)
   self.annotationLine = ButtonLine(self.annotationSymbols, hintDict = self.symbolDescription, pointSize = 12, title = 'Move Annotation', parent = self)
   self.positionLine = ButtonLine(self.positionSymbols, hintDict = self.symbolDescription, pointSize = 12, title = 'Position', parent = self)
   self.endGameLine = ButtonLine(self.endGameSymbols, hintDict = self.endGameDescription, title = 'End Game',  pointSize = 12, parent = self)
@@ -110,12 +104,22 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   
  def _resetColumnWidth(self) -> None:
   test = PyQt5.QtWidgets.QLabel()
-  zeroWidth = test.fontMetrics().size(PyQt5.QtCore.Qt.TextSingleLine, '0').width()
-  self.setColumnWidth(1, 20*zeroWidth)
-  self.setColumnWidth(1, 4*zeroWidth)
-  self.setColumnWidth(2, 8*zeroWidth)
-  self.setColumnWidth(3, 8*zeroWidth)
+  self.zeroWidth = test.fontMetrics().size(PyQt5.QtCore.Qt.TextSingleLine, '0').width()
+  # self.setColumnWidth(1, 20*zeroWidth)
+  self.depth = 0
+  self.setColumnWidth(0, 15*self.zeroWidth)
+  self.setColumnWidth(1, 4*self.zeroWidth)
+  self.setColumnWidth(2, 8*self.zeroWidth)
+  self.setColumnWidth(3, 8*self.zeroWidth)
   
+ @PyQt5.QtCore.pyqtSlot(PyQt5.QtWidgets.QTreeWidgetItem)
+ def on_itemExpanded(self, widgetItem):
+  depth = -1
+  while widgetItem is not None:
+   depth +=1
+   widgetItem = widgetItem.parent()
+  self.setColumnWidth(0, (depth*4 + 15)*self.zeroWidth)
+
  def _clear(self) -> None:
   self.game = None
   self.gameNodeList = list()
@@ -176,6 +180,9 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
 :param parentItem: parent item of the gameNode (used only for internal use)
   '''
   if gameNode is None:
+   return
+  if isinstance(gameNode, chess.pgn.Game):
+   self.setGame(gameNode)
    return
   if gameNode.parent not in self.gameNodeList:
    raise ValueError('Parent Node {} not found'.format(gameNode.parent))
@@ -303,7 +310,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   if not next:
    # go back to the first variation
    newNodeIndex = parentNode.variations.index(gameNode) - 1
-   if newNodeIndex > 0:
+   if newNodeIndex >= 0:
     self.selectNodeItem(parentNode.variations[newNodeIndex])
   else:
    # go to next variation
@@ -496,28 +503,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
     itemNode = self.gameVariantNodeList[selIndex]
     itemNode.parent.promote_to_main(itemNode)
     self._emitGameChanged()
-
- @PyQt5.QtCore.pyqtSlot()
- def on_sc_activated(self):
-  itemList = self.selectedItems()
-  if len(itemList) > 0 and not self._isVariant(itemList[0]):
-   row = self.gameItemList.index(itemList[0])
-   gameNode = self.gameNodeList[row]
-   sendingSC = self.sender()
-   if sendingSC.key() == PyQt5.QtCore.Qt.Key_Down:
-    newGameNode = gameNode.next()
-    if newGameNode is not None:
-     self.notifyGameNodeSelectedSignal.emit(newGameNode)
-     self.setCurrentItem(self.itemBelow(itemList[0]))
-    else:
-     print("next({}) == None".format(gameNode))
-   else:
-    if gameNode.parent is not None:
-     self.notifyGameNodeSelectedSignal.emit(gameNode.parent)
-     self.setCurrentItem(self.itemAbove(itemList[0]))
-    else:
-     print("previous({}) == None".format(gameNode))
-
+  
  def _emitGameChanged(self) -> None:
   if self.notifyGameChangedSignal is not None:
    self.notifyGameChangedSignal.emit(self.game)

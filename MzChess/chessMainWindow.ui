@@ -497,7 +497,7 @@
     <string>Down</string>
    </property>
    <property name="shortcutContext">
-    <enum>Qt::WidgetShortcut</enum>
+    <enum>Qt::WindowShortcut</enum>
    </property>
   </action>
   <action name="actionPrevious_Move">
@@ -508,7 +508,7 @@
     <string>Up</string>
    </property>
    <property name="shortcutContext">
-    <enum>Qt::WidgetShortcut</enum>
+    <enum>Qt::WindowShortcut</enum>
    </property>
   </action>
   <action name="actionOpen_PGN">
@@ -574,7 +574,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Flip Board</string>
+    <string>Rotate Board</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>

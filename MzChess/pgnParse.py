@@ -4,12 +4,61 @@
 .. _PGN: https://github.com/fsmosca/PGN-Standard
 '''
 
-from typing import Optional, Type, Callable, List, TextIO
+from typing import Union, Optional, Type, Callable, List, TextIO
 import os, os.path
 import re
 
-import chess.pgn
+import chess, chess.pgn
 import ply.lex
+
+def checkFEN(boardOrFen : Union[chess.Board, str], allowIncompleteBoard : bool = False) -> None:
+ boardStatusString = [
+ 'White king is missing.', 
+ 'Black king is missing.', 
+ 'Too many kings.', 
+ 'Too many white pawns.', 
+ 'Too many black pawns.', 
+ 'Pawn on rank (row) 1 or 8.', 
+ 'Too many white pieces.', 
+ 'Too many black pieces.', 
+ 'Bad castling rights.', 
+ 'Invalid en passant square.', 
+ 'Opposite check.',
+ '<EMPTY>', 
+ '<RACE_CHECK>', 
+ '<RACE_OVER>', 
+ '<RACE_MATERIAL>', 
+ 'To many pieces giving check.', 
+ 'Check impossible.'
+ ]
+
+ errList = list()
+ if isinstance(boardOrFen, chess.Board):
+  board =boardOrFen
+ else:
+  board = chess.Board()
+  board.set_fen(boardOrFen)
+ boardStatus = board.status()
+ if allowIncompleteBoard:
+  boardStatus &= ~chess.STATUS_EMPTY
+  boardStatus &= ~chess.STATUS_NO_WHITE_KING
+  boardStatus &= ~chess.STATUS_NO_BLACK_KING
+ if boardStatus != chess.STATUS_VALID:
+  bss = '{:b}'.format(boardStatus)[::-1]
+  for err in [boardStatusString[m.start(0)] for m in re.finditer('1', bss)]:
+   errList.append(err) 
+ colorString = 'white'
+ for color in [chess.WHITE, chess.BLACK]:
+  nPP = chess.popcount(board.occupied_co[color] & board.pawns)
+  nPP += max(chess.popcount(board.occupied_co[color] & board.queens) - 1, 0)
+  nPP += max(chess.popcount(board.occupied_co[color] & board.rooks) - 2, 0)
+  nPP += max(chess.popcount(board.occupied_co[color] & board.bishops) - 2, 0)
+  nPP += max(chess.popcount(board.occupied_co[color] & board.knights) - 2, 0)
+  if nPP > 8:
+   errList.append('Too many promoted {} pieces.'.format(colorString))
+  colorString = 'black'
+ if len(errList) > 0:
+  raise ValueError('\n'.join(errList))
 
 class PGNLexer(object):
  '''A Lexer for Portable Game Notation (PGN) files (see `ply`_)
@@ -475,10 +524,10 @@ if __name__ == "__main__":
 
  fileDirectory = os.path.dirname(os.path.abspath(__file__))
  parser = argparse.ArgumentParser(description='PGN Parser: test')
- parser.add_argument("pgnFile", help = "PGN-File (required)")
+ parser.add_argument("pgnFile", help = "PGN-File or FEN (required)")
  parser.add_argument("--target",  metavar = 'target',  default = 'g', 
-   choices=['g', 'game', 'h' ,'headers', 's', 'skip', 'b', 'board', 'l', 'lex'], 
-   help="target of parsing (g - games, h - headers, s - skip every second game, b - board, l - lexical analysis only)")
+   choices=['g', 'game', 'h' ,'headers', 's', 'skip', 'b', 'board', 'l', 'lex', 'f', 'fen'], 
+   help="target of parsing (g - games, h - headers, s - skip every second game, b - board, l - lexical analysis only, f - check FEN)")
  parser.add_argument("--encoding",  metavar = 'encoding',  default = 'u', 
    choices=['u', 'utf-8', 'i', 'iso-8859-1', 'a', 'ascii'], 
    help="target of parsing (g - games, h - headers, s - skip every second game, b - board, l - lexical analysis only)")
@@ -536,11 +585,15 @@ if __name__ == "__main__":
    for subNode1, subNode2 in zip(chessNode.variations, newNode.variations):
     cmpGameNodes(subNode1, subNode2)
 
- print('File: {}'.format(os.path.abspath(args.pgnFile)))
- try:
-  pgn = open(args.pgnFile, mode = 'r', encoding = encoding)
- except:
-  raise IOError("Cannot open file '{}' for reading".format(args.pgnFile))
+ if target == 'f':
+  checkFEN(args.pgnFile)
+  quit()
+ else:
+  try:
+   pgn = open(args.pgnFile, mode = 'r', encoding = encoding)
+   print('File: {}'.format(os.path.abspath(args.pgnFile)))
+  except:
+   raise IOError("Cannot open file '{}' for reading".format(args.pgnFile))
  
  if target == 'l':
   lexer = PGNLexer(bufsize = 4096, debug = args.debug, optimize = False)

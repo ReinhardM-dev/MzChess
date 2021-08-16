@@ -70,6 +70,16 @@ class ChessEngine(PyQt5.QtCore.QObject):
   self.playResult = None
   self.board = chess.Board()
 
+ def kill(self, beSilent : bool = False) -> None:
+  '''Kills the process, engine cannot be used anymore
+  '''
+  if 'p' in vars(self):
+   self.p.kill()
+   isFinished = self.p.waitForFinished(1000)
+   if not (isFinished and beSilent):
+    raise IOError('Cannot stop ChessEngine ...')
+   self.p = None
+
  def setLog(self, log : Optional[Callable[[str], None]] = None) -> None:
   '''Sets the log for engine's commands
 
@@ -105,6 +115,8 @@ class ChessEngine(PyQt5.QtCore.QObject):
    self.notify(txt)
 
  def _fromStdout(self) -> None:
+  if self.p is None:
+   return
   if 'stdout' not in vars(self):
    self.stdout = ''
   try:
@@ -139,7 +151,9 @@ class ChessEngine(PyQt5.QtCore.QObject):
   stderr = bytes(self.p.readAllStandardError()).decode('utf-8').strip("\n")
   self._log('ChessEngine/_fromStderr:???????????????\n <stderr: {} \n???????????????'.format(stderr))
 
- def _toStdin(self, txt : str) -> None:
+ def _toStdin(self, txt : str) -> bool:
+  if self.p is None:
+   return False
   self._log('ChessEngine/_toStdin: stdin> {}, readyok = {}'.format(txt, self.readyok))
   if not self.readyok:
    return False

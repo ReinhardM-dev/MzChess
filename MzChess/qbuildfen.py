@@ -1,7 +1,6 @@
 from typing import Optional,  Callable,  List
 import os
 import sys
-import re
 
 import Ui_buildFen
 
@@ -11,39 +10,32 @@ import PyQt5.QtWidgets
 import PyQt5.QtSvg
 
 import chess, chess.pgn
+import MzChess
+import AboutDialog
 from installLeipFont import installLeipFont
 
 class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
  '''The *chessboard* is based on Qt's QGraphicsView.
  '''
- boardStatusString = [
- 'White king is missing.', 
- 'Black king is missing.', 
- 'Too many kings.', 
- 'Too many white pawns.', 
- 'Too many black pawns.', 
- 'Pawn on rank (row) 1 or 8.', 
- 'Too many white pieces.', 
- 'Too many black pieces.', 
- 'Bad castling rights.', 
- 'Invalid en passant square.', 
- 'Opposite check.',
- '<EMPTY>', 
- '<RACE_CHECK>', 
- '<RACE_OVER>', 
- '<RACE_MATERIAL>', 
- 'To many pieces giving check.', 
- 'Check impossible.'
- ]
 
  def __init__(self, parent = None) -> None:
   super(BuildFenClass, self).__init__(parent)
   self.setupUi(self)
+
+  self.pgm = 'FEN-Builder'
+  self.version = MzChess.__version__
+  self.dateString = MzChess.__date__
+
+  self.helpIndex = PyQt5.QtCore.QUrl('https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation')
  
   sbText = self.statusBar().font()
   sbText.setPointSize(12)
 
   self.board = chess.Board()
+
+  self.msgBox = PyQt5.QtWidgets.QMessageBox()
+  self.msgBox.setIcon(PyQt5.QtWidgets.QMessageBox.Critical)
+  self.msgBox.setWindowTitle("Error ...")
 
   self.infoLabel = PyQt5.QtWidgets.QLabel()
   self.infoLabel.setAlignment(PyQt5.QtCore.Qt.AlignLeft)
@@ -61,25 +53,21 @@ class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
   self.bqCheckBox = self. _addCastlingBox(chess.BLACK, False)
   
   installLeipFont()
+  
+  self.aboutDialog = AboutDialog.AboutDialog()
+  self.aboutDialog.setup(
+   pgm = self.pgm, 
+   version = self.version, 
+   dateString = self.dateString)
 
  def setup(self) -> None:
   self.selectionBox.setup()
   self.placementBoard.setup(self)
   self._resetFen()
   
- def notifyStatusError(self, boardStatus : chess.Status) -> None:
-  bss = '{:b}'.format(boardStatus)[::-1]
-  errList = list()
-  for err in [self.boardStatusString[m.start(0)] for m in re.finditer('1', bss)]:
-   errList.append(err) 
-  self.notifyError('\n'.join(errList))
-
  def notifyError(self, str : str) -> None:
-  msgBox = PyQt5.QtWidgets.QMessageBox()
-  msgBox.setIcon(PyQt5.QtWidgets.QMessageBox.Critical)
-  msgBox.setText(str)
-  msgBox.setWindowTitle("Error ...")
-  msgBox.exec()
+  self.msgBox.setText(str)
+  self.msgBox.exec()
 
  @PyQt5.QtCore.pyqtSlot(str)
  def notify(self, str : str) -> None:
@@ -149,22 +137,22 @@ class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
 
  @PyQt5.QtCore.pyqtSlot()
  def on_actionCopy_triggered(self):
-  boardStatus = self.board.status() & ~chess.STATUS_EMPTY
-  if boardStatus == chess.STATUS_VALID:
+  try:
+   MzChess.checkFEN(self.board)
    fen = self.board.fen()
    PyQt5.QtWidgets.QApplication.clipboard().setText(fen)
-  else:
-   self.notifyStatusError(boardStatus)
+  except ValueError as err:
+   self.notifyError('Improper FEN {}:\n{}'.format(fen, str(err)))
    
  @PyQt5.QtCore.pyqtSlot()
  def on_actionPaste_triggered(self):
   fen = PyQt5.QtWidgets.QApplication.clipboard().text()
   try:
+   MzChess.checkFEN(fen, allowIncompleteBoard = True)
    self.board.set_fen(fen)
    self._resetFen()
-  except:
-   self.notifyError('Improper FEN')
-   return
+  except ValueError as err:
+   self.notifyError('Improper FEN {}:\n{}'.format(fen, str(err)))
 
  @PyQt5.QtCore.pyqtSlot()
  def on_fenChanged(self):
@@ -232,6 +220,16 @@ class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
   self.board.halfmove_clock = halfmoveClock
   self.notify(self.board.fen())
 
+ @PyQt5.QtCore.pyqtSlot()
+ def on_actionAbout_triggered(self):
+  self.notify('')
+  self.aboutDialog.exec()
+ 
+ @PyQt5.QtCore.pyqtSlot()
+ def on_actionHelp_triggered(self):
+  self.notify('')
+  PyQt5.QtGui.QDesktopServices.openUrl(self.helpIndex)
+
 class ChessGroupBox(PyQt5.QtWidgets.QGroupBox):
  leipzigEncodeDict = {
    'P' : 'p', 'N' : 'n', 'B' : 'b', 'R' : 'r', 'Q' : 'q', 'K' : 'k',
@@ -261,8 +259,13 @@ class SelectionBox(ChessGroupBox):
   for s in 'KkQqRrBbNnPp':
    self._addButton(chess.Piece.from_symbol(s))
   self._addButton(None)
+  
+ def getButton(self, piece = Optional[chess.Piece]):
+  for button, actPiece in self.button2PieceDict.items():
+   if actPiece == piece:
+    return button
    
- def _addButton(self, piece = Optional[chess.Piece] ) -> None:
+ def _addButton(self, piece : Optional[chess.Piece] ) -> None:
   pushButton = PyQt5.QtWidgets.QPushButton(self)
   pushButton.setMinimumSize(PyQt5.QtCore.QSize(self.squareSize, self.squareSize))
   pushButton.setMaximumSize(PyQt5.QtCore.QSize(self.squareSize, self.squareSize))
@@ -289,6 +292,7 @@ class SelectionBox(ChessGroupBox):
    pushButton.setToolTip('{} {}'.format(self.colorName[piece.color], chess.piece_name(piece.piece_type)))
    self.gridLayout.addWidget(pushButton, nPieces // 2, nPieces % 2)
   pushButton.clicked.connect(self.on_clicked)
+  pushButton.clicked.connect(self.on_clicked)
   self.pushButtonList.append(pushButton)
   
  @PyQt5.QtCore.pyqtSlot()
@@ -296,6 +300,7 @@ class SelectionBox(ChessGroupBox):
   self.selectedButton.setChecked(False)
   self.selectedButton = self.sender()
   self.selectedPiece = self.button2PieceDict[self.selectedButton]
+  self.sender().setChecked(True)
 
 class PlacementBoard(ChessGroupBox):
 
@@ -304,7 +309,6 @@ class PlacementBoard(ChessGroupBox):
   self.gridLayout.setSpacing(0)
   self.button2SquareList = 64 * [None]
   self.flipped = False
-  self.piece = None
  
  def setup(self, buildFenClass : BuildFenClass):
   self.buildFenClass = buildFenClass
@@ -351,30 +355,27 @@ class PlacementBoard(ChessGroupBox):
 
  @PyQt5.QtCore.pyqtSlot()
  def on_clicked(self):
-  savedFen = self.buildFenClass.board.fen()
   sendingButton = self.sender()
   square = self.button2SquareList.index(sendingButton)
   pieceDict = self.buildFenClass.board.piece_map()
   piece = self.buildFenClass.selectionBox.selectedPiece
   oldPiece = pieceDict.get(square, None)
+  txt = ''
   if piece != oldPiece:
    if piece is None:
     pieceDict.pop(square, None)
-    txt = ''
    else:
     pieceDict[square] = piece
     txt = self.leipzigEncodeDict[piece.symbol()]
+  try:
+   newBoard = chess.Board(self.buildFenClass.board.fen())
+   newBoard.set_piece_map(pieceDict)
+   MzChess.checkFEN(newBoard, allowIncompleteBoard = True)
+   sendingButton.setText(txt)
    self.buildFenClass.board.set_piece_map(pieceDict)
-   boardStatus = self.buildFenClass.board.status() \
-                     & ~chess.STATUS_EMPTY \
-                     & ~chess.STATUS_NO_WHITE_KING \
-                     & ~chess.STATUS_NO_BLACK_KING
-   if boardStatus == chess.STATUS_VALID:
-    sendingButton.setText(txt)
-    self.buildFenClass._resetFen()
-    return
-   self.buildFenClass.board.set_fen(savedFen)
-   self.buildFenClass.notifyStatusError(boardStatus)
+   self.buildFenClass.notify(self.buildFenClass.board.fen())
+  except ValueError as err:
+   self.buildFenClass.notifyError('Improper placemenent @ {}:\n{}'.format(chess.square_name(square), str(err)))
    
 def showStatus(board):
  print('fen = {}'.format(board.fen()))
@@ -387,7 +388,6 @@ def showStatus(board):
      chessSquare, chess.square_name(chessSquare), piece.symbol()))
  for n, move in enumerate(board.move_stack):
   print('{}. {}'.format(n, move.uci()))
-
 
 class MzClassApplication(PyQt5.QtWidgets.QApplication):
  def __init__(self, argv : List[str], notifyFct : Callable[[str], None] = print) -> None: 

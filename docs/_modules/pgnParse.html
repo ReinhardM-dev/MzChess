@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pgnParse &mdash; MzChess V1.0.5 documentation</title>
+  <title>pgnParse &mdash; MzChess V1.2.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                V1.0
+                V1.2
               </div>
             
           
@@ -161,12 +161,61 @@
 <span class="sd">.. _PGN: https://github.com/fsmosca/PGN-Standard</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TextIO</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TextIO</span>
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="kn">import</span> <span class="nn">chess.pgn</span>
+<span class="kn">import</span> <span class="nn">chess</span><span class="o">,</span> <span class="nn">chess.pgn</span>
 <span class="kn">import</span> <span class="nn">ply.lex</span>
+
+<span class="k">def</span> <span class="nf">checkFEN</span><span class="p">(</span><span class="n">boardOrFen</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">allowIncompleteBoard</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+ <span class="n">boardStatusString</span> <span class="o">=</span> <span class="p">[</span>
+ <span class="s1">&#39;White king is missing.&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Black king is missing.&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Too many kings.&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Too many white pawns.&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Too many black pawns.&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Pawn on rank (row) 1 or 8.&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Too many white pieces.&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Too many black pieces.&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Bad castling rights.&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Invalid en passant square.&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Opposite check.&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;&lt;EMPTY&gt;&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;&lt;RACE_CHECK&gt;&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;&lt;RACE_OVER&gt;&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;&lt;RACE_MATERIAL&gt;&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;To many pieces giving check.&#39;</span><span class="p">,</span> 
+ <span class="s1">&#39;Check impossible.&#39;</span>
+ <span class="p">]</span>
+
+ <span class="n">errList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+ <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">boardOrFen</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">):</span>
+  <span class="n">board</span> <span class="o">=</span><span class="n">boardOrFen</span>
+ <span class="k">else</span><span class="p">:</span>
+  <span class="n">board</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">()</span>
+  <span class="n">board</span><span class="o">.</span><span class="n">set_fen</span><span class="p">(</span><span class="n">boardOrFen</span><span class="p">)</span>
+ <span class="n">boardStatus</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+ <span class="k">if</span> <span class="n">allowIncompleteBoard</span><span class="p">:</span>
+  <span class="n">boardStatus</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">chess</span><span class="o">.</span><span class="n">STATUS_EMPTY</span>
+  <span class="n">boardStatus</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">chess</span><span class="o">.</span><span class="n">STATUS_NO_WHITE_KING</span>
+  <span class="n">boardStatus</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">chess</span><span class="o">.</span><span class="n">STATUS_NO_BLACK_KING</span>
+ <span class="k">if</span> <span class="n">boardStatus</span> <span class="o">!=</span> <span class="n">chess</span><span class="o">.</span><span class="n">STATUS_VALID</span><span class="p">:</span>
+  <span class="n">bss</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:b}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">boardStatus</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="p">[</span><span class="n">boardStatusString</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">bss</span><span class="p">)]:</span>
+   <span class="n">errList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> 
+ <span class="n">colorString</span> <span class="o">=</span> <span class="s1">&#39;white&#39;</span>
+ <span class="k">for</span> <span class="n">color</span> <span class="ow">in</span> <span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">BLACK</span><span class="p">]:</span>
+  <span class="n">nPP</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">popcount</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">occupied_co</span><span class="p">[</span><span class="n">color</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">board</span><span class="o">.</span><span class="n">pawns</span><span class="p">)</span>
+  <span class="n">nPP</span> <span class="o">+=</span> <span class="nb">max</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">popcount</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">occupied_co</span><span class="p">[</span><span class="n">color</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">board</span><span class="o">.</span><span class="n">queens</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="n">nPP</span> <span class="o">+=</span> <span class="nb">max</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">popcount</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">occupied_co</span><span class="p">[</span><span class="n">color</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">board</span><span class="o">.</span><span class="n">rooks</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="n">nPP</span> <span class="o">+=</span> <span class="nb">max</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">popcount</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">occupied_co</span><span class="p">[</span><span class="n">color</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">board</span><span class="o">.</span><span class="n">bishops</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="n">nPP</span> <span class="o">+=</span> <span class="nb">max</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">popcount</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">occupied_co</span><span class="p">[</span><span class="n">color</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">board</span><span class="o">.</span><span class="n">knights</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">nPP</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
+   <span class="n">errList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Too many promoted </span><span class="si">{}</span><span class="s1"> pieces.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">colorString</span><span class="p">))</span>
+  <span class="n">colorString</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span>
+ <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">errList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+  <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errList</span><span class="p">))</span>
 
 <div class="viewcode-block" id="PGNLexer"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer">[docs]</a><span class="k">class</span> <span class="nc">PGNLexer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
  <span class="sd">&#39;&#39;&#39;A Lexer for Portable Game Notation (PGN) files (see `ply`_)</span>
@@ -632,10 +681,10 @@
 
  <span class="n">fileDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
  <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;PGN Parser: test&#39;</span><span class="p">)</span>
- <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;pgnFile&quot;</span><span class="p">,</span> <span class="n">help</span> <span class="o">=</span> <span class="s2">&quot;PGN-File (required)&quot;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;pgnFile&quot;</span><span class="p">,</span> <span class="n">help</span> <span class="o">=</span> <span class="s2">&quot;PGN-File or FEN (required)&quot;</span><span class="p">)</span>
  <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--target&quot;</span><span class="p">,</span>  <span class="n">metavar</span> <span class="o">=</span> <span class="s1">&#39;target&#39;</span><span class="p">,</span>  <span class="n">default</span> <span class="o">=</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> 
-   <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;game&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span> <span class="p">,</span><span class="s1">&#39;headers&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;board&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;lex&#39;</span><span class="p">],</span> 
-   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;target of parsing (g - games, h - headers, s - skip every second game, b - board, l - lexical analysis only)&quot;</span><span class="p">)</span>
+   <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;game&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span> <span class="p">,</span><span class="s1">&#39;headers&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;skip&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;board&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;lex&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;fen&#39;</span><span class="p">],</span> 
+   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;target of parsing (g - games, h - headers, s - skip every second game, b - board, l - lexical analysis only, f - check FEN)&quot;</span><span class="p">)</span>
  <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--encoding&quot;</span><span class="p">,</span>  <span class="n">metavar</span> <span class="o">=</span> <span class="s1">&#39;encoding&#39;</span><span class="p">,</span>  <span class="n">default</span> <span class="o">=</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> 
    <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;iso-8859-1&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">],</span> 
    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;target of parsing (g - games, h - headers, s - skip every second game, b - board, l - lexical analysis only)&quot;</span><span class="p">)</span>
@@ -693,11 +742,15 @@
    <span class="k">for</span> <span class="n">subNode1</span><span class="p">,</span> <span class="n">subNode2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">chessNode</span><span class="o">.</span><span class="n">variations</span><span class="p">,</span> <span class="n">newNode</span><span class="o">.</span><span class="n">variations</span><span class="p">):</span>
     <span class="n">cmpGameNodes</span><span class="p">(</span><span class="n">subNode1</span><span class="p">,</span> <span class="n">subNode2</span><span class="p">)</span>
 
- <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;File: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">)))</span>
- <span class="k">try</span><span class="p">:</span>
-  <span class="n">pgn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span><span class="p">)</span>
- <span class="k">except</span><span class="p">:</span>
-  <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Cannot open file &#39;</span><span class="si">{}</span><span class="s2">&#39; for reading&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">))</span>
+ <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
+  <span class="n">checkFEN</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">)</span>
+  <span class="n">quit</span><span class="p">()</span>
+ <span class="k">else</span><span class="p">:</span>
+  <span class="k">try</span><span class="p">:</span>
+   <span class="n">pgn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span><span class="p">)</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;File: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">)))</span>
+  <span class="k">except</span><span class="p">:</span>
+   <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Cannot open file &#39;</span><span class="si">{}</span><span class="s2">&#39; for reading&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">))</span>
  
  <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;l&#39;</span><span class="p">:</span>
   <span class="n">lexer</span> <span class="o">=</span> <span class="n">PGNLexer</span><span class="p">(</span><span class="n">bufsize</span> <span class="o">=</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">debug</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span> <span class="n">optimize</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>

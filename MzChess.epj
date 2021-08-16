@@ -2,7 +2,7 @@
   "header": {
     "comment": "eric project file for project MzChess",
     "copyright": "Copyright (C) 2021 Reinhard M\u00e4rz, ",
-    "saved": "2021-07-23, 17:23:14"
+    "saved": "2021-08-07, 17:33:02"
   },
   "project": {
     "AUTHOR": "Reinhard M\u00e4rz",
@@ -151,9 +151,19 @@
       "license.gpl3",
       "MzChess/settings.ini",
       "doc/requirements.txt",
-      ".readthedocs.yaml",
       "MzChess/qbuildfen.py",
-      "MzChess/Ui_buildFen.py"
+      "MzChess/Ui_buildFen.py",
+      "test/test_fenBuilder.py",
+      "test/pytest.ini",
+      "test/conftest.py",
+      "test/test_mzChess.py",
+      "test/test_pgnParse.py",
+      "test/test_uciEngine.py",
+      "test/promoteMate.pgn",
+      "test/test_1.pgn",
+      "test/test_2.pgn",
+      "test/test_3.pgn",
+      "test/test_4.pgn"
     ],
     "SPELLEXCLUDES": "",
     "SPELLLANGUAGE": "en_US",

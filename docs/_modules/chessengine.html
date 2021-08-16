@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>chessengine &mdash; MzChess V1.0.5 documentation</title>
+  <title>chessengine &mdash; MzChess V1.2.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                V1.0
+                V1.2
               </div>
             
           
@@ -227,6 +227,16 @@
   <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">board</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">()</span>
 
+<div class="viewcode-block" id="ChessEngine.kill"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.kill">[docs]</a> <span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beSilent</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Kills the process, engine cannot be used anymore</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="s1">&#39;p&#39;</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+   <span class="n">isFinished</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">waitForFinished</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">isFinished</span> <span class="ow">and</span> <span class="n">beSilent</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;Cannot stop ChessEngine ...&#39;</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="kc">None</span></div>
+
 <div class="viewcode-block" id="ChessEngine.setLog"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.setLog">[docs]</a> <span class="k">def</span> <span class="nf">setLog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="sd">&#39;&#39;&#39;Sets the log for engine&#39;s commands</span>
 
@@ -262,6 +272,8 @@
    <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
 
  <span class="k">def</span> <span class="nf">_fromStdout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">return</span>
   <span class="k">if</span> <span class="s1">&#39;stdout&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
   <span class="k">try</span><span class="p">:</span>
@@ -296,7 +308,9 @@
   <span class="n">stderr</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">readAllStandardError</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s1">&#39;ChessEngine/_fromStderr:???????????????</span><span class="se">\n</span><span class="s1"> &lt;stderr: </span><span class="si">{}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">???????????????&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stderr</span><span class="p">))</span>
 
- <span class="k">def</span> <span class="nf">_toStdin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+ <span class="k">def</span> <span class="nf">_toStdin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">return</span> <span class="kc">False</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s1">&#39;ChessEngine/_toStdin: stdin&gt; </span><span class="si">{}</span><span class="s1">, readyok = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span><span class="p">))</span>
   <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span><span class="p">:</span>
    <span class="k">return</span> <span class="kc">False</span>

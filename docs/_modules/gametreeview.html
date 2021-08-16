@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>gametreeview &mdash; MzChess V1.0.5 documentation</title>
+  <title>gametreeview &mdash; MzChess V1.2.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                V1.0
+                V1.2
               </div>
             
           
@@ -240,13 +240,6 @@
   <span class="nb">super</span><span class="p">(</span><span class="n">GameTreeView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">setSelectionBehavior</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SelectRows</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">setSelectionMode</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SingleSelection</span><span class="p">)</span>
-  <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">StrongFocus</span><span class="p">)</span>
-  <span class="n">scUp</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QShortcut</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-  <span class="n">scUp</span><span class="o">.</span><span class="n">setKey</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_Up</span><span class="p">)</span>
-  <span class="n">scUp</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_sc_activated</span><span class="p">)</span>
-  <span class="n">scDown</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QShortcut</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-  <span class="n">scDown</span><span class="o">.</span><span class="n">setKey</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_Down</span><span class="p">)</span>
-  <span class="n">scDown</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_sc_activated</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameChangedSignal</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">_clear</span><span class="p">()</span>
@@ -260,6 +253,7 @@
   <span class="n">headerItem</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;Comment of move or variation&#39;</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">_resetColumnWidth</span><span class="p">()</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_clicked</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">itemExpanded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_itemExpanded</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">annotationLine</span> <span class="o">=</span> <span class="n">ButtonLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotationSymbols</span><span class="p">,</span> <span class="n">hintDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbolDescription</span><span class="p">,</span> <span class="n">pointSize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Move Annotation&#39;</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">positionLine</span> <span class="o">=</span> <span class="n">ButtonLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positionSymbols</span><span class="p">,</span> <span class="n">hintDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbolDescription</span><span class="p">,</span> <span class="n">pointSize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Position&#39;</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">endGameLine</span> <span class="o">=</span> <span class="n">ButtonLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endGameSymbols</span><span class="p">,</span> <span class="n">hintDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">endGameDescription</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;End Game&#39;</span><span class="p">,</span>  <span class="n">pointSize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="p">)</span>
@@ -267,12 +261,22 @@
   
  <span class="k">def</span> <span class="nf">_resetColumnWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="n">test</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">()</span>
-  <span class="n">zeroWidth</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">fontMetrics</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">TextSingleLine</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
-  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="o">*</span><span class="n">zeroWidth</span><span class="p">)</span>
-  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="o">*</span><span class="n">zeroWidth</span><span class="p">)</span>
-  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="o">*</span><span class="n">zeroWidth</span><span class="p">)</span>
-  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="o">*</span><span class="n">zeroWidth</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">zeroWidth</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">fontMetrics</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">TextSingleLine</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+  <span class="c1"># self.setColumnWidth(1, 20*zeroWidth)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">zeroWidth</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">zeroWidth</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">zeroWidth</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">zeroWidth</span><span class="p">)</span>
   
+ <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">)</span>
+ <span class="k">def</span> <span class="nf">on_itemExpanded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widgetItem</span><span class="p">):</span>
+  <span class="n">depth</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="k">while</span> <span class="n">widgetItem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">depth</span> <span class="o">+=</span><span class="mi">1</span>
+   <span class="n">widgetItem</span> <span class="o">=</span> <span class="n">widgetItem</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">depth</span><span class="o">*</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">15</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">zeroWidth</span><span class="p">)</span>
+
  <span class="k">def</span> <span class="nf">_clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">game</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -333,6 +337,9 @@
 <span class="sd">:param parentItem: parent item of the gameNode (used only for internal use)</span>
 <span class="sd">  &#39;&#39;&#39;</span>
   <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">return</span>
+  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gameNode</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">setGame</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
    <span class="k">return</span>
   <span class="k">if</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">:</span>
    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Parent Node </span><span class="si">{}</span><span class="s1"> not found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span>
@@ -460,7 +467,7 @@
   <span class="k">if</span> <span class="ow">not</span> <span class="nb">next</span><span class="p">:</span>
    <span class="c1"># go back to the first variation</span>
    <span class="n">newNodeIndex</span> <span class="o">=</span> <span class="n">parentNode</span><span class="o">.</span><span class="n">variations</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-   <span class="k">if</span> <span class="n">newNodeIndex</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">newNodeIndex</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">selectNodeItem</span><span class="p">(</span><span class="n">parentNode</span><span class="o">.</span><span class="n">variations</span><span class="p">[</span><span class="n">newNodeIndex</span><span class="p">])</span>
   <span class="k">else</span><span class="p">:</span>
    <span class="c1"># go to next variation</span>
@@ -653,28 +660,7 @@
     <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
     <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">promote_to_main</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_emitGameChanged</span><span class="p">()</span></div>
-
- <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">()</span>
- <span class="k">def</span> <span class="nf">on_sc_activated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-  <span class="n">itemList</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()</span>
-  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">itemList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">itemList</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-   <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">itemList</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-   <span class="n">gameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">[</span><span class="n">row</span><span class="p">]</span>
-   <span class="n">sendingSC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">()</span>
-   <span class="k">if</span> <span class="n">sendingSC</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_Down</span><span class="p">:</span>
-    <span class="n">newGameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">newGameNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">newGameNode</span><span class="p">)</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itemBelow</span><span class="p">(</span><span class="n">itemList</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="k">else</span><span class="p">:</span>
-     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;next(</span><span class="si">{}</span><span class="s2">) == None&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameNode</span><span class="p">))</span>
-   <span class="k">else</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itemAbove</span><span class="p">(</span><span class="n">itemList</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="k">else</span><span class="p">:</span>
-     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;previous(</span><span class="si">{}</span><span class="s2">) == None&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameNode</span><span class="p">))</span>
-
+  
  <span class="k">def</span> <span class="nf">_emitGameChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameChangedSignal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameChangedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span></div>

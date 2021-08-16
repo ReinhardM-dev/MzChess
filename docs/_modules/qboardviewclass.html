@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>qboardviewclass &mdash; MzChess V1.1.0 documentation</title>
+  <title>qboardviewclass &mdash; MzChess V1.2.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                V1.1
+                V1.2
               </div>
             
           
@@ -445,10 +445,10 @@
  <span class="k">def</span> <span class="nf">fen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
   <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()</span><span class="o">.</span><span class="n">fen</span><span class="p">()</span>
   
- <span class="k">def</span> <span class="nf">setGameNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span> <span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-  <span class="k">if</span> <span class="n">game</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+ <span class="k">def</span> <span class="nf">setGameNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameNode</span> <span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
    <span class="k">return</span>
-  <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span> <span class="o">=</span> <span class="n">game</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span> <span class="o">=</span> <span class="n">gameNode</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">draw_board</span><span class="p">()</span>
   <span class="n">board</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">showMaterial</span><span class="p">(</span><span class="n">board</span><span class="p">)</span>
@@ -497,18 +497,17 @@
    <span class="k">return</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">is_game_over</span><span class="p">()</span>
   <span class="n">game</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">game</span><span class="p">()</span>
-  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span> <span class="ow">or</span> <span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">is_end</span><span class="p">()):</span>
-   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span><span class="p">:</span>
-    <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">is_checkmate</span><span class="p">():</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: red&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: yellow&#39;</span><span class="p">)</span>
-   <span class="k">elif</span> <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;1/2-1/2&#39;</span><span class="p">:</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span><span class="p">:</span>
+   <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+   <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">is_checkmate</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: red&#39;</span><span class="p">)</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: yellow&#39;</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">is_mainline</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">is_end</span><span class="p">():</span>
+   <span class="k">if</span> <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;1/2-1/2&#39;</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: yellow&#39;</span><span class="p">)</span>
    <span class="k">else</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: red&#39;</span><span class="p">)</span>
-   <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span> <span class="o">=</span> <span class="kc">True</span>
   <span class="k">elif</span> <span class="n">board</span><span class="o">.</span><span class="n">turn</span><span class="p">:</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: white&#39;</span><span class="p">)</span>
   <span class="k">else</span><span class="p">:</span>
@@ -544,7 +543,7 @@
   <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
     <span class="n">rect</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsRectItem</span><span class="p">(</span> <span class="n">row</span> <span class="o">*</span> <span class="n">elementWidth</span><span class="p">,</span> <span class="n">col</span> <span class="o">*</span> <span class="n">elementWidth</span><span class="p">,</span> <span class="n">elementWidth</span><span class="p">,</span> <span class="n">elementWidth</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">row</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">col</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">row</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">col</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
      <span class="n">rect</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">whiteSquareBrush</span> <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
      <span class="n">rect</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">blackSquareBrush</span> <span class="p">)</span>
@@ -559,14 +558,17 @@
   <span class="n">symbolWidth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pieceSize</span>
   <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
-    <span class="n">chessSquare</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span><span class="p">:</span>
+     <span class="n">chessSquare</span> <span class="o">=</span> <span class="mi">63</span> <span class="o">-</span> <span class="n">chess</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+     <span class="n">chessSquare</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
     <span class="n">piece</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()</span><span class="o">.</span><span class="n">piece_at</span><span class="p">(</span><span class="n">chessSquare</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">piece</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
      <span class="c1"># print(&#39;draw_pieces: square = {}, name = {}&#39;.format(chessSquare, chess.square_name(chessSquare)))</span>
      <span class="c1"># print(&#39;draw_pieces: piece = {}, scenePos = {}&#39;.format(piece.symbol(), self.getScenePos(chessSquare)))</span>
      <span class="n">bPiece</span> <span class="o">=</span> <span class="n">Piece</span><span class="p">(</span><span class="n">piece</span><span class="o">.</span><span class="n">symbol</span><span class="p">(),</span> <span class="n">size</span> <span class="o">=</span> <span class="n">symbolWidth</span><span class="p">)</span>
      <span class="n">bPiece</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="n">chessSquare</span><span class="p">))</span>
-     <span class="n">bPiece</span><span class="o">.</span><span class="n">setScale</span><span class="p">(</span><span class="n">symbolWidth</span><span class="o">/</span><span class="n">bPiece</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">()</span><span class="o">.</span><span class="n">width</span><span class="p">())</span>
+     <span class="c1"># bPiece.setScale(symbolWidth/bPiece.boundingRect().width())</span>
      <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">bPiece</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
@@ -628,22 +630,27 @@
    <span class="k">pass</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">warnOfDangerGroup</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
    
- <span class="k">def</span> <span class="nf">getScenePos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chessSquare</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QPointF</span><span class="p">:</span>
+ <span class="k">def</span> <span class="nf">getScenePos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chessSquare</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">center</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QPointF</span><span class="p">:</span>
   <span class="k">if</span> <span class="n">chessSquare</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">chessSquare</span> <span class="o">&gt;</span> <span class="mi">63</span><span class="p">:</span>
    <span class="k">return</span> <span class="kc">None</span> 
-  <span class="n">col</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">square_file</span><span class="p">(</span><span class="n">chessSquare</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">center</span><span class="p">:</span>
+   <span class="n">delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pieceSize</span> <span class="o">/</span> <span class="mi">2</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">delta</span> <span class="o">=</span> <span class="mi">0</span>
   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span><span class="p">:</span>
    <span class="n">row</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">square_rank</span><span class="p">(</span><span class="n">chessSquare</span><span class="p">)</span>
+   <span class="n">col</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">-</span> <span class="n">chess</span><span class="o">.</span><span class="n">square_file</span><span class="p">(</span><span class="n">chessSquare</span><span class="p">)</span>
   <span class="k">else</span><span class="p">:</span>
    <span class="n">row</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">-</span> <span class="n">chess</span><span class="o">.</span><span class="n">square_rank</span><span class="p">(</span><span class="n">chessSquare</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QPointF</span><span class="p">(</span><span class="n">col</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pieceSize</span><span class="p">,</span> <span class="n">row</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pieceSize</span><span class="p">)</span>
+   <span class="n">col</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">square_file</span><span class="p">(</span><span class="n">chessSquare</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QPointF</span><span class="p">(</span><span class="n">col</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pieceSize</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="n">row</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pieceSize</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span>
 
  <span class="c1"># -------------------------------------------------------</span>
    
  <span class="k">def</span> <span class="nf">getChessSquareAt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenePos</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QPointF</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
   <span class="n">iPos</span> <span class="o">=</span> <span class="n">scenePos</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">pieceSize</span>
   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span><span class="p">:</span>
-   <span class="nb">id</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">iPos</span><span class="o">.</span><span class="n">x</span><span class="p">()),</span> <span class="nb">int</span><span class="p">(</span><span class="n">iPos</span><span class="o">.</span><span class="n">y</span><span class="p">()))</span>
+   <span class="nb">id</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="mi">7</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">iPos</span><span class="o">.</span><span class="n">x</span><span class="p">()),</span> <span class="nb">int</span><span class="p">(</span><span class="n">iPos</span><span class="o">.</span><span class="n">y</span><span class="p">()))</span>
   <span class="k">else</span><span class="p">:</span>
    <span class="nb">id</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">iPos</span><span class="o">.</span><span class="n">x</span><span class="p">()),</span> <span class="mi">7</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">iPos</span><span class="o">.</span><span class="n">y</span><span class="p">()))</span>
   <span class="k">if</span> <span class="nb">id</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">id</span> <span class="o">&gt;</span> <span class="mi">63</span><span class="p">:</span>
@@ -676,7 +683,7 @@
  
  <span class="k">def</span> <span class="nf">flushHint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="n">fen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fen</span><span class="p">()</span>
-  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hintFen</span> <span class="o">!=</span> <span class="n">fen</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">uciNewGame</span><span class="p">(</span><span class="n">fen</span><span class="p">):</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hintFen</span> <span class="o">!=</span> <span class="n">fen</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">uciNewGame</span><span class="p">(</span><span class="n">fen</span><span class="p">):</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">startPlay</span><span class="p">()</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">hintFen</span> <span class="o">=</span> <span class="n">fen</span>
 
@@ -701,6 +708,7 @@
 <div class="viewcode-block" id="Game.mouseMoveEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mouseMoveEvent">[docs]</a> <span class="k">def</span> <span class="nf">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsSceneMouseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">squareLabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
    <span class="n">square</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getChessSquareAt</span><span class="p">(</span><span class="n">qGraphicsSceneMouseEvent</span><span class="o">.</span><span class="n">scenePos</span><span class="p">())</span>
+   <span class="c1"># print(&#39;==&gt; mouseMoveEvent: pos = {} =&gt; square = {}&#39;.format(qGraphicsSceneMouseEvent.scenePos(), chess.square_name(square)))</span>
    <span class="k">if</span> <span class="n">square</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">squareLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">square_name</span><span class="p">(</span><span class="n">square</span><span class="p">))</span>
    <span class="k">else</span><span class="p">:</span>
@@ -708,17 +716,17 @@
   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsScene</span><span class="o">.</span><span class="n">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Game.mouseDoubleClickEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mouseDoubleClickEvent">[docs]</a> <span class="k">def</span> <span class="nf">mouseDoubleClickEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouseEvent</span><span class="p">):</span>
-  <span class="bp">self</span><span class="o">.</span><span class="n">mousePressed</span> <span class="o">=</span> <span class="kc">False</span>
-  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mouseDoubleClickEvent&#39;</span><span class="p">)</span></div>
+  <span class="bp">self</span><span class="o">.</span><span class="n">mousePressed</span> <span class="o">=</span> <span class="kc">False</span></div>
+  <span class="c1"># print(&#39;==&gt; mouseDoubleClickEvent&#39;)</span>
   
 <div class="viewcode-block" id="Game.mousePressEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mousePressEvent">[docs]</a> <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsSceneMouseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">mousePressed</span> <span class="o">=</span> <span class="kc">True</span>
-  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mousePressEvent&#39;</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">remove_warnOfDanger</span><span class="p">()</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getChessSquareAt</span><span class="p">(</span><span class="n">qGraphicsSceneMouseEvent</span><span class="o">.</span><span class="n">scenePos</span><span class="p">())</span>
   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">),</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QTransform</span><span class="p">())</span>
+   <span class="c1"># print(&#39;==&gt; mousePressEvent: scene = {} =&gt; square = {}&#39;.format(qGraphicsSceneMouseEvent.scenePos(), chess.square_name(self.pressedSquareId)))</span>
    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span><span class="p">,</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsRectItem</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># empty field hitten</span>
   <span class="n">board</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()</span>
@@ -739,7 +747,7 @@
   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsScene</span><span class="o">.</span><span class="n">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Game.mouseReleaseEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mouseReleaseEvent">[docs]</a> <span class="k">def</span> <span class="nf">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsSceneMouseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mouseReleaseEvent: mousePressed = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mousePressed</span><span class="p">))</span>
+  <span class="c1"># print(&#39;==&gt; mouseReleaseEvent: mousePressed = {}, scene = {}&#39;.format(self.mousePressed, qGraphicsSceneMouseEvent.scenePos()))</span>
   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsScene</span><span class="o">.</span><span class="n">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span><span class="p">)</span>
   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mousePressed</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span><span class="p">:</span>
    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -752,6 +760,7 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attackedPieceDict</span><span class="p">[</span><span class="n">releasedSquareId</span><span class="p">])</span>
   <span class="k">else</span><span class="p">:</span>
    <span class="n">releasedSquareId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span>
+  <span class="c1"># print(&#39;==&gt; mouseReleaseEvent: square = {}&#39;.format(chess.square_name(releasedSquareId)))</span>
   <span class="k">if</span> <span class="n">releasedSquareId</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">:</span>
    <span class="n">oldBoard</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()</span>
    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span><span class="o">.</span><span class="n">llPiece</span><span class="o">.</span><span class="n">piece_type</span> <span class="o">==</span> <span class="n">chess</span><span class="o">.</span><span class="n">PAWN</span> <span class="ow">and</span> \
@@ -762,7 +771,9 @@
     <span class="n">move</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">,</span> <span class="n">releasedSquareId</span><span class="p">,</span> <span class="n">promotion</span> <span class="o">=</span> <span class="n">promotedPieceType</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span><span class="p">)</span>
     <span class="n">promotedPiece</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Piece</span><span class="p">(</span><span class="n">promotedPieceType</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span><span class="o">.</span><span class="n">llPiece</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">Piece</span><span class="p">(</span><span class="n">promotedPiece</span><span class="o">.</span><span class="n">symbol</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pieceSize</span><span class="p">))</span>
+    <span class="n">pPiece</span> <span class="o">=</span> <span class="n">Piece</span><span class="p">(</span><span class="n">promotedPiece</span><span class="o">.</span><span class="n">symbol</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">pieceSize</span><span class="p">)</span>
+    <span class="n">pPiece</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="n">releasedSquareId</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">pPiece</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
    <span class="k">else</span><span class="p">:</span>
     <span class="n">move</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pressedSquareId</span><span class="p">,</span> <span class="n">releasedSquareId</span><span class="p">)</span>

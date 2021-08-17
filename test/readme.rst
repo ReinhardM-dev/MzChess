@@ -1,5 +1,5 @@
 MzChess: tests
-============
+===============
 
 The test environment is based on *pytest*. If not yet installed:
 ::

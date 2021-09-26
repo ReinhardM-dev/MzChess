@@ -143,7 +143,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   
 :param gameNode: game node to be added (must not be main_variation !!)
   '''
-  if gameNode in self.gameVariantNodeList:
+  if gameNode is None or gameNode in self.gameVariantNodeList:
    return
   if gameNode.parent not in self.gameNodeList:
    raise ValueError('Parent Node {} not found'.format(gameNode.parent))
@@ -190,11 +190,11 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   if parentItem is None:
    if gameNode in self.gameNodeList:
     return
-   if False and not gameNode.is_main_variation():
+   if not gameNode.is_main_variation():
     raise ValueError('Node {} is not in the main variation'.format(gameNode))
    parentIndex = self.gameNodeList.index(parent)
    parentItem = self.gameItemList[parentIndex]
-   if parent.is_main_variation() and parentItem != self.gameItemList[0]:
+   if parentItem != self.gameItemList[0]:
     parentItem = parentItem.parent()
   board = gameNode.parent.board()
   while gameNode is not None: 

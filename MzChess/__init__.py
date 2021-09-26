@@ -10,10 +10,11 @@ Versions:
  1.0.8      setup corrected
  1.1.0      FEN-builder added and bug fixes
  1.2.0      tests established and bug fixes
+ 1.2.1      variant bug fixes
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2021-08-16"
-__version__ = "1.2.0"
+__date__ = "2021-08-28"
+__version__ = "1.2.1"
 
 import os
 import sys

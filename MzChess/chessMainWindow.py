@@ -275,7 +275,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   self.squareLabel = PyQt5.QtWidgets.QLabel()
   self.squareLabel.setFont(sbText)
   self.squareLabel.setAlignment(PyQt5.QtCore.Qt.AlignCenter)
-  self.engineLabel.setToolTip("Position")
+  self.squareLabel.setToolTip("Position")
   self.statusBar().addPermanentWidget(self.squareLabel, 10)
 
   self.itemSelector = ItemSelector('Header Elements (without 7-tag roster)...', pointSize = 10)

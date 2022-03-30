@@ -56,6 +56,7 @@ shutil.rmtree(os.path.join(fileDirectory, 'build'), ignore_errors = True)
 # Need to add all dependencies to setup as we go!
 setup(name = package,
   url = 'https://github.com/ReinhardM-dev/MzChess', 
+  project_urls={ 'Documentation': 'https://reinhardm-dev.github.io/MzChess' }, 
   version = pkgVersion,
   packages = [package],
   options={'bdist_wheel':{'universal':True}},

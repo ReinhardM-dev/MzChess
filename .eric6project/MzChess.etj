@@ -1,0 +1,101 @@
+{
+  "header": {
+    "comment": "eric tasks file for project MzChess",
+    "warning": "This file was generated automatically, do not edit.",
+    "saved": "2022-03-30, 14:48:49"
+  },
+  "ProjectScanFilter": "",
+  "Tasks": [
+    {
+      "summary": "WARNING: Any manual changes made to this file will be lost when pyuic5 is",
+      "description": "",
+      "priority": 1,
+      "lineno": 7,
+      "completed": false,
+      "created": 1648625299.939615,
+      "type": 2,
+      "uid": "{a1fb0b2e-7172-469d-a756-76cdfdff301f}",
+      "parent_uid": "",
+      "expanded": false,
+      "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_AboutDialog.py"
+    },
+    {
+      "summary": "WARNING: Any manual changes made to this file will be lost when pyuic5 is",
+      "description": "",
+      "priority": 1,
+      "lineno": 7,
+      "completed": false,
+      "created": 1648625299.940618,
+      "type": 2,
+      "uid": "{ee72ad45-3a9c-4b84-8804-5a5520061cb6}",
+      "parent_uid": "",
+      "expanded": false,
+      "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_configureEngine.py"
+    },
+    {
+      "summary": "WARNING: Any manual changes made to this file will be lost when pyuic5 is",
+      "description": "",
+      "priority": 1,
+      "lineno": 7,
+      "completed": false,
+      "created": 1648625299.941088,
+      "type": 2,
+      "uid": "{e38a57b8-cb79-4312-adc3-9470ae439ce1}",
+      "parent_uid": "",
+      "expanded": false,
+      "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_configureEngineOptions.py"
+    },
+    {
+      "summary": "WARNING: Any manual changes made to this file will be lost when pyuic5 is",
+      "description": "",
+      "priority": 1,
+      "lineno": 7,
+      "completed": false,
+      "created": 1648625299.941088,
+      "type": 2,
+      "uid": "{86464362-50f9-46a1-bd33-c752ebfced9c}",
+      "parent_uid": "",
+      "expanded": false,
+      "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_propagatePawn.py"
+    },
+    {
+      "summary": "WARNING: Any manual changes made to this file will be lost when pyuic5 is",
+      "description": "",
+      "priority": 1,
+      "lineno": 7,
+      "completed": false,
+      "created": 1648625299.941088,
+      "type": 2,
+      "uid": "{74ba61e7-8516-4178-a531-379e55d275aa}",
+      "parent_uid": "",
+      "expanded": false,
+      "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_textEdit.py"
+    },
+    {
+      "summary": "WARNING: Any manual changes made to this file will be lost when pyuic5 is",
+      "description": "",
+      "priority": 1,
+      "lineno": 7,
+      "completed": false,
+      "created": 1648625300.4739122,
+      "type": 2,
+      "uid": "{742e9e17-d7e5-4e80-86bd-89deb1caa2da}",
+      "parent_uid": "",
+      "expanded": false,
+      "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_buildFen.py"
+    },
+    {
+      "summary": "WARNING: Any manual changes made to this file will be lost when pyuic5 is",
+      "description": "",
+      "priority": 1,
+      "lineno": 7,
+      "completed": false,
+      "created": 1648625300.7277842,
+      "type": 2,
+      "uid": "{58d3a796-0148-4111-b7d5-002181b03187}",
+      "parent_uid": "",
+      "expanded": false,
+      "filename": "C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\Ui_chessMainWindow.py"
+    }
+  ]
+}

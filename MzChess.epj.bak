@@ -1,0 +1,216 @@
+{
+  "header": {
+    "comment": "eric project file for project MzChess",
+    "copyright": "Copyright (C) 2021 Reinhard M\u00e4rz, ",
+    "saved": "2021-08-02, 17:47:28"
+  },
+  "project": {
+    "AUTHOR": "Reinhard M\u00e4rz",
+    "CHECKERSPARMS": {},
+    "DESCRIPTION": "",
+    "DOCSTRING": "",
+    "DOCUMENTATIONPARMS": {},
+    "EMAIL": "",
+    "EOL": 1,
+    "FILETYPES": {
+      "*.bat": "OTHERS",
+      "*.e4p": "OTHERS",
+      "*.epj": "OTHERS",
+      "*.idl": "INTERFACES",
+      "*.md": "OTHERS",
+      "*.proto": "PROTOCOLS",
+      "*.py": "SOURCES",
+      "*.pyw": "SOURCES",
+      "*.qm": "TRANSLATIONS",
+      "*.qrc": "RESOURCES",
+      "*.rst": "OTHERS",
+      "*.ts": "TRANSLATIONS",
+      "*.txt": "OTHERS",
+      "*.ui": "FORMS",
+      "GNUmakefile": "OTHERS",
+      "Makefile": "OTHERS",
+      "README": "OTHERS",
+      "README.*": "OTHERS",
+      "makefile": "OTHERS"
+    },
+    "FORMS": [
+      "MzChess/AboutDialog.ui",
+      "MzChess/chessMainWindow.ui",
+      "MzChess/configureEngine.ui",
+      "MzChess/configureEngineOptions.ui",
+      "MzChess/propagatePawn.ui",
+      "MzChess/buildFen.ui"
+    ],
+    "HASH": "bed6ae81d29022141adf17229cf9b6c26f92c8fb",
+    "IDLPARAMS": {
+      "DefinedNames": [],
+      "IncludeDirs": [],
+      "UndefinedNames": []
+    },
+    "INTERFACES": [],
+    "LEXERASSOCS": {},
+    "MAINSCRIPT": "MzChess/chessMainWindow.py",
+    "MAKEPARAMS": {
+      "MakeEnabled": false,
+      "MakeExecutable": "",
+      "MakeFile": "",
+      "MakeParameters": "",
+      "MakeTarget": "",
+      "MakeTestOnly": true
+    },
+    "MIXEDLANGUAGE": false,
+    "OTHERS": [
+      "doc/make.bat",
+      "MzChess/eco/README.md",
+      "doc/annotator.rst",
+      "doc/chessengine.rst",
+      "doc/chessMainWindow.rst",
+      "doc/configureEngine.rst",
+      "doc/eco.rst",
+      "doc/gameHeaderView.rst",
+      "doc/gameTreeView.rst",
+      "doc/gui.rst",
+      "doc/index.rst",
+      "doc/pgnParse.rst",
+      "doc/qboardview.rst",
+      "doc/scoreplotgraphicsview.rst",
+      "doc/utilities.rst",
+      "doc/warnOfDanger.rst",
+      "MzChess/books/readme.txt",
+      "MzChess/credits.txt",
+      "MzChess/eco/bin/requirements.txt",
+      "MzChess/eco/COPYING.txt",
+      "doc/Makefile",
+      ".gitignore",
+      "license.gpl3",
+      "MzChess/readme.rst",
+      "pyproject.toml",
+      "doc/requirements.txt"
+    ],
+    "OTHERTOOLSPARMS": {},
+    "PACKAGERSPARMS": {},
+    "PROGLANGUAGE": "Python3",
+    "PROJECTTYPE": "PyQt5",
+    "PROJECTTYPESPECIFICDATA": {},
+    "PROTOCOLS": [],
+    "RCCPARAMS": {
+      "CompressLevel": 0,
+      "CompressionDisable": false,
+      "CompressionThreshold": 70,
+      "PathPrefix": ""
+    },
+    "RESOURCES": [],
+    "SOURCES": [
+      "doc/conf.py",
+      "MzChess/AboutDialog.py",
+      "MzChess/annotateEngine.py",
+      "MzChess/chessengine.py",
+      "MzChess/chessMainWindow.py",
+      "MzChess/configureEngine.py",
+      "MzChess/configureEngineOptions.py",
+      "MzChess/eco/bin/lint.py",
+      "MzChess/eco/bin/to-scalachess.py",
+      "MzChess/eco.py",
+      "MzChess/gameheaderview.py",
+      "MzChess/gamelisttableview.py",
+      "MzChess/gametreeview.py",
+      "MzChess/helpDialog.py",
+      "MzChess/pgnParse.py",
+      "MzChess/qboardviewclass.py",
+      "MzChess/scoreplotgraphicsview.py",
+      "MzChess/specialDialogs.py",
+      "MzChess/uciedit.py",
+      "MzChess/Ui_AboutDialog.py",
+      "MzChess/Ui_chessMainWindow.py",
+      "MzChess/Ui_configureEngine.py",
+      "MzChess/Ui_configureEngineOptions.py",
+      "MzChess/Ui_propagatePawn.py",
+      "MzChess/Ui_textEdit.py",
+      "MzChess/warnOfDanger.py",
+      "doc/Makefile",
+      "doc/utilities.rst",
+      "doc/warnOfDanger.rst",
+      "doc/gui.rst",
+      "doc/gameHeaderView.rst",
+      "doc/scoreplotgraphicsview.rst",
+      "doc/configureEngine.rst",
+      "doc/gameTreeView.rst",
+      "doc/qboardview.rst",
+      "doc/annotator.rst",
+      "doc/chessMainWindow.rst",
+      "doc/index.rst",
+      "doc/pgnParse.rst",
+      "doc/make.bat",
+      "doc/eco.rst",
+      "doc/chessengine.rst",
+      "MzChess/__init__.py",
+      "setup.py",
+      "MzChess/credits.txt",
+      "MzChess/readme.rst",
+      "pyproject.toml",
+      "license.gpl3",
+      "MzChess/settings.ini",
+      "doc/requirements.txt",
+      ".readthedocs.yaml",
+      "MzChess/qbuildfen.py",
+      "MzChess/Ui_buildFen.py",
+      "test/test_fenBuilder.py",
+      "test/pytest.ini",
+      "test/conftest.py",
+      "test/test_mzChess.py"
+    ],
+    "SPELLEXCLUDES": "",
+    "SPELLLANGUAGE": "en_US",
+    "SPELLWORDS": "",
+    "TRANSLATIONEXCEPTIONS": [],
+    "TRANSLATIONPATTERN": "",
+    "TRANSLATIONS": [],
+    "TRANSLATIONSBINPATH": "",
+    "UICPARAMS": {
+      "Package": "",
+      "PackagesRoot": "",
+      "RcSuffix": ""
+    },
+    "VCS": "Git",
+    "VCSOPTIONS": {
+      "add": [
+        ""
+      ],
+      "checkout": [
+        ""
+      ],
+      "commit": [
+        ""
+      ],
+      "diff": [
+        ""
+      ],
+      "export": [
+        ""
+      ],
+      "global": [
+        ""
+      ],
+      "history": [
+        ""
+      ],
+      "log": [
+        ""
+      ],
+      "remove": [
+        ""
+      ],
+      "status": [
+        ""
+      ],
+      "tag": [
+        ""
+      ],
+      "update": [
+        ""
+      ]
+    },
+    "VCSOTHERDATA": {},
+    "VERSION": "0.1"
+  }
+}

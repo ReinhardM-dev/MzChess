@@ -1,0 +1,582 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>annotateEngine &mdash; MzChess 1.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> MzChess
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MzChess</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>annotateEngine</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for annotateEngine</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;Annotation support</span>
+
+<span class="sd">.. _fiekas.eco: https://github.com/niklasf/eco</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtCore</span>
+
+<span class="kn">import</span> <span class="nn">chess</span><span class="o">,</span> <span class="nn">chess.pgn</span>
+<span class="kn">from</span> <span class="nn">chessengine</span> <span class="kn">import</span> <span class="n">ChessEngine</span><span class="p">,</span> <span class="n">PGNEval_REGEX</span>
+
+<div class="viewcode-block" id="Annotator"><a class="viewcode-back" href="../annotator.html#annotateEngine.Annotator">[docs]</a><span class="k">class</span> <span class="nc">Annotator</span><span class="p">():</span>
+ <span class="sd">&#39;&#39;&#39;A Annotator class applying </span>
+
+<span class="sd">:param name: name of the annotation engine</span>
+<span class="sd">:param notifyFunction: print-like function used for notification</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+
+ <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="n">notifyFunction</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyFunction</span> <span class="o">=</span> <span class="n">notifyFunction</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">posScNagAV</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">negScNagAV</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+ 
+ <span class="k">def</span> <span class="nf">_setClass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nagCode</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">score</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">addVariant</span> <span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">newList</span> <span class="o">=</span> <span class="p">[(</span><span class="n">score</span><span class="p">,</span> <span class="n">nagCode</span><span class="p">,</span> <span class="n">addVariant</span><span class="p">)]</span>
+   <span class="k">for</span> <span class="n">scNagAv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">posScNagAV</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">scNagAv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">nagCode</span><span class="p">:</span>
+     <span class="n">newList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scNagAv</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">posScNagAV</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">newList</span><span class="p">,</span> <span class="n">reverse</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">el</span> <span class="p">:</span> <span class="n">el</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">newList</span> <span class="o">=</span> <span class="p">[(</span><span class="n">score</span><span class="p">,</span> <span class="n">nagCode</span><span class="p">,</span> <span class="n">addVariant</span><span class="p">)]</span>
+   <span class="k">for</span> <span class="n">scNagAv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">negScNagAV</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">scNagAv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">nagCode</span><span class="p">:</span>
+     <span class="n">newList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scNagAv</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">negScNagAV</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">newList</span><span class="p">,</span> <span class="n">reverse</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">el</span> <span class="p">:</span> <span class="n">el</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+  
+ <span class="c1"># ---------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Annotator.setBlunder"><a class="viewcode-back" href="../annotator.html#annotateEngine.Annotator.setBlunder">[docs]</a> <span class="k">def</span> <span class="nf">setBlunder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">addVariant</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Sets the condition for a blunder move (NAG: $4)</span>
+<span class="sd">  </span>
+<span class="sd">:param score: score limit (score &lt; 0 expected)</span>
+<span class="sd">:param addVariant: add a variant in below score</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="o">-</span><span class="n">score</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setClass</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">NAG_BLUNDER</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">addVariant</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Annotator.setDubiousMove"><a class="viewcode-back" href="../annotator.html#annotateEngine.Annotator.setDubiousMove">[docs]</a> <span class="k">def</span> <span class="nf">setDubiousMove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">addVariant</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Sets the condition for a dubious move (NAG: $6)</span>
+<span class="sd">  </span>
+<span class="sd">:param score: score limit (score &lt; 0 expected)</span>
+<span class="sd">:param addVariant: add a variant in below score</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="o">-</span><span class="n">score</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setClass</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">NAG_DUBIOUS_MOVE</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">addVariant</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Annotator.setPoorMove"><a class="viewcode-back" href="../annotator.html#annotateEngine.Annotator.setPoorMove">[docs]</a> <span class="k">def</span> <span class="nf">setPoorMove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">addVariant</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Sets the condition for a poor move (NAG: $2)</span>
+<span class="sd">  </span>
+<span class="sd">:param score: score limit (score &lt; 0 expected)</span>
+<span class="sd">:param addVariant: add a variant in below score</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="o">-</span><span class="n">score</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setClass</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">NAG_MISTAKE</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">addVariant</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Annotator.setBrillantMove"><a class="viewcode-back" href="../annotator.html#annotateEngine.Annotator.setBrillantMove">[docs]</a> <span class="k">def</span> <span class="nf">setBrillantMove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">addVariant</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Sets the condition for a brilliant move (NAG: $3)</span>
+<span class="sd">  </span>
+<span class="sd">:param score: score limit (score &gt; 0 expected)</span>
+<span class="sd">:param addVariant: add a variant in below score</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="o">-</span><span class="n">score</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setClass</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">NAG_BRILLIANT_MOVE</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">addVariant</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Annotator.setSpeculativeMove"><a class="viewcode-back" href="../annotator.html#annotateEngine.Annotator.setSpeculativeMove">[docs]</a> <span class="k">def</span> <span class="nf">setSpeculativeMove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">addVariant</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Sets the condition for a speculative move (NAG: $5)</span>
+<span class="sd">  </span>
+<span class="sd">:param score: score limit (score &gt; 0 expected)</span>
+<span class="sd">:param addVariant: add a variant in below score</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="o">-</span><span class="n">score</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setClass</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">NAG_SPECULATIVE_MOVE</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">addVariant</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Annotator.setGoodMove"><a class="viewcode-back" href="../annotator.html#annotateEngine.Annotator.setGoodMove">[docs]</a> <span class="k">def</span> <span class="nf">setGoodMove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">addVariant</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Sets the condition for a good move (NAG: $1)</span>
+<span class="sd">  </span>
+<span class="sd">:param score: score limit (score &gt; 0 expected)</span>
+<span class="sd">:param addVariant: add a variant in below score</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="o">-</span><span class="n">score</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setClass</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">NAG_GOOD_MOVE</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">addVariant</span><span class="p">)</span></div>
+  
+ <span class="c1"># ---------------------------------------------------------------</span>
+
+ <span class="k">def</span> <span class="nf">_nagAv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">whiteScore</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lastWhiteScore</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">turn</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">whiteScore</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">whiteScore</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="k">try</span><span class="p">:</span> 
+    <span class="n">score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">whiteScore</span><span class="p">)</span>
+   <span class="k">except</span><span class="p">:</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">whiteScore</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+   <span class="k">try</span><span class="p">:</span> 
+    <span class="n">lastScore</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lastWhiteScore</span><span class="p">)</span>
+   <span class="k">except</span><span class="p">:</span>
+    <span class="n">lastScore</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lastWhiteScore</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="n">turn</span><span class="p">:</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="o">-</span><span class="n">score</span>
+    <span class="n">lastScore</span> <span class="o">=</span> <span class="o">-</span><span class="n">lastScore</span>
+   <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">posScNagAV</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">sc</span><span class="p">,</span> <span class="n">nag</span><span class="p">,</span> <span class="n">av</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">posScNagAV</span><span class="p">:</span>
+     <span class="k">if</span> <span class="n">lastScore</span> <span class="o">-</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="n">sc</span><span class="p">:</span>
+      <span class="k">return</span> <span class="p">([</span><span class="n">nag</span><span class="p">],</span> <span class="n">av</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">negScNagAV</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">sc</span><span class="p">,</span> <span class="n">nag</span><span class="p">,</span> <span class="n">av</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">negScNagAV</span><span class="p">:</span>
+     <span class="k">if</span> <span class="n">lastScore</span> <span class="o">-</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="n">sc</span><span class="p">:</span>
+      <span class="k">return</span> <span class="p">([</span><span class="n">nag</span><span class="p">],</span> <span class="n">av</span><span class="p">)</span>
+  <span class="k">return</span> <span class="p">(</span><span class="nb">list</span><span class="p">(),</span> <span class="kc">False</span><span class="p">)</span>
+   
+ <span class="k">def</span> <span class="nf">_replaceScore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comment</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">newWhiteScore</span> <span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+  <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+   <span class="n">match</span> <span class="o">=</span> <span class="n">PGNEval_REGEX</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">break</span>
+   <span class="n">comment</span> <span class="o">=</span> <span class="n">comment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;[</span><span class="si">%e</span><span class="s1">val </span><span class="si">{}</span><span class="s1">] </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newWhiteScore</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">comment</span> 
+
+<div class="viewcode-block" id="Annotator.remove"><a class="viewcode-back" href="../annotator.html#annotateEngine.Annotator.remove">[docs]</a> <span class="nd">@staticmethod</span>
+ <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="n">game</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">,</span> <span class="n">comments</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">variants</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Remove certain items from a game</span>
+<span class="sd">  </span>
+<span class="sd">:param game: game to process</span>
+<span class="sd">:param comments: If True, remove all comments</span>
+<span class="sd">:param variants: If True, remove all variants</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+
+  <span class="n">gameNode</span> <span class="o">=</span> <span class="n">game</span>
+  <span class="k">while</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">comments</span><span class="p">:</span>
+    <span class="n">gameNode</span><span class="o">.</span><span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+   <span class="k">if</span> <span class="n">variants</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">variations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">gameNode</span><span class="o">.</span><span class="n">variations</span> <span class="o">=</span> <span class="p">[</span><span class="n">gameNode</span><span class="o">.</span><span class="n">variations</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+   <span class="n">gameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">game</span></div>
+  
+<div class="viewcode-block" id="Annotator.apply"><a class="viewcode-back" href="../annotator.html#annotateEngine.Annotator.apply">[docs]</a> <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                <span class="n">game</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">]</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">(),</span> 
+                <span class="n">scoreListList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(),</span> 
+                <span class="n">pvListList</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">]]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                <span class="n">forceHints</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Apply the results of AnnotateEngine.run to a game </span>
+<span class="sd">  </span>
+<span class="sd">:param game: game or gameNode where annotation starts (required)</span>
+<span class="sd">:param scoreListList: for each move a list of scores for each variant, see AnnotateEngine.scoreListList</span>
+<span class="sd">:param pvListList: for each move a list of lists of moves for each variant, see AnnotateEngine.pvListList</span>
+<span class="sd">:param forceHints: force the creation of variants independent of the setXX definitions</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  
+  <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">scoreListList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Empty scoreListList detected&#39;</span>
+  <span class="k">if</span> <span class="n">pvListList</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pvListList</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">pvListList</span> <span class="o">=</span> <span class="kc">None</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">scoreListList</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">pvListList</span><span class="p">),</span> <span class="s1">&#39;len(scoreListList) == len(pvListList) required&#39;</span>
+  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">):</span>
+   <span class="n">gameNode</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Annotator&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">gameNode</span> <span class="o">=</span> <span class="n">game</span>
+  <span class="n">lastWsc</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">plyID</span><span class="p">,</span> <span class="n">scoreList</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scoreListList</span><span class="p">):</span>
+   <span class="k">assert</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;No gameNode for plyID = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plyID</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">pvListList</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">pvList</span> <span class="o">=</span> <span class="n">pvListList</span><span class="p">[</span><span class="n">plyID</span><span class="p">]</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">pvList</span> <span class="o">=</span> <span class="kc">None</span>
+   <span class="n">wsc</span> <span class="o">=</span> <span class="n">scoreList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+   <span class="n">nag</span><span class="p">,</span> <span class="n">av</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nagAv</span><span class="p">(</span><span class="n">wsc</span><span class="p">,</span> <span class="n">lastWsc</span><span class="p">,</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">turn</span><span class="p">())</span>
+   <span class="n">lastWsc</span> <span class="o">=</span> <span class="n">wsc</span>
+   <span class="n">gameNode</span><span class="o">.</span><span class="n">nags</span> <span class="o">=</span> <span class="n">nag</span>
+   <span class="n">gameNode</span><span class="o">.</span><span class="n">comment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replaceScore</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">comment</span><span class="p">,</span> <span class="n">wsc</span><span class="p">)</span>
+   <span class="n">addHints</span> <span class="o">=</span> <span class="p">(</span><span class="n">av</span> <span class="ow">or</span> <span class="n">forceHints</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pvList</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyFunction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">notifyFunction</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">. </span><span class="si">{}</span><span class="s1">: score = </span><span class="si">{}</span><span class="s1">, nags = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plyID</span><span class="p">,</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">move</span><span class="p">,</span> <span class="n">wsc</span><span class="p">,</span> <span class="n">nag</span><span class="p">))</span>
+   <span class="k">if</span> <span class="n">addHints</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scoreList</span><span class="p">):</span>
+     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyFunction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">notifyFunction</span><span class="p">(</span><span class="s1">&#39;--&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pvList</span><span class="p">[</span><span class="n">n</span><span class="p">]))</span>
+     <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="n">pvList</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">starting_comment</span> <span class="o">=</span> <span class="s1">&#39;&lt;-[</span><span class="si">%e</span><span class="s1">val </span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">score</span><span class="p">))</span>
+   <span class="n">gameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">game</span></div></div>
+
+<div class="viewcode-block" id="AnnotateEngine"><a class="viewcode-back" href="../annotator.html#annotateEngine.AnnotateEngine">[docs]</a><span class="k">class</span> <span class="nc">AnnotateEngine</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+ <span class="sd">&#39;&#39;&#39;A wrapper class collecting score and variant (pv) data from an engine </span>
+
+<span class="sd">:param notifyFunction: print-like function used for notification</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+ <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                    <span class="n">notifyFunction</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                    <span class="n">parent</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">AnnotateEngine</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyFunction</span> <span class="o">=</span> <span class="n">notifyFunction</span>
+
+<div class="viewcode-block" id="AnnotateEngine.setup"><a class="viewcode-back" href="../annotator.html#annotateEngine.AnnotateEngine.setup">[docs]</a> <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                <span class="n">engine</span> <span class="p">:</span> <span class="n">ChessEngine</span><span class="p">,</span> 
+                <span class="n">hintPLYs</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> 
+                <span class="n">multiPV</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Setup for operation</span>
+
+<span class="sd">:param engine: engine used for annotation</span>
+<span class="sd">:param hintPLYs: number of half moves (plys) in variants. Suppress hints by setting hintPLYs == 0 </span>
+<span class="sd">:param multiPV: number of variants</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">assert</span> <span class="n">hintPLYs</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+  <span class="k">assert</span> <span class="n">multiPV</span> <span class="o">&gt;</span> <span class="mi">0</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">halfMoveID</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">engine</span> <span class="o">=</span> <span class="n">engine</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">bestMoveScoreSignal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bestMoveScoreAvailable</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">hintPLYs</span> <span class="o">=</span> <span class="n">hintPLYs</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">multiPV</span> <span class="o">=</span> <span class="n">multiPV</span></div>
+
+ <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+ <span class="k">def</span> <span class="nf">_bestMoveScoreAvailable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">move</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">,</span> <span class="n">score</span> <span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyFunction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">move</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">san</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">san</span><span class="p">()</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">san</span> <span class="o">=</span> <span class="kc">None</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">turn</span><span class="p">():</span>
+    <span class="n">moveText</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">. </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">halfMoveID</span><span class="o">//</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">san</span><span class="p">)</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">moveText</span> <span class="o">=</span> <span class="s1">&#39;... </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">san</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">notifyFunction</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: score = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">moveText</span><span class="p">,</span> <span class="n">score</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">halfMoveID</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="n">scoreList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="n">pvList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">hintID</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">):</span>
+   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hintPLYs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s1">&#39;pv&#39;</span> <span class="ow">in</span> <span class="n">info</span><span class="p">:</span>
+     <span class="n">pvList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;pv&#39;</span><span class="p">][:</span><span class="bp">self</span><span class="o">.</span><span class="n">hintPLYs</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+     <span class="n">pvList</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+   <span class="n">scoreList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">getScore</span><span class="p">(</span><span class="n">hintID</span> <span class="o">=</span> <span class="n">hintID</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">scoreListList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scoreList</span><span class="p">)</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hintPLYs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">pvListList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pvList</span><span class="p">)</span>
+  <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numberOfPlys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scoreListList</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numberOfPlys</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_startNext</span><span class="p">():</span>
+   <span class="k">return</span>
+ 
+ <span class="k">def</span> <span class="nf">_startNext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isNew</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">isNew</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">uciNewGame</span><span class="p">(</span><span class="n">fen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()</span><span class="o">.</span><span class="n">fen</span><span class="p">())</span>
+  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">startAnalysis</span><span class="p">(</span><span class="n">multiPV</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiPV</span><span class="p">)</span>
+  
+<div class="viewcode-block" id="AnnotateEngine.run"><a class="viewcode-back" href="../annotator.html#annotateEngine.AnnotateEngine.run">[docs]</a> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">],</span> <span class="n">numberOfPlys</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Runs the engine for a whole game or a gameNode</span>
+
+<span class="sd">:param game: game or gameNode</span>
+<span class="sd">:param numberOfPlys: number of half moves to analyse, ``None`` means analysis of the rest of the game</span>
+<span class="sd">:returns: True, if successful</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span> <span class="o">=</span> <span class="n">game</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">numberOfPlys</span> <span class="o">=</span> <span class="n">numberOfPlys</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">scoreListList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hintPLYs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">pvListList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">pvListList</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_startNext</span><span class="p">(</span><span class="n">isNew</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numberOfPlys</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scoreListList</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">numberOfPlys</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QCoreApplication</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
+  <span class="k">return</span> <span class="kc">True</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+ <span class="kn">import</span> <span class="nn">io</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+ <span class="kn">import</span> <span class="nn">pickle</span>
+ <span class="kn">import</span> <span class="nn">argparse</span>
+ <span class="kn">import</span> <span class="nn">configparser</span>
+ <span class="kn">import</span> <span class="nn">chess.pgn</span>
+ <span class="kn">import</span> <span class="nn">configureEngine</span>
+ <span class="kn">from</span> <span class="nn">pgnParse</span> <span class="kn">import</span> <span class="n">read_game</span>
+
+ <span class="n">app</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QCoreApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+
+ <span class="n">fileDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+ <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">fileDirectory</span><span class="p">)</span>
+ <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;PGN Parser: test&#39;</span><span class="p">)</span>
+ 
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;pgnFile&quot;</span><span class="p">,</span> <span class="n">help</span> <span class="o">=</span> <span class="s2">&quot;PGN-File&quot;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--encoding&quot;</span><span class="p">,</span>  <span class="n">metavar</span> <span class="o">=</span> <span class="s1">&#39;encoding&#39;</span><span class="p">,</span>  <span class="n">default</span> <span class="o">=</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> 
+   <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8-sig&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;iso-8859-1&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">],</span> 
+   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;target of parsing (g - games, h - headers, s - skip every second game, b - board, l - lexical analysis only)&quot;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--gameID&quot;</span><span class="p">,</span> <span class="n">metavar</span> <span class="o">=</span> <span class="s1">&#39;gameID&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;ID of the game to be used&quot;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--plyID&quot;</span><span class="p">,</span> <span class="n">metavar</span> <span class="o">=</span> <span class="s1">&#39;plyID&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;ID of the game to be used&quot;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--multiPV&quot;</span><span class="p">,</span> <span class="n">metavar</span> <span class="o">=</span> <span class="s1">&#39;multiPV&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;ID of the game to be used&quot;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--engine&quot;</span><span class="p">,</span> <span class="n">metavar</span> <span class="o">=</span> <span class="s1">&#39;engine&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;ID of the game to be used&quot;</span><span class="p">)</span>
+ <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-debug&quot;</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">help</span> <span class="o">=</span> <span class="s2">&quot;Enable Debugging&quot;</span><span class="p">)</span>
+
+ <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+ <span class="k">assert</span> <span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;pgnFile is required&#39;</span>
+ <span class="n">encoding</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">encoding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+ <span class="k">if</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s1">&#39;u&#39;</span><span class="p">:</span>
+  <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8-sig&#39;</span>
+ <span class="k">elif</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s1">&#39;i&#39;</span><span class="p">:</span>
+  <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;iso-8859-1&#39;</span>
+ <span class="k">elif</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s1">&#39;a&#39;</span><span class="p">:</span>
+  <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;ascii&#39;</span>
+
+ <span class="n">settingsFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fileDirectory</span><span class="p">,</span> <span class="s1">&#39;settings.ini&#39;</span><span class="p">)</span>
+ <span class="n">settings</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">(</span><span class="n">delimiters</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;=&#39;</span><span class="p">],</span> <span class="n">allow_no_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+ <span class="n">settings</span><span class="o">.</span><span class="n">optionxform</span> <span class="o">=</span> <span class="nb">str</span>
+ <span class="n">settings</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">settingsFile</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+ <span class="n">engineDict</span> <span class="o">=</span> <span class="n">configureEngine</span><span class="o">.</span><span class="n">loadEngineSettings</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+ <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">engine</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="n">selectedEngine</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;Menu/Engine&#39;</span><span class="p">][</span><span class="s1">&#39;selectedEngine&#39;</span><span class="p">]</span>
+ <span class="k">else</span><span class="p">:</span>
+  <span class="n">selectedEngine</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">engine</span>
+ <span class="k">assert</span> <span class="n">selectedEngine</span> <span class="ow">in</span> <span class="n">engineDict</span><span class="p">,</span> <span class="s1">&#39;Unexpected engine </span><span class="si">{}</span><span class="s1"> (must be out of </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">selectedEngine</span><span class="p">,</span>  <span class="n">engineDict</span><span class="p">)</span>
+ <span class="n">executable</span> <span class="o">=</span> <span class="n">engineDict</span><span class="p">[</span><span class="n">selectedEngine</span><span class="p">]</span>
+
+ <span class="n">engine</span> <span class="o">=</span> <span class="n">ChessEngine</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">Limit</span><span class="p">(</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">15</span><span class="p">),</span>  <span class="n">log</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+ 
+ <span class="n">_</span><span class="p">,</span>  <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">)</span>
+ <span class="k">assert</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;.ppgn&#39;</span><span class="p">,</span> <span class="s1">&#39;.pgn&#39;</span><span class="p">],</span> <span class="s1">&#39;Unexpected file type </span><span class="si">{}</span><span class="s1"> of </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">)</span>
+ 
+ <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;.ppgn&#39;</span><span class="p">:</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+   <span class="n">gameList</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+   <span class="n">game</span> <span class="o">=</span> <span class="n">gameList</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">gameID</span><span class="p">]</span>
+ <span class="k">else</span><span class="p">:</span>
+  <span class="n">pgn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span>  <span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">gameID</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+   <span class="n">game</span> <span class="o">=</span> <span class="n">read_game</span><span class="p">(</span><span class="n">pgn</span><span class="p">)</span>
+ 
+ <span class="n">annotateEngine</span> <span class="o">=</span> <span class="n">AnnotateEngine</span><span class="p">(</span><span class="n">notifyFunction</span> <span class="o">=</span> <span class="nb">print</span><span class="p">)</span>
+ <span class="n">annotateEngine</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">hintPLYs</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">multiPV</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">multiPV</span><span class="p">)</span>
+
+ <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">plyID</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+  <span class="n">rc</span> <span class="o">=</span> <span class="n">annotateEngine</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+  <span class="n">gameNode</span> <span class="o">=</span> <span class="n">game</span>
+  <span class="n">forceHints</span> <span class="o">=</span> <span class="kc">False</span>
+ <span class="k">else</span><span class="p">:</span>
+  <span class="n">gameNode</span> <span class="o">=</span> <span class="n">game</span>
+  <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">plyID</span><span class="p">):</span>
+   <span class="n">gameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+  <span class="n">rc</span> <span class="o">=</span> <span class="n">annotateEngine</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">numberOfPlys</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="n">forceHints</span> <span class="o">=</span> <span class="kc">True</span>
+  
+ <span class="k">if</span> <span class="n">rc</span><span class="p">:</span>
+  <span class="n">annotator</span> <span class="o">=</span> <span class="n">Annotator</span><span class="p">(</span><span class="n">selectedEngine</span><span class="p">,</span> <span class="n">notifyFunction</span> <span class="o">=</span> <span class="nb">print</span><span class="p">)</span>
+  <span class="n">annotator</span><span class="o">.</span><span class="n">setBlunder</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">addVariant</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+  <span class="n">annotator</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">game</span> <span class="o">=</span> <span class="n">gameNode</span><span class="p">,</span> 
+                        <span class="n">scoreListList</span> <span class="o">=</span> <span class="n">annotateEngine</span><span class="o">.</span><span class="n">scoreListList</span><span class="p">,</span> 
+                        <span class="n">pvListList</span> <span class="o">=</span> <span class="n">annotateEngine</span><span class="o">.</span><span class="n">pvListList</span><span class="p">,</span> 
+                        <span class="n">forceHints</span> <span class="o">=</span> <span class="n">forceHints</span><span class="p">)</span>
+  <span class="n">exporter</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">StringExporter</span><span class="p">(</span><span class="n">headers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  <span class="n">pgnString</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">exporter</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">pgnString</span><span class="p">)</span>
+  <span class="n">base</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pgnFile</span><span class="p">)</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_new.pgn&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">base</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;iso-8859-1&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+   <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pgnString</span><span class="p">)</span>
+ 
+ <span class="n">app</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+ <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;completed&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Reinhard März.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

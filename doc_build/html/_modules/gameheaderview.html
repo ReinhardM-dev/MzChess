@@ -1,0 +1,532 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>gameheaderview &mdash; MzChess 1.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> MzChess
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MzChess</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>gameheaderview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gameheaderview</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Game Header Editor</span>
+<span class="sd">=====================</span>
+
+<span class="sd">The game header editor is a 2-column table which assigns to values to header elements.</span>
+<span class="sd">The `PGN`_ standard lists the supported header elements. </span>
+<span class="sd">The header elements of 7-tag roster, </span>
+<span class="sd">i.e. *Event*, *Site*, *Date*, *Round*, *White*, *Black* and *Result*, are mandatory.</span>
+
+<span class="sd">The *Game/Select Header Elements ...* menu entry opens a dialog to add/remove header elements.</span>
+
+<span class="sd">|HeaderEditor|</span>
+
+<span class="sd">Depending on the type, the values are edited using a *text*, *date* and *time* editors.</span>
+<span class="sd">To avoid inconsistent header data, the following header elements are readonly:</span>
+
+<span class="sd">* *Result*, *Annotator*, *PlyCount*</span>
+<span class="sd">* any kind of opening information, i.e. *Opening*, *Variation*, *SubVariation*, *ECO*, *NIC*</span>
+
+
+<span class="sd">.. |HeaderEditor| image:: headerEditor.png</span>
+<span class="sd">  :width: 800</span>
+<span class="sd">  :alt: Header Editor</span>
+<span class="sd">.. _PGN: https://github.com/fsmosca/PGN-Standard</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">unique</span>
+
+<span class="kn">import</span> <span class="nn">PyQt5.QtCore</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtGui</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtWidgets</span>
+
+<span class="kn">import</span> <span class="nn">chess</span><span class="o">,</span> <span class="nn">chess.pgn</span>
+
+<div class="viewcode-block" id="KeyType"><a class="viewcode-back" href="../gameHeaderView.html#gameheaderview.KeyType">[docs]</a><span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">KeyType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+ <span class="n">STR</span> <span class="o">=</span> <span class="mi">0</span>
+ <span class="n">INT</span> <span class="o">=</span> <span class="mi">1</span>
+ <span class="n">LABEL</span> <span class="o">=</span> <span class="mi">2</span>
+ <span class="n">DATE</span> <span class="o">=</span> <span class="mi">3</span>
+ <span class="n">TIME</span> <span class="o">=</span> <span class="mi">4</span>
+ <span class="n">EVENT</span> <span class="o">=</span> <span class="mi">5</span>
+ <span class="n">SITE</span> <span class="o">=</span> <span class="mi">6</span>
+ <span class="n">PLAYER</span> <span class="o">=</span> <span class="mi">7</span>
+ <span class="n">TITLE</span> <span class="o">=</span> <span class="mi">8</span></div>
+
+<div class="viewcode-block" id="GameHeaderView"><a class="viewcode-back" href="../gameHeaderView.html#gameheaderview.GameHeaderView">[docs]</a><span class="k">class</span> <span class="nc">GameHeaderView</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTableWidget</span><span class="p">):</span>
+ <span class="sd">&#39;&#39;&#39;Game Header Editor object</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+ <span class="n">stdKey2ValueTypeDict</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="c1"># seven tag roster</span>
+   <span class="s2">&quot;Event&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">EVENT</span><span class="p">),</span>
+   <span class="s2">&quot;Site&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">SITE</span><span class="p">),</span>
+   <span class="s2">&quot;Date&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;????.??.??&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">DATE</span><span class="p">),</span>
+   <span class="s2">&quot;Round&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">STR</span><span class="p">),</span>
+   <span class="s2">&quot;White&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">PLAYER</span><span class="p">),</span>
+   <span class="s2">&quot;Black&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">PLAYER</span><span class="p">),</span>
+   <span class="s2">&quot;Result&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">LABEL</span><span class="p">),</span> 
+   <span class="c1"># player related information </span>
+   <span class="s2">&quot;WhiteTitle&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">TITLE</span><span class="p">),</span> 
+   <span class="s2">&quot;BlackTitle&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">TITLE</span><span class="p">),</span> 
+   <span class="s2">&quot;WhiteElo&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">INT</span><span class="p">),</span> 
+   <span class="s2">&quot;BlackElo&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">INT</span><span class="p">),</span> 
+   <span class="s2">&quot;WhiteUSCF&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">INT</span><span class="p">),</span> 
+   <span class="s2">&quot;BlackUSCF&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">INT</span><span class="p">),</span> 
+   <span class="s2">&quot;WhiteNA&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">STR</span><span class="p">),</span> 
+   <span class="s2">&quot;BlackNA&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">STR</span><span class="p">),</span> 
+   <span class="c1"># event related information </span>
+   <span class="s2">&quot;EventDate&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">DATE</span><span class="p">),</span>
+   <span class="s2">&quot;EventSponsor&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">STR</span><span class="p">),</span>
+   <span class="s2">&quot;Section&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">STR</span><span class="p">),</span>
+   <span class="s2">&quot;Stage&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">STR</span><span class="p">),</span>
+   <span class="s2">&quot;Board&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">INT</span><span class="p">),</span>
+   <span class="c1"># opening information </span>
+   <span class="s2">&quot;Opening&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">LABEL</span><span class="p">),</span> 
+   <span class="s2">&quot;Variation&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">LABEL</span><span class="p">),</span> 
+   <span class="s2">&quot;SubVariation&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">LABEL</span><span class="p">),</span> 
+   <span class="s2">&quot;ECO&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">LABEL</span><span class="p">),</span> 
+   <span class="s2">&quot;NIC&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">LABEL</span><span class="p">),</span> 
+   <span class="c1"># time</span>
+   <span class="s2">&quot;Time&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;??:??:??&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">TIME</span><span class="p">),</span>
+   <span class="s2">&quot;UTCTime&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;??:??:??&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">TIME</span><span class="p">),</span>
+   <span class="s2">&quot;UTCDate&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;????.??.??&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">DATE</span><span class="p">),</span>
+   <span class="c1"># time control</span>
+   <span class="s2">&quot;TimeContol&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">STR</span><span class="p">),</span> 
+   <span class="c1"># alternative starting positions</span>
+   <span class="s2">&quot;FEN&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">STARTING_FEN</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">LABEL</span><span class="p">),</span> 
+   <span class="c1"># game termination</span>
+   <span class="s2">&quot;Termination&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">STR</span><span class="p">),</span> 
+   <span class="c1"># miscellaneous</span>
+   <span class="s2">&quot;Annotator&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">LABEL</span><span class="p">),</span> 
+   <span class="s2">&quot;PlyCount&quot;</span> <span class="p">:</span> <span class="p">(</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">LABEL</span><span class="p">)}</span>
+ <span class="n">gameResult</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;1-0&quot;</span><span class="p">,</span> <span class="s2">&quot;0-1&quot;</span><span class="p">,</span> <span class="s2">&quot;1/2-1/2&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">]</span>
+
+ <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">GameHeaderView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameHeadersChangedSignal</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameResultLabel</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">eventList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;?&#39;</span><span class="p">]</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">siteList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;?&#39;</span><span class="p">]</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">playerList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;?&#39;</span><span class="p">]</span>
+  
+ <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notifyGameHeadersChangedSignal</span>  <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                 <span class="n">eventList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(),</span> <span class="n">siteList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(),</span> <span class="n">playerList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">eventList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;?&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">eventList</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">siteList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;?&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">siteList</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">playerList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;?&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">playerList</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameHeadersChangedSignal</span> <span class="o">=</span> <span class="n">notifyGameHeadersChangedSignal</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">resetGame</span><span class="p">()</span>
+ 
+<div class="viewcode-block" id="GameHeaderView.headerElements"><a class="viewcode-back" href="../gameHeaderView.html#gameheaderview.GameHeaderView.headerElements">[docs]</a> <span class="nd">@staticmethod</span>
+ <span class="k">def</span> <span class="nf">headerElements</span><span class="p">(</span><span class="n">withoutSevenTagRoster</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+  <span class="sd">&#39;&#39;&#39;Get game header elements</span>
+
+<span class="sd">:param withoutSevenTagRoster: returns only the optional header elements</span>
+<span class="sd">:returns: list of header elements</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">withoutSevenTagRoster</span><span class="p">:</span>
+   <span class="n">hElements</span> <span class="o">=</span> <span class="n">GameHeaderView</span><span class="o">.</span><span class="n">stdKey2ValueTypeDict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">hElements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+   <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">GameHeaderView</span><span class="o">.</span><span class="n">stdKey2ValueTypeDict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">el</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Headers</span><span class="p">():</span>
+     <span class="n">hElements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">hElements</span></div>
+
+ <span class="k">def</span> <span class="nf">_createCompleteEdit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span> <span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">:</span>
+  <span class="n">completer</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCompleter</span><span class="p">(</span><span class="n">selList</span><span class="p">)</span>
+  <span class="n">completer</span><span class="o">.</span><span class="n">setCaseSensitivity</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CaseInsensitive</span><span class="p">)</span>
+  <span class="n">completer</span><span class="o">.</span><span class="n">setFilterMode</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">MatchContains</span><span class="p">)</span>
+  <span class="n">completer</span><span class="o">.</span><span class="n">setCompletionMode</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCompleter</span><span class="o">.</span><span class="n">InlineCompletion</span><span class="p">)</span>
+  <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+  <span class="n">item</span><span class="o">.</span><span class="n">setCompleter</span><span class="p">(</span><span class="n">completer</span><span class="p">)</span>
+  <span class="n">item</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_editingFinished</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">item</span>
+
+ <span class="k">def</span> <span class="nf">_showTable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyValueTypeList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">KeyType</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">verticalHeader</span><span class="p">()</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keyValueTypeList</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultKeyValueType</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keyValueTypeList</span><span class="p">):</span>
+   <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultKeyValueType</span>
+   <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">setCellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+  <span class="n">test</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">()</span>
+  <span class="n">zeroWidth</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">fontMetrics</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">TextSingleLine</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="o">*</span><span class="n">zeroWidth</span><span class="p">)</span>
+  
+  <span class="bp">self</span><span class="o">.</span><span class="n">itemList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultKeyValueType</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keyValueTypeList</span><span class="p">):</span>
+   <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultKeyValueType</span>
+   <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">STR</span><span class="p">:</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_editingFinished</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">LABEL</span><span class="p">:</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;background-color : white; color : gray;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;PlyCount&#39;</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">plyCountLabel</span> <span class="o">=</span> <span class="n">item</span>
+    <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;Result&#39;</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">gameResultLabel</span> <span class="o">=</span> <span class="n">item</span>
+   <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">DATE</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+     <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="s1">&#39;-&#39;</span><span class="p">))</span>
+     <span class="n">date</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;yyyy.MM.dd&quot;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+     <span class="n">date</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="o">.</span><span class="n">currentDate</span><span class="p">()</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDateEdit</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">dateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_dateChanged</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+     <span class="n">_time</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QTime</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;hh:mm:ss&quot;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+     <span class="n">_time</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QTime</span><span class="o">.</span><span class="n">currentTime</span><span class="p">()</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTimeEdit</span><span class="p">(</span><span class="n">_time</span><span class="p">)</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">timeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_timeChanged</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">INT</span><span class="p">:</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">()</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">setSpecialValueText</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_spinBox_changed</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">EVENT</span><span class="p">:</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_createCompleteEdit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eventList</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">SITE</span><span class="p">:</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_createCompleteEdit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">siteList</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">PLAYER</span><span class="p">:</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_createCompleteEdit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">playerList</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="k">continue</span>
+   
+   <span class="bp">self</span><span class="o">.</span><span class="n">itemList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">setCellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+  
+ <span class="k">def</span> <span class="nf">_getHeaders</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Headers</span><span class="p">:</span>
+  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span>
+
+<div class="viewcode-block" id="GameHeaderView.resetGame"><a class="viewcode-back" href="../gameHeaderView.html#gameheaderview.GameHeaderView.resetGame">[docs]</a> <span class="k">def</span> <span class="nf">resetGame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Resets editor to standard header</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setGame</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="GameHeaderView.setPlyCount"><a class="viewcode-back" href="../gameHeaderView.html#gameheaderview.GameHeaderView.setPlyCount">[docs]</a> <span class="k">def</span> <span class="nf">setPlyCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newCount</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Sets the &#39;PlyCount&#39; header element, if selected </span>
+
+<span class="sd">:param newCount: actual number of halfmoves</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plyCountLabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="s1">&#39;PlyCount&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">newCount</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">plyCountLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">newCount</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="GameHeaderView.setGameResult"><a class="viewcode-back" href="../gameHeaderView.html#gameheaderview.GameHeaderView.setGameResult">[docs]</a> <span class="k">def</span> <span class="nf">setGameResult</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Sets the &#39;Result&#39; header element</span>
+
+<span class="sd">:param result: one out of *1-0*, *0-1*, *1/2-1/2*, *\**</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">result</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameResult</span><span class="p">:</span>
+   <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameResult</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameResultLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameHeaderView.setGame"><a class="viewcode-back" href="../gameHeaderView.html#gameheaderview.GameHeaderView.setGame">[docs]</a> <span class="k">def</span> <span class="nf">setGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Edit the header of a game. It corrects the following header elements</span>
+<span class="sd">  </span>
+<span class="sd">  * *Result*</span>
+<span class="sd">  * *FEN*, if available</span>
+<span class="sd">  * *PlyCount*, if available</span>
+
+<span class="sd">:param game: game to be edited</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">defValue</span> <span class="ow">in</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Headers</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+   <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">defValue</span>
+  <span class="k">if</span> <span class="s1">&#39;FEN&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="s1">&#39;FEN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">board</span><span class="p">()</span><span class="o">.</span><span class="n">fen</span><span class="p">()</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameResult</span><span class="p">:</span>
+   <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameResult</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+  <span class="n">plyCount</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">gameNode</span> <span class="o">=</span> <span class="n">game</span>
+  <span class="k">while</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">plyCount</span> <span class="o">+=</span> <span class="mi">1</span>
+   <span class="n">gameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+  <span class="k">if</span> <span class="s1">&#39;PlyCount&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="s1">&#39;PlyCount&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">plyCount</span><span class="p">)</span>
+  <span class="n">keyValueTypeList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+   <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdKey2ValueTypeDict</span><span class="p">:</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdKey2ValueTypeDict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;??? </span><span class="si">{}</span><span class="s1"> ???&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">STR</span>
+   <span class="n">keyValueTypeList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_showTable</span><span class="p">(</span><span class="n">keyValueTypeList</span><span class="p">)</span></div>
+ 
+ <span class="k">def</span> <span class="nf">_getKV</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">]:</span>
+  <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">()</span>
+  <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+  <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  
+ <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">()</span>
+ <span class="k">def</span> <span class="nf">on_editingFinished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="n">key</span><span class="p">,</span> <span class="n">valueItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getKV</span><span class="p">()</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="n">valueItem</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\t\n</span><span class="s1">&#39;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">text</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_emitHeader</span><span class="p">()</span>
+  
+ <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="p">)</span>
+ <span class="k">def</span> <span class="nf">on_dateChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+  <span class="n">key</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getKV</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="s1">&#39;yyyy.MM.dd&#39;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_emitHeader</span><span class="p">()</span>
+
+ <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QTime</span><span class="p">)</span>
+ <span class="k">def</span> <span class="nf">on_timeChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_time</span><span class="p">):</span>
+  <span class="n">key</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getKV</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_time</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="s1">&#39;hh:mm:ss&#39;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_emitHeader</span><span class="p">()</span>
+
+ <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+ <span class="k">def</span> <span class="nf">on_spinBox_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+  <span class="n">key</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getKV</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_emitHeader</span><span class="p">()</span>
+   
+ <span class="k">def</span> <span class="nf">_emitHeader</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameHeadersChangedSignal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameHeadersChangedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">)</span></div>
+  
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+ <span class="kn">import</span> <span class="nn">io</span><span class="o">,</span> <span class="nn">sys</span>
+ <span class="kn">from</span> <span class="nn">pgnParse</span> <span class="kn">import</span> <span class="n">read_game</span>
+
+ <span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
+  <span class="n">newData</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;[Event &quot;matein2&quot;]</span>
+<span class="s2">[Site &quot;problem solved&quot;]</span>
+<span class="s2">[Date &quot;????.??.??&quot;]</span>
+<span class="s2">[Round &quot;?&quot;]</span>
+<span class="s2">[White &quot;?&quot;]</span>
+<span class="s2">[Black &quot;?&quot;]</span>
+<span class="s2">[Result &quot;*&quot;]</span>
+<span class="s2">[Time &quot;??:??:??&quot;]</span>
+<span class="s2">[FEN &quot;1k6/Rp1K4/1P5P/8/P7/3pP3/1p1P4/8 w - - 0 1&quot;]</span>
+<span class="s2">  </span>
+<span class="s2">1.h7 b1=Q! $20 {[% -4.80]} 2.h8=R# *&quot;&quot;&quot;</span>
+ <span class="k">else</span><span class="p">:</span>
+  <span class="n">ps</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/Reinh/OneDrive/Dokumente/Schach/ps.pgn&quot;</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span>  <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+   <span class="n">newdata</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+ 
+ <span class="n">pgn</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">newData</span><span class="p">)</span>
+ <span class="n">game</span> <span class="o">=</span> <span class="n">read_game</span><span class="p">(</span><span class="n">pgn</span><span class="p">)</span>
+ <span class="n">app</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+ <span class="n">tbl</span> <span class="o">=</span> <span class="n">GameHeaderView</span><span class="p">()</span>
+ <span class="n">tbl</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span>
+   <span class="n">eventList</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Wöchentliche Schachmeisterschaften&quot;</span><span class="p">],</span> 
+   <span class="n">siteList</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;München GER&quot;</span><span class="p">,</span> <span class="s2">&quot;Internet&quot;</span><span class="p">],</span> 
+   <span class="n">playerList</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;März, Reinhard&quot;</span><span class="p">,</span> <span class="s2">&quot;Schlüter, Paul&quot;</span><span class="p">])</span>
+ <span class="n">tbl</span><span class="o">.</span><span class="n">setGame</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+ <span class="n">tbl</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">360</span><span class="p">,</span><span class="mi">240</span><span class="p">)</span>
+ <span class="n">tbl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+ <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Reinhard März.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

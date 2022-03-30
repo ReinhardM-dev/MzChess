@@ -1,0 +1,830 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>chessengine &mdash; MzChess 1.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> MzChess
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MzChess</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>chessengine</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for chessengine</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;A Qt-compatible interface similar to `chess.engine`_ </span>
+<span class="sd"> </span>
+<span class="sd">.. _chess.engine: https://pypi.org/project/python-chess</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span>  <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">PyQt5.QtCore</span>
+
+<span class="kn">import</span> <span class="nn">chess</span>
+<span class="kn">import</span> <span class="nn">chess.engine</span>
+
+<span class="n">PGNCmd_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\[(%[a-z]*)?[ ]+([^\n\t \]]+)\]&#39;</span><span class="p">)</span>
+<span class="n">PGNEval_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\[(%|</span><span class="si">%e</span><span class="s1">val)[ ]+([^\n\t \]]+)\]&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ChessEngine"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine">[docs]</a><span class="k">class</span> <span class="nc">ChessEngine</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+ <span class="sd">&#39;&#39;&#39;A Universal Chess Interface (`UCI`_) engine using (`QProcess`_)</span>
+
+<span class="sd">:param engine2Option: a pair of a path to the executable and *dict* of the changed options</span>
+<span class="sd">:param limit: a limit definition for the engine (see `chess.engine.Limit`_)</span>
+<span class="sd">:param timeout_msec: timeout for the engine to respond (should be at least 1000)</span>
+<span class="sd">:param log: log for the engine&#39;s commands </span>
+<span class="sd">:param ChessEngine.bestMoveScoreSignal: ``pyqtSignal`` emitted when a best move is available</span>
+<span class="sd"> </span>
+<span class="sd">.. _UCI: http://wbec-ridderkerk.nl/html/UCIProtocol.html</span>
+<span class="sd">.. _QProcess: https://doc.qt.io/qt-5/qprocess.html</span>
+<span class="sd">.. _chess.engine.Limit: https://python-chess.readthedocs.io/en/latest/engine.html</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+ <span class="n">bestMoveScoreSignal</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">engine2Option</span> <span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]],</span> 
+   <span class="n">limit</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">Limit</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">Limit</span><span class="p">(</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">10</span><span class="p">),</span> 
+   <span class="n">timeout_msec</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> 
+   <span class="n">log</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+   <span class="n">parent</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">ChessEngine</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="n">executable</span><span class="p">,</span> <span class="n">optionsDict</span> <span class="o">=</span> <span class="n">engine2Option</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">X_OK</span> <span class="p">)):</span>
+   <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;ChessEngine: </span><span class="si">{}</span><span class="s1"> is not an executable&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">executable</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">limit</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setLog</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">timeout_msec</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">timeout_msec</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QProcess</span><span class="p">()</span>  <span class="c1"># Keep a reference to the QProcess (e.g. on self) while it&#39;s running.</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">readyReadStandardOutput</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fromStdout</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">readyReadStandardError</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fromStdout</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QIODevice</span><span class="o">.</span><span class="n">ReadWrite</span> <span class="o">|</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QIODevice</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span>
+  <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">waitForStarted</span><span class="p">(</span><span class="n">msecs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout_msec</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s1">&#39;ChessEngine: slow write, </span><span class="si">{}</span><span class="s1"> msec elapsed&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout_msec</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_toStdin</span><span class="p">(</span><span class="s1">&#39;uci&#39;</span><span class="p">)</span>
+  <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
+  <span class="n">loop</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="k">while</span> <span class="s1">&#39;idDict&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;optionsDict&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QCoreApplication</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
+   <span class="n">elapsed</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span> <span class="o">-</span> <span class="n">start</span>
+   <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout_msec</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s1">&#39;ChessEngine: long wait for uci response, </span><span class="si">{}</span><span class="s1">x looped, </span><span class="si">{}</span><span class="s1"> msec elapsed&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span> <span class="n">elapsed</span><span class="p">))</span>
+    <span class="k">break</span>
+   <span class="n">loop</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
+   <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">optionsDict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">uciSetOption</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">isrunning</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">board</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ChessEngine.setLog"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.setLog">[docs]</a> <span class="k">def</span> <span class="nf">setLog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Sets the log for engine&#39;s commands</span>
+
+<span class="sd">:param log: log for the engine&#39;s commands, default = None  </span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+   <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">notify</span> <span class="o">=</span> <span class="nb">print</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">notify</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">notify</span> <span class="o">=</span> <span class="n">log</span></div>
+
+<div class="viewcode-block" id="ChessEngine.getScore"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.getScore">[docs]</a> <span class="k">def</span> <span class="nf">getScore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hintID</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+  <span class="sd">&#39;&#39;&#39;Delivers the score for a hint, if available</span>
+
+<span class="sd">:param hintID: hint, i.e. alternative to be used (0 for best move)</span>
+<span class="sd">:returns: score in centipawns or ``None``</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span>   <span class="s1">&#39;info&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="p">)</span> \
+    <span class="ow">or</span> <span class="n">hintID</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">)</span> \
+    <span class="ow">or</span> <span class="s1">&#39;score&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">hintID</span><span class="p">]:</span>
+   <span class="k">return</span> <span class="kc">None</span>
+  <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">hintID</span><span class="p">][</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">white</span><span class="p">()</span>
+  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">Cp</span><span class="p">):</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:+.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="n">score</span><span class="o">.</span><span class="n">score</span><span class="p">())</span>
+  <span class="k">elif</span> <span class="n">score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">score</span></div>
+  
+ <span class="k">def</span> <span class="nf">_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notify</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="nf">_fromStdout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="s1">&#39;stdout&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span> <span class="o">+=</span> <span class="nb">bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">readAllStandardOutput</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+   <span class="k">return</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s1">&#39;ChessEngine/_fromStdout: stdout&lt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;uciok&#39;</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">_parseHeader</span><span class="p">()</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span> <span class="o">=</span> <span class="kc">True</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;readyok&#39;</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span> <span class="o">=</span> <span class="kc">True</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;bestmove&#39;</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">_parseResult</span><span class="p">()</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getScore</span><span class="p">(</span><span class="n">hintID</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span> <span class="o">=</span> <span class="kc">True</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> 
+    <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">move</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">bestMoveScoreSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">move</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="n">score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">bestMoveScoreSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">null</span><span class="p">(),</span> <span class="n">score</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="nf">_fromStderr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="n">stderr</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">readAllStandardError</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s1">&#39;ChessEngine/_fromStderr:???????????????</span><span class="se">\n</span><span class="s1"> &lt;stderr: </span><span class="si">{}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">???????????????&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stderr</span><span class="p">))</span>
+
+ <span class="k">def</span> <span class="nf">_toStdin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s1">&#39;ChessEngine/_toStdin: stdin&gt; </span><span class="si">{}</span><span class="s1">, readyok = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span><span class="p">))</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span><span class="p">:</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+  <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">waitForBytesWritten</span><span class="p">(</span><span class="n">msecs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout_msec</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s1">&#39;ChessEngine/_toStdin: slow write, </span><span class="si">{}</span><span class="s1"> msec elapsed&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout_msec</span><span class="p">))</span>
+  <span class="k">return</span> <span class="kc">True</span>
+ 
+<div class="viewcode-block" id="ChessEngine.isReady"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.isReady">[docs]</a> <span class="k">def</span> <span class="nf">isReady</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Checks whether the engine is able to receive commands</span>
+
+<span class="sd">:returns: boolean indicating the response</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">state</span><span class="p">()</span> <span class="o">==</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QProcess</span><span class="o">.</span><span class="n">Running</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span></div>
+  
+ <span class="c1">#  Parser --------------------------------------------------------------------------------------</span>
+
+ <span class="k">def</span> <span class="nf">_parseHeader</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">idDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">optionsDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span><span class="p">:</span>
+   <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+   <span class="n">report</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">report</span> <span class="o">==</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;name&#39;</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;author&#39;</span><span class="p">:</span>
+     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;UIE: Unknown </span><span class="si">{}</span><span class="s2"> in header (expected name or author)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">idDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="n">report</span> <span class="o">==</span> <span class="s1">&#39;option&#39;</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_parseOption</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">report</span> <span class="o">!=</span> <span class="s1">&#39;uciok&#39;</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="s2">&quot;Extra line &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+
+ <span class="k">def</span> <span class="nf">_parseOption</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="n">optDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+  <span class="n">minValue</span> <span class="o">=</span> <span class="kc">None</span> 
+  <span class="n">maxValue</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="n">vtype</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="k">while</span> <span class="n">tokens</span><span class="p">:</span>
+   <span class="n">key</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span>
+    <span class="n">nameList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">tokens</span><span class="p">:</span>
+     <span class="n">part</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+     <span class="k">if</span> <span class="n">part</span> <span class="ow">in</span>  <span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="s1">&#39;var&#39;</span><span class="p">]:</span>
+      <span class="k">break</span>
+     <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+     <span class="n">nameList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nameList</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span>
+    <span class="n">vtype</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="s1">&#39;spin&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">]:</span>
+     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;UIE: Unexpected option type &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vtype</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">vtype</span> <span class="o">==</span> <span class="s1">&#39;combo&#39;</span><span class="p">:</span>
+     <span class="n">optDict</span><span class="p">[</span><span class="s1">&#39;varList&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">optDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">vtype</span>
+   <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;default&#39;</span><span class="p">:</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vtype</span> <span class="o">==</span> <span class="s1">&#39;spin&#39;</span><span class="p">:</span>
+     <span class="n">optDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;check&#39;</span><span class="p">:</span>
+     <span class="n">optDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+     <span class="n">optDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+   <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
+    <span class="n">minValue</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> 
+   <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span>
+    <span class="n">maxValue</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> 
+   <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;var&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s1">&#39;varList&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">optDict</span><span class="p">:</span>
+     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;UIE: var found, not type &#39;combo&#39; ?!?&quot;</span><span class="p">)</span>
+    <span class="n">optDict</span><span class="p">[</span><span class="s1">&#39;varList&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+   <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+     <span class="n">value</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+     <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&lt;empty&gt;&#39;</span><span class="p">:</span>
+     <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">optDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+  <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">vtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;UIE: name and/or type record missing&quot;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">vtype</span> <span class="o">==</span> <span class="s1">&#39;spin&#39;</span> <span class="ow">and</span> <span class="n">minValue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">maxValue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">optDict</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">minValue</span><span class="p">,</span> <span class="n">maxValue</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">optionsDict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">optDict</span>
+
+ <span class="k">def</span> <span class="nf">_parseResult</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="s1">&#39;move&#39;</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">PlayResult</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">draw_offered</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">resigned</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stdoutLines</span><span class="p">):</span>
+   <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+   <span class="n">report</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">report</span> <span class="o">==</span> <span class="s1">&#39;info&#39;</span><span class="p">:</span>
+    <span class="n">actInfo</span><span class="p">,</span> <span class="n">newDepth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseInfoline</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">depth</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">newDepth</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">actInfo</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="s1">&#39;score&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">actInfo</span><span class="p">:</span>
+     <span class="k">continue</span>
+    <span class="k">if</span> <span class="n">newDepth</span> <span class="o">&lt;</span> <span class="n">depth</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">))</span>
+     <span class="k">break</span>
+    <span class="n">depth</span> <span class="o">=</span> <span class="n">newDepth</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">actInfo</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="n">report</span> <span class="o">==</span> <span class="s1">&#39;bestmove&#39;</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">move</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">move</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;ponder&#39;</span><span class="p">:</span>
+     <span class="k">try</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">ponder</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+     <span class="k">except</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">ponder</span> <span class="o">=</span> <span class="kc">None</span> 
+
+ <span class="k">def</span> <span class="nf">_parseInfoline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">,</span> <span class="n">depth</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
+   <span class="n">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+   <span class="n">actDepth</span> <span class="o">=</span> <span class="kc">None</span>
+   <span class="k">while</span> <span class="n">tokens</span><span class="p">:</span>
+    <span class="n">parameter</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">parameter</span> <span class="o">==</span> <span class="s2">&quot;string&quot;</span><span class="p">:</span>
+     <span class="n">info</span><span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+     <span class="k">return</span> <span class="nb">dict</span><span class="p">(),</span> <span class="n">depth</span>
+    <span class="k">elif</span> <span class="n">parameter</span> <span class="o">==</span> <span class="s2">&quot;depth&quot;</span><span class="p">:</span>
+     <span class="n">actDepth</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+     <span class="n">info</span><span class="p">[</span><span class="n">parameter</span><span class="p">]</span> <span class="o">=</span> <span class="n">actDepth</span>
+    <span class="k">elif</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;seldepth&quot;</span><span class="p">,</span> <span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="s2">&quot;multipv&quot;</span><span class="p">,</span> <span class="s2">&quot;currmovenumber&quot;</span><span class="p">,</span> <span class="s2">&quot;hashfull&quot;</span><span class="p">,</span> <span class="s2">&quot;nps&quot;</span><span class="p">,</span> <span class="s2">&quot;tbhits&quot;</span><span class="p">,</span> <span class="s2">&quot;cpuload&quot;</span><span class="p">]:</span>
+     <span class="n">info</span><span class="p">[</span><span class="n">parameter</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+    <span class="k">elif</span> <span class="n">parameter</span> <span class="o">==</span> <span class="s2">&quot;time&quot;</span><span class="p">:</span>
+     <span class="n">info</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="o">//</span> <span class="mf">1000.0</span>
+    <span class="k">elif</span> <span class="n">parameter</span> <span class="o">==</span> <span class="s2">&quot;ebf&quot;</span><span class="p">:</span>
+     <span class="n">info</span><span class="p">[</span><span class="s2">&quot;ebf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">parameter</span> <span class="o">==</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span>
+     <span class="n">kind</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+     <span class="n">value</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+     <span class="k">if</span> <span class="n">tokens</span> <span class="ow">and</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;lowerbound&quot;</span><span class="p">,</span> <span class="s2">&quot;upperbound&quot;</span><span class="p">]:</span>
+      <span class="n">info</span><span class="p">[</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># type: ignore</span>
+     <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;cp&quot;</span><span class="p">:</span>
+      <span class="n">info</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">PovScore</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">Cp</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">turn</span><span class="p">)</span>
+     <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;mate&quot;</span><span class="p">:</span>
+      <span class="n">info</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">PovScore</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">Mate</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">turn</span><span class="p">)</span>
+     <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;UIE: Unknown score kind </span><span class="si">{}</span><span class="s2"> in info (expected cp or mate)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">parameter</span> <span class="o">==</span> <span class="s2">&quot;currmove&quot;</span><span class="p">:</span>
+     <span class="n">info</span><span class="p">[</span><span class="s2">&quot;currmove&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">parameter</span> <span class="o">==</span> <span class="s2">&quot;currline&quot;</span><span class="p">:</span>
+     <span class="n">cpunr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+     <span class="n">currline</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cpunr</span><span class="p">):</span>
+      <span class="n">currline</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+     <span class="n">info</span><span class="p">[</span><span class="s2">&quot;currline&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">currline</span>
+    <span class="k">elif</span> <span class="n">parameter</span> <span class="o">==</span> <span class="s2">&quot;refutation&quot;</span><span class="p">:</span>
+     <span class="n">info</span><span class="p">[</span><span class="s2">&quot;refutation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+     <span class="k">while</span> <span class="n">tokens</span><span class="p">:</span>
+      <span class="k">try</span><span class="p">:</span>
+       <span class="n">move</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+       <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+       <span class="n">info</span><span class="p">[</span><span class="s2">&quot;refutation&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move</span><span class="p">)</span>
+      <span class="k">except</span><span class="p">:</span>
+       <span class="k">break</span>
+    <span class="k">elif</span> <span class="n">parameter</span> <span class="o">==</span> <span class="s2">&quot;pv&quot;</span><span class="p">:</span>
+     <span class="n">info</span><span class="p">[</span><span class="s2">&quot;pv&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+     <span class="k">while</span> <span class="n">tokens</span><span class="p">:</span>
+      <span class="k">try</span><span class="p">:</span>
+       <span class="n">move</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+       <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+       <span class="n">info</span><span class="p">[</span><span class="s2">&quot;pv&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move</span><span class="p">)</span>
+      <span class="k">except</span><span class="p">:</span>
+       <span class="k">break</span>
+    <span class="k">elif</span> <span class="n">parameter</span> <span class="o">==</span> <span class="s2">&quot;wdl&quot;</span><span class="p">:</span>
+     <span class="n">info</span><span class="p">[</span><span class="s2">&quot;wdl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">PovWdl</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">Wdl</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))),</span> <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">turn</span><span class="p">)</span>
+   <span class="k">return</span> <span class="n">info</span><span class="p">,</span> <span class="n">actDepth</span>
+
+ <span class="c1">#  Methods for use  --------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ChessEngine.uciNewGame"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.uciNewGame">[docs]</a> <span class="k">def</span> <span class="nf">uciNewGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fen</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">moves</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Wrapper for the UCI *ucinewgame* command</span>
+
+<span class="sd">:param fen: starting position in Forsyth-Edwards-Notation (FEN)</span>
+<span class="sd">:param moves: list of moves to be applied</span>
+<span class="sd">:returns: boolean indicating the success</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">playResult</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toStdin</span><span class="p">(</span><span class="s1">&#39;ucinewgame&#39;</span><span class="p">):</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="n">builder</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">]</span>
+  <span class="k">if</span> <span class="n">fen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">set_fen</span><span class="p">(</span><span class="n">fen</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;fen&quot;</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fen</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">set_fen</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">STARTING_FEN</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;startpos&quot;</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">moves</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move</span><span class="o">.</span><span class="n">uci</span><span class="p">())</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_toStdin</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">builder</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ChessEngine.uciSetOption"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.uciSetOption">[docs]</a> <span class="k">def</span> <span class="nf">uciSetOption</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span>  <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Wrapper for the UCI *setoption* command</span>
+
+<span class="sd">:param name: name of the option</span>
+<span class="sd">:param value: value, type depends on name</span>
+<span class="sd">:returns: boolean indicating the success</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optionsDict</span><span class="p">:</span>
+   <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ChessEngine/setOption: </span><span class="si">{}</span><span class="s1"> is not a valid option name&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+  <span class="n">optDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optionsDict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+  <span class="n">optType</span> <span class="o">=</span> <span class="n">optDict</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+  <span class="n">builder</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;setoption&#39;</span><span class="p">]</span>
+  <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+  <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+  <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">optType</span> <span class="o">==</span> <span class="s1">&#39;button&#39;</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ChessEngine/setOption: option name </span><span class="si">{}</span><span class="s1"> expects no value&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+  <span class="k">elif</span> <span class="n">optType</span> <span class="o">==</span> <span class="s1">&#39;check&#39;</span><span class="p">:</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ChessEngine/setOption: option name </span><span class="si">{}</span><span class="s1"> expects an boolean value&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">][</span><span class="n">value</span><span class="p">])</span>
+  <span class="k">elif</span> <span class="n">optType</span> <span class="o">==</span> <span class="s1">&#39;spin&#39;</span><span class="p">:</span>
+   <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+   <span class="k">if</span> <span class="s1">&#39;range&#39;</span> <span class="ow">in</span> <span class="n">optDict</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">optDict</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ChessEngine/setOption: option name </span><span class="si">{}</span><span class="s1">: value </span><span class="si">{}</span><span class="s1"> not in range </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">optDict</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]))</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+  <span class="k">elif</span> <span class="n">optType</span> <span class="o">==</span> <span class="s1">&#39;combo&#39;</span><span class="p">:</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ChessEngine/setOption: option name </span><span class="si">{}</span><span class="s1"> expects an string value&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+   <span class="k">if</span> <span class="s1">&#39;varList&#39;</span> <span class="ow">in</span> <span class="n">optDict</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">optDict</span><span class="p">[</span><span class="s1">&#39;varList&#39;</span><span class="p">]:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ChessEngine/setOption: option name </span><span class="si">{}</span><span class="s1">: value </span><span class="si">{}</span><span class="s1"> not in list </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">optDict</span><span class="p">[</span><span class="s1">&#39;varList&#39;</span><span class="p">]))</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">Type</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">:</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ChessEngine/setOption: option name </span><span class="si">{}</span><span class="s1"> expects an string value&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&lt;empty&gt;&#39;</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toStdin</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">builder</span><span class="p">)):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span></div>
+
+<div class="viewcode-block" id="ChessEngine.uciGo"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.uciGo">[docs]</a> <span class="k">def</span> <span class="nf">uciGo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_moves</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ponder</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">infinite</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Wrapper for the UCI *go* command</span>
+
+<span class="sd">:param search_moves: list of moves to be searched</span>
+<span class="sd">:param ponder: suggest a response to the *best-move*</span>
+<span class="sd">:param infinite: improve the *best-move* continuously</span>
+<span class="sd">:returns: boolean indicating the success</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">builder</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;go&quot;</span><span class="p">]</span>
+  <span class="k">if</span> <span class="n">ponder</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ponder&quot;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">white_clock</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;wtime&quot;</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">white_clock</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))))</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">black_clock</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;btime&quot;</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">black_clock</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))))</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">white_inc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;winc&quot;</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">white_inc</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)))</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">black_inc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;binc&quot;</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">black_inc</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)))</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">remaining_moves</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">remaining_moves</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;movestogo&quot;</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">remaining_moves</span><span class="p">)))</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;depth&quot;</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">depth</span><span class="p">))))</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">nodes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">nodes</span><span class="p">))))</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">mate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mate&quot;</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">mate</span><span class="p">))))</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;movetime&quot;</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">time</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))))</span>
+  <span class="k">if</span> <span class="n">infinite</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;infinite&quot;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">search_moves</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;searchmoves&quot;</span><span class="p">)</span>
+   <span class="n">builder</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">move</span><span class="o">.</span><span class="n">uci</span><span class="p">()</span> <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">search_moves</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toStdin</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">builder</span><span class="p">)):</span>
+   <span class="k">return</span> <span class="kc">False</span>
+
+  <span class="k">if</span> <span class="n">infinite</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">isrunning</span> <span class="o">=</span> <span class="kc">True</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ChessEngine.uciStop"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.uciStop">[docs]</a> <span class="k">def</span> <span class="nf">uciStop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Wrapper for the UCI *stop* command to stop an infinite *go*</span>
+
+<span class="sd">:returns: boolean indicating the success</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isrunning</span><span class="p">:</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toStdin</span><span class="p">(</span><span class="s1">&#39;stop&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ChessEngine.uciQuit"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.uciQuit">[docs]</a> <span class="k">def</span> <span class="nf">uciQuit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="s1">&#39;Terminate the engine&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_toStdin</span><span class="p">(</span><span class="s1">&#39;quit&#39;</span><span class="p">)</span></div>
+
+ <span class="c1">#  chess.engine like calls  --------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ChessEngine.startPlay"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.startPlay">[docs]</a> <span class="k">def</span> <span class="nf">startPlay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Emits *uciGO* in *play* mode, i.e.g</span>
+<span class="sd">  </span>
+<span class="sd">  * *UCI_AnalyseMode = off*</span>
+<span class="sd">  * *MultiPV = 1*, i.e. no alternative move suggestions</span>
+
+<span class="sd">:returns: boolean indicating the success</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="s1">&#39;MultiPV&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optionsDict</span><span class="p">:</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">uciSetOption</span><span class="p">(</span><span class="s1">&#39;MultiPV&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">if</span> <span class="s1">&#39;UCI_AnalyseMode&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optionsDict</span><span class="p">:</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">uciSetOption</span><span class="p">(</span><span class="s1">&#39;UCI_AnalyseMode&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">uciGo</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ChessEngine.startAnalysis"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.startAnalysis">[docs]</a> <span class="k">def</span> <span class="nf">startAnalysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiPV</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Emits *uciGO* in *analyse* mode, i.e.</span>
+<span class="sd">  </span>
+<span class="sd">  * *UCI_AnalyseMode = off*</span>
+<span class="sd">  * *MultiPV =* ``multiPV``</span>
+
+<span class="sd">:param multiPV: number of alternative move suggestions</span>
+<span class="sd">:returns: boolean indicating the success</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="s1">&#39;MultiPV&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optionsDict</span><span class="p">:</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">uciSetOption</span><span class="p">(</span><span class="s1">&#39;MultiPV&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">multiPV</span><span class="p">)):</span>
+    <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">if</span> <span class="s1">&#39;UCI_AnalyseMode&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optionsDict</span><span class="p">:</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">uciSetOption</span><span class="p">(</span><span class="s1">&#39;UCI_AnalyseMode&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">uciGo</span><span class="p">()</span></div>
+
+ <span class="k">def</span> <span class="nf">setELO</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elo</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;UCI_Elo&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optionsDict</span> <span class="ow">and</span> <span class="s1">&#39;UCI_LimitStrength&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optionsDict</span><span class="p">):</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="n">eloDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optionsDict</span><span class="p">[</span><span class="s1">&#39;UCI_Elo&#39;</span><span class="p">]</span>
+  <span class="k">if</span> <span class="n">elo</span> <span class="o">==</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span>
+   <span class="n">elo</span> <span class="o">=</span><span class="n">eloDict</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="mi">1</span>
+  <span class="k">elif</span> <span class="n">elo</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
+   <span class="n">elo</span> <span class="o">=</span> <span class="n">eloDict</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">start</span>
+  <span class="k">if</span> <span class="n">elo</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">eloDict</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]:</span>
+   <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ChessEngine: elo </span><span class="si">{}</span><span class="s1"> not in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elo</span><span class="p">,</span> <span class="n">eloDict</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]))</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">uciSetOption</span><span class="p">(</span><span class="s1">&#39;UCI_Elo&#39;</span><span class="p">,</span> <span class="n">elo</span><span class="p">):</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">uciSetOption</span><span class="p">(</span><span class="s1">&#39;UCI_LimitStrength&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="k">return</span> <span class="kc">True</span></div>
+  
+<span class="c1"># ---------------------------------------------------------------------</span>
+<span class="c1"># ---------------------------------------------------------------------</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+ 
+ <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;C:/Users/Reinh/chess_engines&#39;</span><span class="p">)</span>
+ <span class="n">stockfish12</span> <span class="o">=</span> <span class="s1">&#39;stockfish_12_win_x64_bmi2/stockfish_20090216_x64_bmi2.exe&#39;</span>
+ <span class="n">togaII4</span> <span class="o">=</span> <span class="s1">&#39;TogaII40/Windows/TogaII_40_intelPGO_x64.exe&#39;</span>
+ <span class="n">komodo12</span> <span class="o">=</span> <span class="s1">&#39;komodo-12.1.1_5a8fc2/Windows/komodo-12.1.1-64bit-bmi2.exe&#39;</span>
+ <span class="n">fritz17</span> <span class="o">=</span> <span class="s1">&#39;Fritz17/Fritz17.exe&#39;</span>
+ <span class="n">lcZero26</span> <span class="o">=</span> <span class="s1">&#39;lc0-v0.26.3-windows-gpu-opencl/lc0.exe&#39;</span>
+ <span class="n">raubfischGTZ23</span> <span class="o">=</span> <span class="s1">&#39;RaubfischX44_and_GTZ23/GTZ23/RaubfischGTZ23_nn_sl-bmi2.exe&#39;</span>
+ 
+ <span class="n">executable</span> <span class="o">=</span> <span class="n">stockfish12</span>
+
+ <span class="k">def</span> <span class="nf">waitForData</span><span class="p">(</span><span class="n">engine</span><span class="p">):</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QThread</span><span class="o">.</span><span class="n">msleep</span><span class="p">(</span><span class="n">engine</span><span class="o">.</span><span class="n">timeout_msec</span><span class="p">)</span>
+   <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QCoreApplication</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
+   <span class="k">if</span> <span class="n">engine</span><span class="o">.</span><span class="n">isReady</span><span class="p">():</span>
+    <span class="k">return</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----&gt; waiting </span><span class="si">{}</span><span class="s1"> * </span><span class="si">{}</span><span class="s1"> ms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">engine</span><span class="o">.</span><span class="n">timeout_msec</span><span class="p">))</span>
+
+ <span class="k">def</span> <span class="nf">printPlayResult</span><span class="p">(</span><span class="n">engine</span><span class="p">):</span>
+  <span class="n">playResult</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">playResult</span>
+  <span class="n">rootBoard</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">(</span><span class="n">engine</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">fen</span><span class="p">())</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;best move&#39;</span><span class="p">,</span> <span class="n">playResult</span><span class="o">.</span><span class="n">move</span><span class="p">))</span>
+  <span class="k">if</span> <span class="n">playResult</span><span class="o">.</span><span class="n">ponder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;expected response&#39;</span><span class="p">,</span> <span class="n">playResult</span><span class="o">.</span><span class="n">ponder</span><span class="p">))</span>
+  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+   <span class="n">infoList</span> <span class="o">=</span> <span class="p">[</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">infoList</span> <span class="o">=</span> <span class="n">playResult</span><span class="o">.</span><span class="n">info</span>
+  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">infoDict</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">infoList</span><span class="p">):</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;info #</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+   <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">infoDict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span> 
+    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;pv&#39;</span><span class="p">:</span>
+     <span class="n">pvString</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+     <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">moveList</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+      <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">moveList</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+       <span class="n">moveList</span> <span class="o">=</span> <span class="p">[</span><span class="n">moveList</span><span class="p">]</span>
+      <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">moveList</span><span class="p">:</span> 
+       <span class="n">rootBoard</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">move</span><span class="p">)</span>
+       <span class="n">uciMove</span> <span class="o">=</span> <span class="n">move</span><span class="o">.</span><span class="n">uci</span><span class="p">()</span>
+       <span class="k">if</span> <span class="n">rootBoard</span><span class="o">.</span><span class="n">is_checkmate</span><span class="p">():</span>
+        <span class="n">uciMove</span> <span class="o">+=</span> <span class="s1">&#39;#&#39;</span>
+       <span class="k">elif</span> <span class="n">rootBoard</span><span class="o">.</span><span class="n">is_check</span><span class="p">():</span>
+        <span class="n">uciMove</span> <span class="o">+=</span> <span class="s1">&#39;+&#39;</span>
+       <span class="k">if</span> <span class="n">engine</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">turn</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+         <span class="n">pvString</span> <span class="o">+=</span> <span class="s1">&#39;1.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uciMove</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+         <span class="n">pvString</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">uciMove</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+         <span class="n">pvString</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uciMove</span><span class="p">)</span>
+       <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+         <span class="n">pvString</span> <span class="o">+=</span> <span class="s1">&#39;1...</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uciMove</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+         <span class="n">pvString</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">uciMove</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+         <span class="n">pvString</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uciMove</span><span class="p">)</span>
+       <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">pvString</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+ <span class="k">def</span> <span class="nf">runChessEngine</span><span class="p">():</span>
+  <span class="k">global</span> <span class="n">executable</span>
+  <span class="n">fenList</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s2">&quot;3rr3/2p3p1/4N3/3b4/1p3P2/2PBB3/kPQ3PP/3R2K1 w - - 0 1&quot;</span><span class="p">,</span> 
+  <span class="s2">&quot;rn3r1k/pp4pp/2p1Q2N/q2np3/4N2P/2PP4/PP3P2/R3K2R w KQ - 0 1&quot;</span><span class="p">,</span> 
+  <span class="s2">&quot;r2rkn2/1R1N2p1/2p1B2p/4p1PP/p1P2b2/5P2/P3K3/1R6 w - - 0 1&quot;</span><span class="p">,</span> 
+  <span class="s2">&quot;2r4k/p2R4/1p2P3/5p2/3PbbpP/BP6/P1r5/4Q1K1 b - - 0 1&quot;</span>
+  <span class="p">]</span>
+  <span class="n">engine</span> <span class="o">=</span> <span class="n">ChessEngine</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">Limit</span><span class="p">(</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">15</span><span class="p">),</span>  <span class="n">log</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+  <span class="n">waitForData</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">engine</span><span class="o">.</span><span class="n">idDict</span><span class="p">):</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">engine</span><span class="o">.</span><span class="n">idDict</span><span class="p">[</span><span class="n">item</span><span class="p">]))</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Options:&#39;</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">engine</span><span class="o">.</span><span class="n">optionsDict</span><span class="p">):</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">engine</span><span class="o">.</span><span class="n">optionsDict</span><span class="p">[</span><span class="n">opt</span><span class="p">]))</span>
+  <span class="k">for</span> <span class="n">fen</span> <span class="ow">in</span> <span class="n">fenList</span><span class="p">:</span>
+   <span class="n">engine</span><span class="o">.</span><span class="n">uciNewGame</span><span class="p">(</span><span class="n">fen</span> <span class="o">=</span> <span class="n">fen</span><span class="p">)</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;------------------------- startPlay -------------------------&#39;</span><span class="p">)</span>
+   <span class="n">engine</span><span class="o">.</span><span class="n">startPlay</span><span class="p">()</span>
+   <span class="n">waitForData</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+   <span class="n">printPlayResult</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----------------------- startAnalysis -----------------------&#39;</span><span class="p">)</span>
+   <span class="n">engine</span><span class="o">.</span><span class="n">startAnalysis</span><span class="p">(</span><span class="n">multiPV</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+   <span class="n">waitForData</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+   <span class="n">printPlayResult</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+
+ <span class="kn">import</span> <span class="nn">sys</span>
+ <span class="kn">from</span> <span class="nn">eco</span> <span class="kn">import</span> <span class="n">ECODatabase</span> 
+ <span class="k">def</span> <span class="nf">scoreECOTable</span><span class="p">():</span>
+  <span class="k">global</span> <span class="n">executable</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">depth</span>
+  <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.tsv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basename</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Scoring </span><span class="si">{}</span><span class="s1"> -------------&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+  <span class="n">eco</span> <span class="o">=</span> <span class="n">ECODatabase</span><span class="p">(</span><span class="n">tsvPattern</span> <span class="o">=</span> <span class="n">filename</span><span class="p">)</span>
+  <span class="n">fenList</span> <span class="o">=</span> <span class="n">eco</span><span class="o">.</span><span class="n">fen2Id</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+  <span class="n">engine</span> <span class="o">=</span> <span class="n">ChessEngine</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span> 
+   <span class="n">limit</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">Limit</span><span class="p">(</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span><span class="p">),</span>  
+   <span class="n">timeout_msec</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span> 
+   <span class="n">log</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+  <span class="n">waitForData</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+  <span class="n">nTotal</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fenList</span><span class="p">)</span>
+  <span class="n">fen2score</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;fen&#39;</span><span class="p">,</span><span class="n">executable</span><span class="p">])]</span>
+  <span class="n">scmin</span><span class="p">,</span> <span class="n">scmean</span><span class="p">,</span> <span class="n">scmax</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">fen</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fenList</span><span class="p">):</span>
+   <span class="n">engine</span><span class="o">.</span><span class="n">startAnalysis</span><span class="p">(</span><span class="n">multiPV</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+   <span class="n">waitForData</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">engine</span><span class="o">.</span><span class="n">playResult</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">relative</span><span class="p">))</span>
+   <span class="n">scmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">scmin</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+   <span class="n">scmean</span> <span class="o">+=</span> <span class="n">score</span><span class="o">/</span><span class="n">nTotal</span>
+   <span class="n">scmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">scmax</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+   <span class="n">fen2score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fen</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">score</span><span class="p">)]))</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">{}</span><span class="s1"> of </span><span class="si">{}</span><span class="s1"> completed&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">nTotal</span><span class="p">))</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Scores </span><span class="si">{}</span><span class="s1"> &lt;= </span><span class="si">{:.1f}</span><span class="s1"> &lt;= </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scmin</span><span class="p">,</span> <span class="n">scmean</span><span class="p">,</span> <span class="n">scmax</span><span class="p">))</span>
+
+  <span class="n">fscFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">eco</span><span class="o">.</span><span class="n">ecoDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.fsc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basename</span><span class="p">))</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fscFile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+   <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fen2score</span><span class="p">))</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Result filed @ </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fscFile</span><span class="p">))</span>
+
+ <span class="n">app</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QCoreApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+
+ <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">runChessEngine</span><span class="p">)</span>
+ <span class="c1"># PyQt5.QtCore.QTimer.singleShot(10, scoreECOTable)</span>
+ 
+ <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+ <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;completed&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Reinhard März.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

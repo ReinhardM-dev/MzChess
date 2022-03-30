@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>gametreeview &mdash; MzChess 1.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> MzChess
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MzChess</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>gametreeview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gametreeview</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;Game Editor</span>
+<span class="sd">================================</span>
+<span class="sd">The *game* editor is based on Qt&#39;s QTreeWidget. </span>
+
+<span class="sd">|GameEditor|</span>
+<span class="sd">It has 2 types of lines:</span>
+
+<span class="sd"> * regular moves where all columns have a white background</span>
+<span class="sd"> * beginning of a variant where the middle columns have a grey background</span>
+
+<span class="sd">The tree widget has 4 colums:</span>
+
+<span class="sd"> #. *Move* shows the actual move or the beginning of a variant in SAN notation </span>
+<span class="sd"> #. *Ann* shows the annotation, i.e. a symbolic move assessment</span>
+<span class="sd"> #. *Pos* shows the position assessment</span>
+<span class="sd"> #. *Score* shows the engine or material score of the last move in pawns, material score ending with M</span>
+<span class="sd"> #. *Comment* shows either the move comment or starting comment of a variant</span>
+<span class="sd"> </span>
+<span class="sd">By clicking the annotation (*Ann*) and position assessment (*Pos*) fields, a popup dialog</span>
+<span class="sd">opens which allows to change the contents   </span>
+<span class="sd">.. |GameEditor| image:: gameEditor.png</span>
+<span class="sd">  :width: 800</span>
+<span class="sd">  :alt: Game Editor</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtCore</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtGui</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtWidgets</span>
+
+<span class="kn">import</span> <span class="nn">chess</span><span class="o">,</span> <span class="nn">chess.pgn</span>
+<span class="kn">from</span> <span class="nn">chessengine</span> <span class="kn">import</span> <span class="n">PGNEval_REGEX</span>
+<span class="kn">from</span> <span class="nn">specialDialogs</span> <span class="kn">import</span> <span class="n">ButtonLine</span><span class="p">,</span> <span class="n">TextEdit</span><span class="p">,</span> <span class="n">treeWidgetItemPos</span>
+
+<div class="viewcode-block" id="GameTreeView"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView">[docs]</a><span class="k">class</span> <span class="nc">GameTreeView</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidget</span><span class="p">):</span>
+ <span class="sd">&#39;&#39;&#39;Game Editor object</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+ <span class="n">itemFlags</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsEnabled</span> <span class="o">|</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsSelectable</span>
+ <span class="n">inactiveBrush</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QBrush</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="s1">&#39;lightgray&#39;</span><span class="p">))</span>
+ <span class="n">colorChars</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span>
+ <span class="n">endGameSymbols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;1-0&#39;</span><span class="p">,</span> <span class="s1">&#39;0-1&#39;</span><span class="p">,</span> <span class="s1">&#39;1/2-1/2&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">]</span>
+ <span class="n">endGameDescription</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;1-0&#39;</span>      <span class="p">:</span> <span class="s1">&#39;White wins&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;0-1&#39;</span>       <span class="p">:</span> <span class="s1">&#39;Black wins&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;1/2-1/2&#39;</span> <span class="p">:</span> <span class="s1">&#39;Drawn game&#39;</span><span class="p">,</span> 
+                                  <span class="s1">&#39;*&#39;</span>          <span class="p">:</span> <span class="s1">&#39;game in progress&#39;</span> <span class="p">}</span>
+ <span class="n">annotationSymbols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="s1">&#39;!!&#39;</span><span class="p">,</span> <span class="s1">&#39;??&#39;</span><span class="p">,</span> <span class="s1">&#39;!?&#39;</span><span class="p">,</span> <span class="s1">&#39;?!&#39;</span><span class="p">]</span>
+ <span class="n">positionSymbols</span> <span class="o">=</span>  <span class="p">{</span> <span class="s1">&#39;&#39;</span>       <span class="p">:</span>  <span class="mi">0</span><span class="p">,</span>
+                              <span class="s1">&#39;=&#39;</span>     <span class="p">:</span> <span class="mi">10</span><span class="p">,</span> 
+                              <span class="s1">&#39;~&#39;</span>     <span class="p">:</span> <span class="mi">13</span><span class="p">,</span> 
+                              <span class="s1">&#39;+=&#39;</span>   <span class="p">:</span> <span class="mi">14</span><span class="p">,</span> 
+                              <span class="s1">&#39;=+&#39;</span>   <span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+                              <span class="s1">&#39;+/-&#39;</span> <span class="p">:</span> <span class="mi">16</span><span class="p">,</span> 
+                              <span class="s1">&#39;-/+&#39;</span> <span class="p">:</span> <span class="mi">17</span><span class="p">,</span> 
+                              <span class="s1">&#39;+-&#39;</span>   <span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+                              <span class="s1">&#39;-+&#39;</span>   <span class="p">:</span> <span class="mi">19</span><span class="p">,</span>
+                              <span class="s1">&#39;+--&#39;</span> <span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                              <span class="s1">&#39;-++&#39;</span> <span class="p">:</span> <span class="mi">21</span> <span class="p">}</span>
+ <span class="n">symbolDescription</span> <span class="o">=</span>  <span class="p">{</span> <span class="s1">&#39;&#39;</span>    <span class="p">:</span> <span class="s1">&#39;null annotation&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;!&#39;</span>     <span class="p">:</span> <span class="s1">&#39;good move&#39;</span><span class="p">,</span> 
+                              <span class="s1">&#39;?&#39;</span>     <span class="p">:</span> <span class="s1">&#39;poor move&#39;</span><span class="p">,</span> 
+                              <span class="s1">&#39;!!&#39;</span>   <span class="p">:</span> <span class="s1">&#39;brilliant move&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;??&#39;</span>   <span class="p">:</span> <span class="s1">&#39;blunder&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;!?&#39;</span>   <span class="p">:</span> <span class="s1">&#39;intesting move&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;?!&#39;</span>   <span class="p">:</span> <span class="s1">&#39;dubious move&#39;</span><span class="p">,</span> 
+                              <span class="s1">&#39;=&#39;</span>     <span class="p">:</span> <span class="s1">&#39;even position&#39;</span><span class="p">,</span> 
+                              <span class="s1">&#39;~&#39;</span>     <span class="p">:</span> <span class="s1">&#39;unclear position&#39;</span><span class="p">,</span> 
+                              <span class="s1">&#39;+=&#39;</span>   <span class="p">:</span> <span class="s1">&#39;slight advantage for white&#39;</span><span class="p">,</span> 
+                              <span class="s1">&#39;=+&#39;</span>   <span class="p">:</span> <span class="s1">&#39;slight advantage for black&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;+/-&#39;</span> <span class="p">:</span> <span class="s1">&#39;moderate advantage for white&#39;</span><span class="p">,</span> 
+                              <span class="s1">&#39;-/+&#39;</span> <span class="p">:</span> <span class="s1">&#39;moderate advantage for black&#39;</span><span class="p">,</span> 
+                              <span class="s1">&#39;+-&#39;</span>   <span class="p">:</span> <span class="s1">&#39;decisive advantage for white&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;-+&#39;</span>   <span class="p">:</span> <span class="s1">&#39;decisive advantage for white&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;+--&#39;</span> <span class="p">:</span> <span class="s1">&#39;white should resign&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;-++&#39;</span> <span class="p">:</span> <span class="s1">&#39;black should resign&#39;</span> <span class="p">}</span>
+ <span class="n">piecePawnScoreDict</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">chess</span><span class="o">.</span><span class="n">PAWN</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+  <span class="n">chess</span><span class="o">.</span><span class="n">KNIGHT</span> <span class="p">:</span> <span class="mi">3</span><span class="p">,</span> 
+  <span class="n">chess</span><span class="o">.</span><span class="n">BISHOP</span> <span class="p">:</span> <span class="mi">3</span><span class="p">,</span> 
+  <span class="n">chess</span><span class="o">.</span><span class="n">ROOK</span> <span class="p">:</span> <span class="mi">5</span><span class="p">,</span> 
+  <span class="n">chess</span><span class="o">.</span><span class="n">QUEEN</span> <span class="p">:</span> <span class="mi">9</span>
+ <span class="p">}</span>
+
+ <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">GameTreeView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setSelectionBehavior</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SelectRows</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setSelectionMode</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SingleSelection</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">StrongFocus</span><span class="p">)</span>
+  <span class="n">scUp</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QShortcut</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+  <span class="n">scUp</span><span class="o">.</span><span class="n">setKey</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_Up</span><span class="p">)</span>
+  <span class="n">scUp</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_sc_activated</span><span class="p">)</span>
+  <span class="n">scDown</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QShortcut</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+  <span class="n">scDown</span><span class="o">.</span><span class="n">setKey</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_Down</span><span class="p">)</span>
+  <span class="n">scDown</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_sc_activated</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameChangedSignal</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_clear</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setHeaderLabels</span><span class="p">([</span><span class="s1">&#39;Move&#39;</span><span class="p">,</span> <span class="s1">&#39;Ann&#39;</span><span class="p">,</span> <span class="s1">&#39;Pos&#39;</span><span class="p">,</span> <span class="s1">&#39;Score&#39;</span><span class="p">,</span> <span class="s1">&#39;Comment&#39;</span><span class="p">])</span>
+  <span class="n">headerItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">headerItem</span><span class="p">()</span>
+  <span class="n">headerItem</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;SAN notation&#39;</span><span class="p">)</span>
+  <span class="n">headerItem</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Move assessments&#39;</span><span class="p">)</span>
+  <span class="n">headerItem</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Positional assessments&#39;</span><span class="p">)</span>
+  <span class="n">headerItem</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;Score [pawns] (&lt;float&gt;M == material score)&#39;</span><span class="p">)</span>
+  <span class="n">headerItem</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;Comment of move or variation&#39;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_resetColumnWidth</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_clicked</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">annotationLine</span> <span class="o">=</span> <span class="n">ButtonLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotationSymbols</span><span class="p">,</span> <span class="n">hintDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbolDescription</span><span class="p">,</span> <span class="n">pointSize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Move Annotation&#39;</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">positionLine</span> <span class="o">=</span> <span class="n">ButtonLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positionSymbols</span><span class="p">,</span> <span class="n">hintDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbolDescription</span><span class="p">,</span> <span class="n">pointSize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Position&#39;</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">endGameLine</span> <span class="o">=</span> <span class="n">ButtonLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endGameSymbols</span><span class="p">,</span> <span class="n">hintDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">endGameDescription</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;End Game&#39;</span><span class="p">,</span>  <span class="n">pointSize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">commentEdit</span> <span class="o">=</span> <span class="n">TextEdit</span><span class="p">(</span><span class="s1">&#39;Comment ...&#39;</span><span class="p">,</span> <span class="n">pointSize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+  
+ <span class="k">def</span> <span class="nf">_resetColumnWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="n">test</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">()</span>
+  <span class="n">zeroWidth</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">fontMetrics</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">TextSingleLine</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="o">*</span><span class="n">zeroWidth</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="o">*</span><span class="n">zeroWidth</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="o">*</span><span class="n">zeroWidth</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="o">*</span><span class="n">zeroWidth</span><span class="p">)</span>
+  
+ <span class="k">def</span> <span class="nf">_clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">game</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">GameTreeView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GameTreeView.setup"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.setup">[docs]</a> <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notifyGameNodeSelectedSignal</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">],</span> 
+                       <span class="n">notifyGameChangedSignal</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Set up of the game editor</span>
+<span class="sd">  </span>
+<span class="sd">:param notifyGameNodeSelectedSignal: signal to be emitted if a game node is selected</span>
+<span class="sd">:param notifyGameChangedSignal: signal to be emitted if the loaded game is changed</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span> <span class="o">=</span> <span class="n">notifyGameNodeSelectedSignal</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameChangedSignal</span> <span class="o">=</span> <span class="n">notifyGameChangedSignal</span></div>
+
+<div class="viewcode-block" id="GameTreeView.addVariant"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.addVariant">[docs]</a> <span class="k">def</span> <span class="nf">addVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameNode</span> <span class="p">:</span>  <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Adds a new variant, parent node must exist in the editor</span>
+<span class="sd">  </span>
+<span class="sd">:param gameNode: game node to be added (must not be main_variation !!)</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">:</span>
+   <span class="k">return</span>
+  <span class="k">if</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">:</span>
+   <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Parent Node </span><span class="si">{}</span><span class="s1"> not found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span>
+  <span class="k">if</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">is_main_variation</span><span class="p">():</span>
+   <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Node </span><span class="si">{}</span><span class="s1"> is not a variant&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameNode</span><span class="p">))</span>
+
+  <span class="n">parent</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">variations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">parentIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="n">parentItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">[</span><span class="n">parentIndex</span><span class="p">]</span>
+  <span class="n">newVariant</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+   <span class="n">newVariant</span><span class="o">.</span><span class="n">setBackground</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inactiveBrush</span><span class="p">)</span>
+  <span class="n">newVariant</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itemFlags</span><span class="p">)</span>
+  <span class="n">board</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">board</span><span class="p">()</span>
+  <span class="n">san</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">san</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">move</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">turn</span><span class="p">:</span>
+   <span class="n">moveText</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">fullmove_number</span><span class="p">,</span> <span class="n">san</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">moveText</span> <span class="o">=</span> <span class="s1">&#39;... </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">san</span><span class="p">)</span>
+  <span class="n">newVariant</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> ...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">moveText</span><span class="p">))</span>
+  <span class="n">newVariant</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">starting_comment</span><span class="p">)</span>
+  <span class="n">parentItem</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">newVariant</span><span class="p">)</span>
+
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">newVariant</span><span class="p">)</span>
+
+  <span class="bp">self</span><span class="o">.</span><span class="n">addGameNodes</span><span class="p">(</span><span class="n">gameNode</span><span class="p">,</span> <span class="n">parentItem</span> <span class="o">=</span> <span class="n">newVariant</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameTreeView.addGameNodes"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.addGameNodes">[docs]</a> <span class="k">def</span> <span class="nf">addGameNodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameNode</span> <span class="p">:</span>  <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">,</span>  
+                                     <span class="n">parentItem</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Adds 1 or more nodes, parent node of first node must exist in the editor</span>
+<span class="sd">  </span>
+<span class="sd">:param gameNode: game node to be added (must be main_variation !!)</span>
+<span class="sd">:param parentItem: parent item of the gameNode (used only for internal use)</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">return</span>
+  <span class="k">if</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">:</span>
+   <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Parent Node </span><span class="si">{}</span><span class="s1"> not found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span>
+  <span class="n">parent</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span>
+  <span class="k">if</span> <span class="n">parentItem</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">:</span>
+    <span class="k">return</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">is_main_variation</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Node </span><span class="si">{}</span><span class="s1"> is not in the main variation&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameNode</span><span class="p">))</span>
+   <span class="n">parentIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+   <span class="n">parentItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">[</span><span class="n">parentIndex</span><span class="p">]</span>
+  <span class="n">board</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">board</span><span class="p">()</span>
+  <span class="k">while</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+   <span class="n">newNode</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">()</span>
+   <span class="n">newNode</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itemFlags</span><span class="p">)</span>
+   <span class="n">parent</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span>
+   <span class="n">san</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">san</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">move</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">turn</span><span class="p">:</span>
+    <span class="n">moveText</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">fullmove_number</span><span class="p">,</span> <span class="n">san</span><span class="p">)</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">moveText</span> <span class="o">=</span> <span class="s1">&#39;... </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">san</span><span class="p">)</span>
+   <span class="n">newNode</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">moveText</span><span class="p">)</span>
+   <span class="n">newNode</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findNAGSymbol</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span>  <span class="n">gameNode</span><span class="p">))</span>
+   <span class="n">newNode</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findNAGSymbol</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span>  <span class="n">gameNode</span><span class="p">))</span>
+   <span class="n">comment</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">comment</span>
+   <span class="n">comment</span> <span class="o">=</span> <span class="n">comment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">n&#39;</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">is_checkmate</span><span class="p">():</span>
+    <span class="n">scoreText</span> <span class="o">=</span> <span class="s1">&#39;MATE&#39;</span>
+   <span class="k">elif</span> <span class="n">board</span><span class="o">.</span><span class="n">is_stalemate</span><span class="p">():</span>
+    <span class="n">scoreText</span> <span class="o">=</span> <span class="s1">&#39;SMATE&#39;</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">scoreText</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+     <span class="n">match</span> <span class="o">=</span> <span class="n">PGNEval_REGEX</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+     <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">break</span>
+     <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;%&#39;</span> <span class="ow">or</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="si">%e</span><span class="s1">val&#39;</span><span class="p">:</span>
+      <span class="n">scoreText</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+     <span class="n">comment</span> <span class="o">=</span> <span class="n">comment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scoreText</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+     <span class="n">pieceMap</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()</span><span class="o">.</span><span class="n">piece_map</span><span class="p">()</span>
+     <span class="n">pawnScore</span> <span class="o">=</span> <span class="mi">0</span>
+     <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pieceMap</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+      <span class="k">if</span> <span class="n">piece</span><span class="o">.</span><span class="n">piece_type</span> <span class="o">!=</span> <span class="n">chess</span><span class="o">.</span><span class="n">KING</span><span class="p">:</span>
+       <span class="k">if</span> <span class="n">piece</span><span class="o">.</span><span class="n">color</span> <span class="o">==</span> <span class="n">chess</span><span class="o">.</span><span class="n">WHITE</span><span class="p">:</span>
+        <span class="n">pawnScore</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">piecePawnScoreDict</span><span class="p">[</span><span class="n">piece</span><span class="o">.</span><span class="n">piece_type</span><span class="p">]</span>
+       <span class="k">else</span><span class="p">:</span>
+        <span class="n">pawnScore</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">piecePawnScoreDict</span><span class="p">[</span><span class="n">piece</span><span class="o">.</span><span class="n">piece_type</span><span class="p">]</span>
+     <span class="n">scoreText</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">M&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pawnScore</span><span class="p">)</span>
+   <span class="n">newNode</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">scoreText</span><span class="p">)</span>
+   <span class="n">newNode</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+   
+   <span class="n">parentItem</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">newNode</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">newNode</span><span class="p">)</span>
+   <span class="k">for</span> <span class="n">variantNode</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">variations</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">addVariant</span><span class="p">(</span><span class="n">variantNode</span><span class="p">)</span>
+    
+   <span class="n">board</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">move</span><span class="p">)</span>
+   <span class="n">gameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span></div>
+   
+<div class="viewcode-block" id="GameTreeView.setGame"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.setGame">[docs]</a> <span class="k">def</span> <span class="nf">setGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Clears the editor and sets new game</span>
+<span class="sd">  </span>
+<span class="sd">:param game: game to be set</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_clear</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">game</span> <span class="o">=</span> <span class="n">game</span>
+  <span class="n">master</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">()</span>
+  <span class="n">master</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itemFlags</span><span class="p">)</span>
+  <span class="n">master</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">comment</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">addTopLevelItem</span><span class="p">(</span><span class="n">master</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">]</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span> <span class="o">=</span> <span class="p">[</span><span class="n">master</span><span class="p">]</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">addGameNodes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
+  <span class="n">resultItem</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">()</span>
+  <span class="n">resultItem</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">NoItemFlags</span><span class="p">)</span>
+  <span class="n">resultItem</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">])</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resultItem</span><span class="p">)</span>
+  <span class="n">master</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">resultItem</span><span class="p">)</span>
+  <span class="n">master</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameTreeView.selectNodeItem"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.selectNodeItem">[docs]</a> <span class="k">def</span> <span class="nf">selectNodeItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameNode</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Selects a game node</span>
+<span class="sd">  </span>
+<span class="sd">:param gameNode: game node to be selected</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">:</span>
+   <span class="n">selIndex</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">selIndex</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">expandItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">])</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QItemSelectionModel</span><span class="o">.</span><span class="n">SelectCurrent</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameTreeView.selectSubnodeItem"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.selectSubnodeItem">[docs]</a> <span class="k">def</span> <span class="nf">selectSubnodeItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameNode</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">,</span> <span class="nb">next</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+  <span class="sd">&#39;&#39;&#39;Selects the next or previous variant</span>
+<span class="sd">  </span>
+<span class="sd">:param gameNode: reference game node</span>
+<span class="sd">:param next: if True select the next variant, else select previous variant</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">:</span>
+   <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;selectSubnodeItem/gameNode: </span><span class="si">{}</span><span class="s1"> not found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameNode</span><span class="p">))</span>
+  <span class="n">parentNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span>
+  <span class="k">if</span> <span class="n">parentNode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">return</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="nb">next</span><span class="p">:</span>
+   <span class="c1"># go back to the first variation</span>
+   <span class="n">newNodeIndex</span> <span class="o">=</span> <span class="n">parentNode</span><span class="o">.</span><span class="n">variations</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+   <span class="k">if</span> <span class="n">newNodeIndex</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">selectNodeItem</span><span class="p">(</span><span class="n">parentNode</span><span class="o">.</span><span class="n">variations</span><span class="p">[</span><span class="n">newNodeIndex</span><span class="p">])</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="c1"># go to next variation</span>
+   <span class="n">newNodeIndex</span> <span class="o">=</span> <span class="n">parentNode</span><span class="o">.</span><span class="n">variations</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+   <span class="k">if</span> <span class="n">newNodeIndex</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">parentNode</span><span class="o">.</span><span class="n">variations</span><span class="p">):</span>
+    <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">expandItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">])</span>
+    <span class="n">newGameNode</span> <span class="o">=</span> <span class="n">parentNode</span><span class="o">.</span><span class="n">variations</span><span class="p">[</span><span class="n">newNodeIndex</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">selectNodeItem</span><span class="p">(</span><span class="n">newGameNode</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">newGameNode</span><span class="p">)</span></div>
+    
+ <span class="k">def</span> <span class="nf">_findNAGSymbol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isAnnotation</span> <span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>  <span class="n">gameNode</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+  <span class="k">if</span> <span class="n">isAnnotation</span><span class="p">:</span>
+   <span class="k">for</span> <span class="n">nag</span><span class="p">,</span> <span class="n">sym</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotationSymbols</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">nag</span> <span class="ow">in</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">nags</span><span class="p">:</span>
+     <span class="k">return</span> <span class="n">sym</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="k">for</span> <span class="n">sym</span><span class="p">,</span> <span class="n">nag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">positionSymbols</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">nag</span> <span class="ow">in</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">nags</span><span class="p">:</span>
+     <span class="k">return</span> <span class="n">sym</span>
+
+ <span class="k">def</span> <span class="nf">_updateNAGs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isAnnotation</span> <span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>  <span class="n">gameNode</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameNode</span><span class="p">,</span>  <span class="n">nag</span> <span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+  <span class="n">newNAGs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">nag</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">isAnnotation</span><span class="p">:</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">140</span><span class="p">)</span>
+   <span class="k">for</span> <span class="n">_nag</span> <span class="ow">in</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">nags</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">_nag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+     <span class="n">newNAGs</span> <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">_nag</span><span class="p">)</span>
+   <span class="n">newNAGs</span> <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nag</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">newNAGs</span>
+  
+ <span class="k">def</span> <span class="nf">_editComment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span> <span class="p">:</span>  <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">commentEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">n&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">commentEdit</span><span class="o">.</span><span class="n">exec</span><span class="p">():</span>
+   <span class="k">return</span> <span class="kc">None</span>
+  <span class="n">comment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">commentEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">n&#39;</span><span class="p">)</span>
+  <span class="n">item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+  <span class="n">score</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">score</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;M&#39;</span><span class="p">:</span>
+   <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;[</span><span class="si">%e</span><span class="s1">val </span><span class="si">{}</span><span class="s1">] </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">comment</span>
+
+ <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QModelIndex</span><span class="p">)</span>
+ <span class="k">def</span> <span class="nf">on_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+  <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemFromIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+  <span class="n">column</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">column</span><span class="p">()</span>
+  <span class="n">isVariant</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="n">parent</span> <span class="o">=</span> <span class="n">index</span>
+  <span class="k">while</span> <span class="n">parent</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
+   <span class="n">isVariant</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">isVariant</span>
+   <span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">isVariant</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="p">:</span>
+     <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+     <span class="n">gameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
+     <span class="n">gameNode</span><span class="o">.</span><span class="n">starting_comment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editComment</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">comment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editComment</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+     <span class="n">gameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span>
+    <span class="k">return</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">:</span>
+    <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="n">gameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span>
+   <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">endGameLine</span><span class="o">.</span><span class="n">setFocus</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">endGameLine</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">treeWidgetItemPos</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+     <span class="n">endGameID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">endGameLine</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">endGameSymbols</span><span class="p">[</span><span class="n">endGameID</span><span class="p">]</span>
+     <span class="n">item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endGameSymbols</span><span class="p">[</span><span class="n">endGameID</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
+     <span class="k">return</span>
+   <span class="k">elif</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">annotationLine</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">treeWidgetItemPos</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+    <span class="n">nag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotationLine</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+    <span class="n">gameNode</span><span class="o">.</span><span class="n">nags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateNAGs</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">gameNode</span><span class="p">,</span> <span class="n">nag</span><span class="p">)</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findNAGSymbol</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span>  <span class="n">gameNode</span><span class="p">))</span>
+   <span class="k">elif</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">positionLine</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">treeWidgetItemPos</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+    <span class="n">nag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">positionLine</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+    <span class="n">gameNode</span><span class="o">.</span><span class="n">nags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateNAGs</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">gameNode</span><span class="p">,</span> <span class="n">nag</span><span class="p">)</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findNAGSymbol</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span>  <span class="n">gameNode</span><span class="p">))</span>
+   <span class="k">elif</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+    <span class="n">gameNode</span><span class="o">.</span><span class="n">comment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editComment</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_emitGameChanged</span><span class="p">()</span>
+  
+ <span class="k">def</span> <span class="nf">_isVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span> <span class="p">:</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="n">isTrue</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="n">parent</span> <span class="o">=</span> <span class="n">item</span>
+  <span class="k">while</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">isTrue</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">isTrue</span>
+   <span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">isTrue</span>
+
+<div class="viewcode-block" id="GameTreeView.removeVariant"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.removeVariant">[docs]</a> <span class="k">def</span> <span class="nf">removeVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Remove variant, if currently selected item is a variant</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+   <span class="n">parent</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+   <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">return</span>
+   <span class="n">index</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">indexOfChild</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="n">parent</span><span class="o">.</span><span class="n">removeChild</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+   <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
+   <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">remove_variation</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">_emitGameChanged</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GameTreeView.promoteVariant"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.promoteVariant">[docs]</a> <span class="k">def</span> <span class="nf">promoteVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Promote variant, if currently selected item is a variant</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+   <span class="n">parent</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+   <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">return</span>
+   <span class="n">index</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">indexOfChild</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">parent</span><span class="o">.</span><span class="n">takeChild</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">parent</span><span class="o">.</span><span class="n">insertChild</span><span class="p">(</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="n">parent</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
+    <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">promote</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_emitGameChanged</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GameTreeView.demoteVariant"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.demoteVariant">[docs]</a> <span class="k">def</span> <span class="nf">demoteVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Demote variant, if currently selected item is a variant</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+   <span class="n">parent</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+   <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">return</span>
+   <span class="n">index</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">indexOfChild</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">parent</span><span class="o">.</span><span class="n">childCount</span><span class="p">():</span>
+    <span class="n">parent</span><span class="o">.</span><span class="n">takeChild</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">parent</span><span class="o">.</span><span class="n">insertChild</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="n">parent</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
+    <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">demote</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_emitGameChanged</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GameTreeView.promoteVariant2Main"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.promoteVariant2Main">[docs]</a> <span class="k">def</span> <span class="nf">promoteVariant2Main</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="sd">&#39;&#39;&#39;Promote variant to main line, if currently selected item is a variant</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">parent</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">indexOfChild</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+     <span class="n">child</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">takeChild</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+     <span class="n">parent</span><span class="o">.</span><span class="n">insertChild</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">child</span><span class="p">)</span>
+    <span class="n">vChildren</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">takeChildren</span><span class="p">()</span>
+    <span class="n">gParent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+    <span class="n">fIndex</span> <span class="o">=</span> <span class="n">gParent</span><span class="o">.</span><span class="n">indexOfChild</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+    <span class="n">pChildren</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">takeChildren</span><span class="p">()</span>
+    <span class="n">mChildren</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">fIndex</span><span class="p">,</span> <span class="n">gParent</span><span class="o">.</span><span class="n">childCount</span><span class="p">())):</span>
+     <span class="n">mChildren</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">gParent</span><span class="o">.</span><span class="n">takeChild</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
+    <span class="n">gParent</span><span class="o">.</span><span class="n">addChildren</span><span class="p">(</span><span class="n">vChildren</span><span class="p">)</span>
+    <span class="n">vChildren</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addChildren</span><span class="p">(</span><span class="n">pChildren</span><span class="p">)</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">addChildren</span><span class="p">(</span><span class="n">mChildren</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">vChildren</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">parent</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
+    <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">promote_to_main</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_emitGameChanged</span><span class="p">()</span></div>
+
+ <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">()</span>
+ <span class="k">def</span> <span class="nf">on_sc_activated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="n">itemList</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">itemList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">itemList</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+   <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">itemList</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+   <span class="n">gameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">[</span><span class="n">row</span><span class="p">]</span>
+   <span class="n">sendingSC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">()</span>
+   <span class="k">if</span> <span class="n">sendingSC</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_Down</span><span class="p">:</span>
+    <span class="n">newGameNode</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">newGameNode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">newGameNode</span><span class="p">)</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itemBelow</span><span class="p">(</span><span class="n">itemList</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;next(</span><span class="si">{}</span><span class="s2">) == None&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameNode</span><span class="p">))</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itemAbove</span><span class="p">(</span><span class="n">itemList</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;previous(</span><span class="si">{}</span><span class="s2">) == None&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gameNode</span><span class="p">))</span>
+
+ <span class="k">def</span> <span class="nf">_emitGameChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameChangedSignal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameChangedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+ <span class="kn">import</span> <span class="nn">io</span><span class="o">,</span> <span class="nn">sys</span>
+ <span class="kn">from</span> <span class="nn">pgnParse</span> <span class="kn">import</span> <span class="n">read_game</span>
+
+ <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
+  <span class="n">isNewGame</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="n">newData</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;[Event &quot;matein2&quot;]</span>
+<span class="s2">[Site &quot;problem solved&quot;]</span>
+<span class="s2">[Date &quot;????.??.??&quot;]</span>
+<span class="s2">[Round &quot;?&quot;]</span>
+<span class="s2">[White &quot;?&quot;]</span>
+<span class="s2">[Black &quot;?&quot;]</span>
+<span class="s2">[Result &quot;*&quot;]</span>
+<span class="s2">[SetUp &quot;1&quot;]</span>
+<span class="s2">[PlyCount &quot;0&quot;]</span>
+<span class="s2">[FEN &quot;1k6/Rp1K4/1P5P/8/P7/3pP3/1p1P4/8 w - - 0 1&quot;]</span>
+<span class="s2">  </span>
+<span class="s2">1.h7 b1=Q! $20 {[% -4.80]} 2.h8=R# *&quot;&quot;&quot;</span>
+ <span class="k">else</span><span class="p">:</span>
+  <span class="n">isNewGame</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="n">ps</span> <span class="o">=</span> <span class="s2">&quot;C:/Users/Reinh/OneDrive/Dokumente/Schach/kingsPawn.pgn&quot;</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span>  <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+   <span class="n">newData</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+ 
+ <span class="n">pgn</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">newData</span><span class="p">)</span>
+ <span class="n">game</span> <span class="o">=</span> <span class="n">read_game</span><span class="p">(</span><span class="n">pgn</span><span class="p">)</span>
+ <span class="n">app</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+
+ <span class="n">tree</span> <span class="o">=</span> <span class="n">GameTreeView</span><span class="p">()</span>
+ 
+ <span class="n">msgSc</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QShortcut</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QKeySequence</span><span class="p">(</span><span class="s1">&#39;Ctrl+U&#39;</span><span class="p">),</span> <span class="n">tree</span><span class="p">)</span>
+ <span class="n">msgSc</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">promoteVariant</span><span class="p">)</span>
+
+ <span class="n">msgSc</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QShortcut</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QKeySequence</span><span class="p">(</span><span class="s1">&#39;Ctrl+D&#39;</span><span class="p">),</span> <span class="n">tree</span><span class="p">)</span>
+ <span class="n">msgSc</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">demoteVariant</span><span class="p">)</span>
+
+ <span class="n">msgSc</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QShortcut</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QKeySequence</span><span class="p">(</span><span class="s1">&#39;Ctrl+X&#39;</span><span class="p">),</span> <span class="n">tree</span><span class="p">)</span>
+ <span class="n">msgSc</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">removeVariant</span><span class="p">)</span>
+
+ <span class="n">msgSc</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QShortcut</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QKeySequence</span><span class="p">(</span><span class="s1">&#39;Ctrl+M&#39;</span><span class="p">),</span> <span class="n">tree</span><span class="p">)</span>
+ <span class="n">msgSc</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">promoteVariant2Main</span><span class="p">)</span>
+
+ <span class="n">tree</span><span class="o">.</span><span class="n">setGame</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+ <span class="k">if</span> <span class="n">isNewGame</span><span class="p">:</span>
+  <span class="n">newVariant</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">add_variation</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;a2a3&#39;</span><span class="p">),</span> <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;move #1&#39;</span><span class="p">,</span> <span class="n">starting_comment</span> <span class="o">=</span> <span class="s1">&#39;variant&#39;</span><span class="p">,</span> <span class="n">nags</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">17</span><span class="p">])</span> 
+  <span class="n">tree</span><span class="o">.</span><span class="n">addVariant</span><span class="p">(</span><span class="n">newVariant</span><span class="p">)</span>
+  <span class="n">gameNode</span> <span class="o">=</span> <span class="n">newVariant</span><span class="o">.</span><span class="n">add_variation</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="o">.</span><span class="n">from_uci</span><span class="p">(</span><span class="s1">&#39;a7a6&#39;</span><span class="p">),</span> <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;move #2&#39;</span><span class="p">,</span> <span class="n">starting_comment</span> <span class="o">=</span> <span class="s1">&#39;???&#39;</span><span class="p">,</span> <span class="n">nags</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span> 
+  <span class="n">tree</span><span class="o">.</span><span class="n">addGameNodes</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
+ <span class="n">tree</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">400</span><span class="p">)</span>
+ <span class="n">tree</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+ <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Reinhard März.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

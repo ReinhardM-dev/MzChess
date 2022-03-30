@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Annotation Tools &mdash; MzChess V1.0.5 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ECO Utilities" href="eco.html" />
+    <link rel="prev" title="UCI Engine" href="chessengine.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> MzChess
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                V1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gui.html">GUI</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="utilities.html">Utilities</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pgnParse.html">PGN Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chessengine.html">UCI Engine</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Annotation Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eco.html">ECO Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="warnOfDanger.html">Warn of Danger</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MzChess</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="utilities.html">Utilities</a> &raquo;</li>
+        
+      <li>Annotation Tools</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/annotator.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="annotation-tools">
+<h1>Annotation Tools<a class="headerlink" href="#annotation-tools" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="annotateEngine.Annotator">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">annotateEngine.</span></code><code class="sig-name descname"><span class="pre">Annotator</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notifyFunction</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/annotateEngine.html#Annotator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.Annotator" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Annotator class applying</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name of the annotation engine</p></li>
+<li><p><strong>notifyFunction</strong> – print-like function used for notification</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="annotateEngine.Annotator.apply">
+<code class="sig-name descname"><span class="pre">apply</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">game:</span> <span class="pre">Union[chess.pgn.Game</span></em>, <em class="sig-param"><span class="pre">chess.pgn.GameNode]</span> <span class="pre">=</span> <span class="pre">&lt;Game</span> <span class="pre">at</span> <span class="pre">0x22de2158700</span> <span class="pre">('?'</span> <span class="pre">vs.</span> <span class="pre">'?'</span></em>, <em class="sig-param"><span class="pre">'????.??.??')&gt;</span></em>, <em class="sig-param"><span class="pre">scoreListList:</span> <span class="pre">List[List[float]]</span> <span class="pre">=</span> <span class="pre">[]</span></em>, <em class="sig-param"><span class="pre">pvListList:</span> <span class="pre">Optional[List[List[List[chess.Move]]]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">forceHints:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/annotateEngine.html#Annotator.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.Annotator.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the results of AnnotateEngine.run to a game</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>game</strong> – game or gameNode where annotation starts (required)</p></li>
+<li><p><strong>scoreListList</strong> – for each move a list of scores for each variant, see AnnotateEngine.scoreListList</p></li>
+<li><p><strong>pvListList</strong> – for each move a list of lists of moves for each variant, see AnnotateEngine.pvListList</p></li>
+<li><p><strong>forceHints</strong> – force the creation of variants independent of the setXX definitions</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="annotateEngine.Annotator.remove">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">remove</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">chess.pgn.Game</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variants</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">chess.pgn.Game</span><a class="reference internal" href="_modules/annotateEngine.html#Annotator.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.Annotator.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove certain items from a game</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>game</strong> – game to process</p></li>
+<li><p><strong>comments</strong> – If True, remove all comments</p></li>
+<li><p><strong>variants</strong> – If True, remove all variants</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="annotateEngine.Annotator.setBlunder">
+<code class="sig-name descname"><span class="pre">setBlunder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addVariant</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/annotateEngine.html#Annotator.setBlunder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.Annotator.setBlunder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the condition for a blunder move (NAG: $4)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>score</strong> – score limit (score &lt; 0 expected)</p></li>
+<li><p><strong>addVariant</strong> – add a variant in below score</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="annotateEngine.Annotator.setBrillantMove">
+<code class="sig-name descname"><span class="pre">setBrillantMove</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addVariant</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/annotateEngine.html#Annotator.setBrillantMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.Annotator.setBrillantMove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the condition for a brilliant move (NAG: $3)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>score</strong> – score limit (score &gt; 0 expected)</p></li>
+<li><p><strong>addVariant</strong> – add a variant in below score</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="annotateEngine.Annotator.setDubiousMove">
+<code class="sig-name descname"><span class="pre">setDubiousMove</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addVariant</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/annotateEngine.html#Annotator.setDubiousMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.Annotator.setDubiousMove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the condition for a dubious move (NAG: $6)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>score</strong> – score limit (score &lt; 0 expected)</p></li>
+<li><p><strong>addVariant</strong> – add a variant in below score</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="annotateEngine.Annotator.setGoodMove">
+<code class="sig-name descname"><span class="pre">setGoodMove</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addVariant</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/annotateEngine.html#Annotator.setGoodMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.Annotator.setGoodMove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the condition for a good move (NAG: $1)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>score</strong> – score limit (score &gt; 0 expected)</p></li>
+<li><p><strong>addVariant</strong> – add a variant in below score</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="annotateEngine.Annotator.setPoorMove">
+<code class="sig-name descname"><span class="pre">setPoorMove</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addVariant</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/annotateEngine.html#Annotator.setPoorMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.Annotator.setPoorMove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the condition for a poor move (NAG: $2)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>score</strong> – score limit (score &lt; 0 expected)</p></li>
+<li><p><strong>addVariant</strong> – add a variant in below score</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="annotateEngine.Annotator.setSpeculativeMove">
+<code class="sig-name descname"><span class="pre">setSpeculativeMove</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addVariant</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/annotateEngine.html#Annotator.setSpeculativeMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.Annotator.setSpeculativeMove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the condition for a speculative move (NAG: $5)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>score</strong> – score limit (score &gt; 0 expected)</p></li>
+<li><p><strong>addVariant</strong> – add a variant in below score</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="annotateEngine.AnnotateEngine">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">annotateEngine.</span></code><code class="sig-name descname"><span class="pre">AnnotateEngine</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">notifyFunction</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">PyQt5.QtCore.QObject</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/annotateEngine.html#AnnotateEngine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.AnnotateEngine" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper class collecting score and variant (pv) data from an engine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>notifyFunction</strong> – print-like function used for notification</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="annotateEngine.AnnotateEngine.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">chess.pgn.Game</span><span class="p"><span class="pre">,</span> </span><span class="pre">chess.pgn.GameNode</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numberOfPlys</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="_modules/annotateEngine.html#AnnotateEngine.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.AnnotateEngine.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the engine for a whole game or a gameNode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>game</strong> – game or gameNode</p></li>
+<li><p><strong>numberOfPlys</strong> – number of half moves to analyse, <code class="docutils literal notranslate"><span class="pre">None</span></code> means analysis of the rest of the game</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True, if successful</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="annotateEngine.AnnotateEngine.setup">
+<code class="sig-name descname"><span class="pre">setup</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="chessengine.html#chessengine.ChessEngine" title="chessengine.ChessEngine"><span class="pre">chessengine.ChessEngine</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hintPLYs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiPV</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/annotateEngine.html#AnnotateEngine.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.AnnotateEngine.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup for operation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>engine</strong> – engine used for annotation</p></li>
+<li><p><strong>hintPLYs</strong> – number of half moves (plys) in variants. Suppress hints by setting hintPLYs == 0</p></li>
+<li><p><strong>multiPV</strong> – number of variants</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="eco.html" class="btn btn-neutral float-right" title="ECO Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="chessengine.html" class="btn btn-neutral float-left" title="UCI Engine" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Reinhard März.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+# File: .readthedocs.yaml, not working with PyQt5 sources
+version: 2
+
+sphinx:
+  configuration: doc/conf.py
+
+# Build PDF & ePub
+formats:
+  - epub
+  - pdf
+
+python:
+  version: 3.8
+  install:
+    - requirements: doc/requirements.txt

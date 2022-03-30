@@ -20,6 +20,7 @@ class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
 
  def __init__(self, parent = None) -> None:
   super(BuildFenClass, self).__init__(parent)
+  installLeipFont()
   self.setupUi(self)
 
   self.pgm = 'FEN-Builder'
@@ -51,8 +52,6 @@ class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
   self.wqCheckBox = self. _addCastlingBox(chess.WHITE, False)
   self.bkCheckBox = self. _addCastlingBox(chess.BLACK, True)
   self.bqCheckBox = self. _addCastlingBox(chess.BLACK, False)
-  
-  installLeipFont()
   
   self.aboutDialog = AboutDialog.AboutDialog()
   self.aboutDialog.setup(

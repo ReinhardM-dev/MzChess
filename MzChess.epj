@@ -2,7 +2,7 @@
   "header": {
     "comment": "eric project file for project MzChess",
     "copyright": "Copyright (C) 2021 Reinhard M\u00e4rz, ",
-    "saved": "2021-08-07, 17:33:02"
+    "saved": "2021-10-01, 15:37:11"
   },
   "project": {
     "AUTHOR": "Reinhard M\u00e4rz",
@@ -85,7 +85,8 @@
       "license.gpl3",
       "MzChess/readme.rst",
       "pyproject.toml",
-      "doc/requirements.txt"
+      "doc/requirements.txt",
+      "test/readme.rst"
     ],
     "OTHERTOOLSPARMS": {},
     "PACKAGERSPARMS": {},
@@ -163,7 +164,9 @@
       "test/test_1.pgn",
       "test/test_2.pgn",
       "test/test_3.pgn",
-      "test/test_4.pgn"
+      "test/test_4.pgn",
+      "MzChess/installLeipFont.py",
+      "test/readme.rst"
     ],
     "SPELLEXCLUDES": "",
     "SPELLLANGUAGE": "en_US",

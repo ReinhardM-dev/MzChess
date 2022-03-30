@@ -118,20 +118,19 @@ import io
 import re
 import sys, subprocess
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import PyQt5.QtCore
 import PyQt5.QtGui
 import PyQt5.QtWidgets
 
-import Ui_chessMainWindow
-import AboutDialog
-
 import chess, chess.pgn
 import MzChess
-from MzChess import chessengine, annotateEngine, configureEngine
-from MzChess.pgnParse import read_game
-import eco 
-from specialDialogs import ItemSelector
-from installLeipFont import installLeipFont
+print('dir(MzChess) = {}, file = {}'.format(dir(MzChess), MzChess.__file__))
+from MzChess import read_game
+
+import Ui_chessMainWindow
+import AboutDialog
 
 class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWindow):
  logSignal = PyQt5.QtCore.pyqtSignal(str)
@@ -149,15 +148,13 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
 
  def __init__(self, parent = None) -> None:
   super(ChessMainWindow, self).__init__(parent)
+  MzChess.installLeipFont()
   self.setupUi(self)
 
   icon = PyQt5.QtGui.QIcon()
   icon.addPixmap(PyQt5.QtGui.QPixmap(os.path.join(self.fileDirectory,'schach.png')), PyQt5.QtGui.QIcon.Normal, PyQt5.QtGui.QIcon.Off)
   self.setWindowIcon(icon)
   
-  installLeipFont()
-
-
   self.pgm = MzChess.__name__
   self.version = MzChess.__version__
   self.dateString = MzChess.__date__
@@ -165,7 +162,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   # self.helpIndex = PyQt5.QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(self.fileDirectory), 'doc_build', 'html', 'index.html'))
   self.helpIndex = PyQt5.QtCore.QUrl('https://reinhardm-dev.github.io/MzChess')
 
-  self.ecoDB = eco.ECODatabase()
+  self.ecoDB = MzChess.ECODatabase()
   self.ecoFen2IdDict = self.ecoDB.fen2Id()
   self.toolBar = PyQt5.QtWidgets.QToolBar()
   self._setIcon(self.actionNew_PGN, PyQt5.QtWidgets.QStyle.SP_FileDialogNewFolder)
@@ -220,7 +217,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   self.settings.optionxform = str
   if os.path.isfile(self.settingsFile):
    self.settings.read(self.settingsFile, encoding = 'utf-8')
-   self.engineDict = configureEngine.loadEngineSettings(self.settings)
+   self.engineDict = MzChess.loadEngineSettings(self.settings)
    if 'Recent' in self.settings.sections():
     self.recentPGN = dict(self.settings['Recent'])
    if 'Events' in self.settings.sections():
@@ -278,7 +275,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
   self.squareLabel.setToolTip("Position")
   self.statusBar().addPermanentWidget(self.squareLabel, 10)
 
-  self.itemSelector = ItemSelector('Header Elements (without 7-tag roster)...', pointSize = 10)
+  self.itemSelector = MzChess.ItemSelector('Header Elements (without 7-tag roster)...', pointSize = 10)
   
   self.loadOptionDict('Menu/Game', self.gameOptions)
   self.resetSelectEngine()
@@ -987,7 +984,7 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
     logFunction = self.logSignal.emit
    else:
     logFunction = None
-   self.hintEngine = chessengine.ChessEngine(
+   self.hintEngine = MzChess.ChessEngine(
       self.engineDict[self.settings['Menu/Engine']['selectedEngine']], 
       limit = chess.engine.Limit(depth = self.settings['Menu/Engine']['searchDepth']), 
       log = logFunction)

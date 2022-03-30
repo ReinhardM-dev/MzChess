@@ -11,15 +11,11 @@ Versions:
  1.1.0      FEN-builder added and bug fixes
  1.2.0      tests established and bug fixes
  1.2.1      variant bug fixes
+ 1.2.2      bug fixes
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2021-08-28"
-__version__ = "1.2.1"
-
-import os
-import sys
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+__date__ = "2022-03-29"
+__version__ = "1.2.2"
 
 __all__ = [
  'AboutDialog', 
@@ -42,10 +38,12 @@ __all__ = [
  'warnOfDanger'
 ]
 
+# import os.path, sys
+# sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+print('Init started ...')
+
 from .AboutDialog import AboutDialog
 from .annotateEngine import AnnotateEngine,  Annotator
-from .chessMainWindow import ChessMainWindow, runMzChess
-from .qbuildfen import BuildFenClass, SelectionBox, PlacementBoard, runFenBuilder
 from .installLeipFont import installLeipFont
 from .chessengine import ChessEngine
 from .configureEngine import ConfigureEngine, loadEngineSettings, saveEngineSettings
@@ -60,3 +58,5 @@ from .scoreplotgraphicsview import ScorePlot
 from .specialDialogs import ButtonLine, ItemSelector, treeWidgetItemPos
 from .uciedit import QUCIEdit, UCIHighlighter
 from .warnOfDanger import warnOfDanger
+from .qbuildfen import BuildFenClass, SelectionBox, PlacementBoard, runFenBuilder
+from .chessMainWindow import ChessMainWindow, runMzChess

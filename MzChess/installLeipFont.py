@@ -9,7 +9,7 @@ import PyQt5.QtGui
 def installLeipFont(notify : Optional[Callable[[str], None]] = None) -> None:
  fileDirectory = os.path.dirname(os.path.abspath(__file__))
  leipfontFile = os.path.join(fileDirectory, 'pieces', 'LEIPFONT.ttf')
- if platform.system() == 'Linux':
+ if platform.system() == 'Linux_':
   fontFileList = map(lambda x : x.split(':')[0], subprocess.getstatusoutput('fc-list')[1].split('\n'))
   hasLEIPFONT = False
   for fileName in fontFileList:
@@ -29,7 +29,7 @@ def installLeipFont(notify : Optional[Callable[[str], None]] = None) -> None:
  else:
   fDB = PyQt5.QtGui.QFontDatabase()
   if 'Chess Leipzig' not in fDB.families():
-   PyQt5.QtGui.QFontDatabase.addApplicationFont(leipfontFile)
+   assert PyQt5.QtGui.QFontDatabase.addApplicationFont(leipfontFile) != -1, "installLeipFont: Could not add 'Chess Leipzig' font"
    if notify is not None:
     notify('Chess font {} added'.format(leipfontFile))
   elif notify is not None:

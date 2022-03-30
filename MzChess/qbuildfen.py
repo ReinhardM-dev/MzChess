@@ -336,9 +336,9 @@ class PlacementBoard(ChessGroupBox):
     
  def _setBrushAndToolTip(self, pushButton : PyQt5.QtWidgets.QPushButton, square : chess.square) -> None:
   if (chess.square_rank(square) + self.flipped) % 2 == chess.square_file(square) % 2:
-   pushButton.setStyleSheet("background-color: white; \n;border: none;")  
-  else:
    pushButton.setStyleSheet("background-color: lightgray; \n;border: none;")  
+  else:
+   pushButton.setStyleSheet("background-color: white; \n;border: none;")  
   pushButton.setToolTip(chess.square_name(square))
   
  def _addButton(self, square : chess.square ) -> None:

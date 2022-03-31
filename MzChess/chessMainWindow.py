@@ -126,7 +126,6 @@ import PyQt5.QtWidgets
 
 import chess, chess.pgn
 import MzChess
-print('dir(MzChess) = {}, file = {}'.format(dir(MzChess), MzChess.__file__))
 from MzChess import read_game
 
 import Ui_chessMainWindow
@@ -219,7 +218,10 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
    self.settings.read(self.settingsFile, encoding = 'utf-8')
    self.engineDict = MzChess.loadEngineSettings(self.settings)
    if 'Recent' in self.settings.sections():
-    self.recentPGN = dict(self.settings['Recent'])
+    self.recentPGN = dict()
+    for recentDB, enc in dict(self.settings['Recent']).items():
+     if os.path.exists(recentDB):
+      self.recentPGN[recentDB] = enc
    if 'Events' in self.settings.sections():
     self.eventList = self.settings.options('Events')
    if 'Sites' in self.settings.sections():

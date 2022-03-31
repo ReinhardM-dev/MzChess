@@ -63,7 +63,10 @@ def loadEngineSettings(settings : configparser.ConfigParser) -> Dict[str, List[A
     else:
      optionsDict[opt] = value
    if executable is not None:
-    engineDict[key] = [executable, optionsDict]
+    if os.path.exists(executable):
+     engineDict[key] = [executable, optionsDict]
+    else:
+     print('loadEngineSettings: {} not found'.format(executable))
  return engineDict
 
 def saveEngineSettings(settings : configparser.ConfigParser, engineDict : Dict[str, List[Any]]) -> None:

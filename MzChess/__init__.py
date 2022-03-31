@@ -38,9 +38,8 @@ __all__ = [
  'warnOfDanger'
 ]
 
-# import os.path, sys
-# sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-print('Init started ...')
+import os.path, sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from .AboutDialog import AboutDialog
 from .annotateEngine import AnnotateEngine,  Annotator

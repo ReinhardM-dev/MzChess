@@ -340,21 +340,22 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
    return
   self.gameIsOver = board.is_game_over()
   game = self.gameNode.game()
+  border = ' border-color: black; border-style: solid; border-width: 1px;'
   if self.gameIsOver:
    game.headers['Result'] = board.result()
    if board.is_checkmate():
-    self.turnFrame.setStyleSheet('background-color: red')
+    self.turnFrame.setStyleSheet('background-color: red;' + border)
    else:
-    self.turnFrame.setStyleSheet('background-color: yellow')
+    self.turnFrame.setStyleSheet('background-color: yellow;' + border)
   elif game.headers['Result'] != '*' and self.gameNode.is_mainline() and self.gameNode.is_end():
    if game.headers['Result'] == '1/2-1/2':
-    self.turnFrame.setStyleSheet('background-color: yellow')
+    self.turnFrame.setStyleSheet('background-color: yellow;' + border)
    else:
-    self.turnFrame.setStyleSheet('background-color: red')
+    self.turnFrame.setStyleSheet('background-color: red;' + border)
   elif board.turn:
-   self.turnFrame.setStyleSheet('background-color: white')
+   self.turnFrame.setStyleSheet('background-color: white;' + border)
   else:
-   self.turnFrame.setStyleSheet('background-color: black')
+   self.turnFrame.setStyleSheet('background-color: black;')
 
  def showMaterial(self, board : chess.Board) -> None:
   if self.materialLabel is None:

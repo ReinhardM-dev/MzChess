@@ -14,7 +14,7 @@ from packaging import version
 package = 'MzChess'
 fileDirectory = os.path.dirname(os.path.abspath(__file__))
 packageDirectory = os.path.join(fileDirectory, package)
-sys.path.insert(0, fileDirectory)
+sys.path.insert(0, packageDirectory)
 
 with open(os.path.join(packageDirectory,'readme.rst'), 'r', encoding = 'utf-8') as f:
  long_description = f.read()
@@ -85,10 +85,6 @@ setup(name = package,
     'Natural Language :: English', 
     'Topic :: Games/Entertainment :: Board Games'])
 
-app = PyQt5.QtGui.QGuiApplication([])
-MzChess.installLeipFont(print)
-
-settingsFile = os.path.join(fileDirectory, 'settings.ini')
-if os.path.exists(settingsFile):
- os.remove(settingsFile) 
+# app = PyQt5.QtGui.QGuiApplication([])
+# MzChess.installLeipFont(print)
 

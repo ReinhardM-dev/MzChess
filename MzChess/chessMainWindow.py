@@ -230,6 +230,10 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
     self.playerList = self.settings.options('Players')
    if 'OptionalHeaderItems' in self.settings.sections():
     self.optionalHeaderItems = list(self.settings['OptionalHeaderItems'])
+   if self.settings['Menu/Engine']['selectedEngine'] not in self.engineDict:
+    self.settings['Menu/Engine']['selectedEngine'] = None
+    self.settings['Menu/Engine']['showHints'] = False
+    self.settings['Menu/Engine']['showScores'] = False
 
   self.menuRecent_PGN.clear()
   if self.recentPGN is None:
@@ -1008,12 +1012,12 @@ class ChessMainWindow(PyQt5.QtWidgets.QMainWindow, Ui_chessMainWindow.Ui_MainWin
  @PyQt5.QtCore.pyqtSlot()
  def on_actionConfigureEngine_triggered(self):
   self.notify('')
-  configForm = configureEngine.ConfigureEngine()
+  configForm = MzChess.ConfigureEngine()
   newEngineDict = configForm.run(engineDict = self.engineDict, log = self.debugEngine)
   if newEngineDict is not None:
    self.engineDict = newEngineDict
    self.resetSelectEngine()
-   configureEngine.saveEngineSettings(self.settings, self.engineDict)
+   MzChess.saveEngineSettings(self.settings, self.engineDict)
    self.saveSettings()
    
  @PyQt5.QtCore.pyqtSlot(bool)

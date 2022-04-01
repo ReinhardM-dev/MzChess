@@ -12,10 +12,11 @@ Versions:
  1.2.0      tests established and bug fixes
  1.2.1      variant bug fixes
  1.2.2      bug fixes
+ 1.2.3      bug fixes
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2022-03-29"
-__version__ = "1.2.2"
+__date__ = "2022-04-01"
+__version__ = "1.2.3"
 
 __all__ = [
  'AboutDialog', 

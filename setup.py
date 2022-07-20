@@ -5,8 +5,6 @@ import glob
 import sys
 import os, os.path
 
-import PyQt5.QtGui
-
 # Try using setuptools first, if it's installed
 from setuptools import setup
 from packaging import version
@@ -30,7 +28,6 @@ if platform.system() == 'Linux':
  install_requires = list()
  try:
   import PyQt5.QtCore
-  import PyQt5.QtWidgets
   foundPyQt5Version = PyQt5.QtCore.PYQT_VERSION_STR
  except:
   foundPyQt5Version = '0.0.0'
@@ -85,6 +82,4 @@ setup(name = package,
     'Natural Language :: English', 
     'Topic :: Games/Entertainment :: Board Games'])
 
-# app = PyQt5.QtGui.QGuiApplication([])
-# MzChess.installLeipFont(print)
 

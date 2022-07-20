@@ -2,48 +2,45 @@ from typing import Optional,  Callable,  List
 import os
 import sys
 
-import Ui_buildFen
-
-import PyQt5.QtCore
-import PyQt5.QtGui
-import PyQt5.QtWidgets
-import PyQt5.QtSvg
+from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import uic
 
 import chess, chess.pgn
 import MzChess
 import AboutDialog
 from installLeipFont import installLeipFont
 
-class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
+class BuildFenClass(QtWidgets.QMainWindow):
  '''The *chessboard* is based on Qt's QGraphicsView.
  '''
 
  def __init__(self, parent = None) -> None:
   super(BuildFenClass, self).__init__(parent)
   installLeipFont()
-  self.setupUi(self)
+  fileDirectory = os.path.dirname(os.path.abspath(__file__))
+  uic.loadUi(os.path.join(fileDirectory, 'buildFen.ui'), self)
 
   self.pgm = 'FEN-Builder'
   self.version = MzChess.__version__
   self.dateString = MzChess.__date__
 
-  self.helpIndex = PyQt5.QtCore.QUrl('https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation')
+  self.helpIndex = QtCore.QUrl('https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation')
  
   sbText = self.statusBar().font()
   sbText.setPointSize(12)
 
   self.board = chess.Board()
 
-  self.msgBox = PyQt5.QtWidgets.QMessageBox()
-  self.msgBox.setIcon(PyQt5.QtWidgets.QMessageBox.Critical)
+  self.msgBox = QtWidgets.QMessageBox()
+  self.msgBox.setIcon(QtWidgets.QMessageBox.Critical)
   self.msgBox.setWindowTitle("Error ...")
 
-  self.infoLabel = PyQt5.QtWidgets.QLabel()
-  self.infoLabel.setAlignment(PyQt5.QtCore.Qt.AlignLeft)
+  self.infoLabel = QtWidgets.QLabel()
+  self.infoLabel.setAlignment(QtCore.Qt.AlignLeft)
   self.infoLabel.setFont(sbText)
   self.statusBar().addPermanentWidget(self.infoLabel, 150)
  
-  sizePolicy = PyQt5.QtWidgets.QSizePolicy(PyQt5.QtWidgets.QSizePolicy.Minimum, PyQt5.QtWidgets.QSizePolicy.Preferred)
+  sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
   sizePolicy.setHorizontalStretch(0)
   sizePolicy.setVerticalStretch(0)
   sizePolicy.setHeightForWidth(self.castlingGroupBox.sizePolicy().hasHeightForWidth())
@@ -68,14 +65,14 @@ class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
   self.msgBox.setText(str)
   self.msgBox.exec()
 
- @PyQt5.QtCore.pyqtSlot(str)
+ @QtCore.pyqtSlot(str)
  def notify(self, str : str) -> None:
   self.infoLabel.setText(str)
   self.infoLabel.update()
-  PyQt5.QtWidgets.QApplication.processEvents()
+  QtWidgets.QApplication.processEvents()
   
  def _addCastlingBox(self, color : chess.Color, kingside : bool ) -> None:
-  box = PyQt5.QtWidgets.QCheckBox(self.castlingGroupBox)
+  box = QtWidgets.QCheckBox(self.castlingGroupBox)
   box.toggled.connect(self.on_castlingCheckBox_toggled)
   if color == chess.BLACK:
    box.setStyleSheet('background-color: rgb(0, 0, 0);\ncolor: rgb(255, 255, 255);')
@@ -134,18 +131,18 @@ class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
   self.clockSpinBox.setValue(self.board.fullmove_number)
   self.notify(self.board.fen())
 
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_actionCopy_triggered(self):
   try:
    MzChess.checkFEN(self.board)
    fen = self.board.fen()
-   PyQt5.QtWidgets.QApplication.clipboard().setText(fen)
+   QtWidgets.QApplication.clipboard().setText(fen)
   except ValueError as err:
    self.notifyError('Improper FEN {}:\n{}'.format(fen, str(err)))
    
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_actionPaste_triggered(self):
-  fen = PyQt5.QtWidgets.QApplication.clipboard().text()
+  fen = QtWidgets.QApplication.clipboard().text()
   try:
    MzChess.checkFEN(fen, allowIncompleteBoard = True)
    self.board.set_fen(fen)
@@ -153,33 +150,33 @@ class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
   except ValueError as err:
    self.notifyError('Improper FEN {}:\n{}'.format(fen, str(err)))
 
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_fenChanged(self):
   self.notify(self.board.fen())
    
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_actionReset_Board_triggered(self):
   self.board.reset()
   self._resetFen()
   
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_actionClear_Board_triggered(self):
   self.board.clear()
   self._resetFen()
   
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_wRadioButton_clicked(self):
   if self.board.turn != chess.WHITE:
    self.board.turn = chess.WHITE
    self._resetFen()
 
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_bRadioButton_clicked(self):
   if self.board.turn != chess.BLACK:
    self.board.turn = chess.BLACK
    self._resetFen()
   
- @PyQt5.QtCore.pyqtSlot(bool)
+ @QtCore.pyqtSlot(bool)
  def on_castlingCheckBox_toggled(self, checked):
   if    'wkCheckBox' not in vars(self) \
     or 'wqCheckBox' not in vars(self) \
@@ -200,7 +197,7 @@ class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
   self.board.set_castling_fen(castlingString)
   self.notify(self.board.fen())
   
- @PyQt5.QtCore.pyqtSlot(PyQt5.QtWidgets.QListWidgetItem)
+ @QtCore.pyqtSlot(QtWidgets.QListWidgetItem)
  def on_enPassantListWidget_itemClicked(self, enPassantItem):
   enPassantSqSymbol = enPassantItem.text()
   if enPassantSqSymbol != '-':
@@ -209,27 +206,27 @@ class BuildFenClass(PyQt5.QtWidgets.QMainWindow, Ui_buildFen.Ui_MainWindow):
    self.board.ep_square = None
   self.notify(self.board.fen())
 
- @PyQt5.QtCore.pyqtSlot(int)
+ @QtCore.pyqtSlot(int)
  def on_moveSpinBox_valueChanged(self, moveNumber):
   self.board.fullmove_number = moveNumber
   self.notify(self.board.fen())
   
- @PyQt5.QtCore.pyqtSlot(int)
+ @QtCore.pyqtSlot(int)
  def on_clockSpinBox_valueChanged(self, halfmoveClock):
   self.board.halfmove_clock = halfmoveClock
   self.notify(self.board.fen())
 
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_actionAbout_triggered(self):
   self.notify('')
   self.aboutDialog.exec()
  
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_actionHelp_triggered(self):
   self.notify('')
-  PyQt5.QtGui.QDesktopServices.openUrl(self.helpIndex)
+  QtGui.QDesktopServices.openUrl(self.helpIndex)
 
-class ChessGroupBox(PyQt5.QtWidgets.QGroupBox):
+class ChessGroupBox(QtWidgets.QGroupBox):
  leipzigEncodeDict = {
    'P' : 'p', 'N' : 'n', 'B' : 'b', 'R' : 'r', 'Q' : 'q', 'K' : 'k',
    'p' : 'o', 'n' : 'm', 'b' : 'v', 'r' : 't', 'q' : 'w', 'k' : 'l',
@@ -238,10 +235,10 @@ class ChessGroupBox(PyQt5.QtWidgets.QGroupBox):
 
  def __init__(self, parent = None) -> None:
   super(ChessGroupBox, self).__init__(parent)
-  self.font = PyQt5.QtGui.QFont()
+  self.font = QtGui.QFont()
   self.font.setFamily("Chess Leipzig")
   self.font.setPointSize(24)
-  self.gridLayout = PyQt5.QtWidgets.QGridLayout(self)
+  self.gridLayout = QtWidgets.QGridLayout(self)
   self.gridLayout.setContentsMargins(5, 5, 5, 5)
   self.squareSize = 40
   
@@ -265,9 +262,9 @@ class SelectionBox(ChessGroupBox):
     return button
    
  def _addButton(self, piece : Optional[chess.Piece] ) -> None:
-  pushButton = PyQt5.QtWidgets.QPushButton(self)
-  pushButton.setMinimumSize(PyQt5.QtCore.QSize(self.squareSize, self.squareSize))
-  pushButton.setMaximumSize(PyQt5.QtCore.QSize(self.squareSize, self.squareSize))
+  pushButton = QtWidgets.QPushButton(self)
+  pushButton.setMinimumSize(QtCore.QSize(self.squareSize, self.squareSize))
+  pushButton.setMaximumSize(QtCore.QSize(self.squareSize, self.squareSize))
   pushButton.setCheckable(True)
   pushButton.setFont(self.font)
   nPieces = len(self.button2PieceDict)
@@ -278,7 +275,7 @@ class SelectionBox(ChessGroupBox):
    pushButton.setShortcut('x')   
    pushButton.setToolTip('remove piece')
    self.selectedButton = pushButton
-   self.gridLayout.addWidget(pushButton, nPieces // 2, nPieces % 2, 1, -1, PyQt5.QtCore.Qt.AlignCenter)
+   self.gridLayout.addWidget(pushButton, nPieces // 2, nPieces % 2, 1, -1, QtCore.Qt.AlignCenter)
   else:
    pushButton.setChecked(False)
    pushButton.setText(self.leipzigEncodeDict[piece.symbol()])
@@ -294,7 +291,7 @@ class SelectionBox(ChessGroupBox):
   pushButton.clicked.connect(self.on_clicked)
   self.pushButtonList.append(pushButton)
   
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_clicked(self):
   self.selectedButton.setChecked(False)
   self.selectedButton = self.sender()
@@ -333,7 +330,7 @@ class PlacementBoard(ChessGroupBox):
     self._setBrushAndToolTip(self.button2SquareList[square], square)
     self._setBrushAndToolTip(self.button2SquareList[flippedSquare], flippedSquare)
     
- def _setBrushAndToolTip(self, pushButton : PyQt5.QtWidgets.QPushButton, square : chess.square) -> None:
+ def _setBrushAndToolTip(self, pushButton : QtWidgets.QPushButton, square : chess.square) -> None:
   if (chess.square_rank(square) + self.flipped) % 2 == chess.square_file(square) % 2:
    pushButton.setStyleSheet("background-color: lightgray; \n;border: none;")  
   else:
@@ -341,9 +338,9 @@ class PlacementBoard(ChessGroupBox):
   pushButton.setToolTip(chess.square_name(square))
   
  def _addButton(self, square : chess.square ) -> None:
-  pushButton = PyQt5.QtWidgets.QPushButton(self)
-  pushButton.setMinimumSize(PyQt5.QtCore.QSize(self.squareSize, self.squareSize))
-  pushButton.setMaximumSize(PyQt5.QtCore.QSize(self.squareSize, self.squareSize))
+  pushButton = QtWidgets.QPushButton(self)
+  pushButton.setMinimumSize(QtCore.QSize(self.squareSize, self.squareSize))
+  pushButton.setMaximumSize(QtCore.QSize(self.squareSize, self.squareSize))
   pushButton.setFont(self.font)
   pushButton.setText('')
   self._setBrushAndToolTip(pushButton, square)
@@ -352,7 +349,7 @@ class PlacementBoard(ChessGroupBox):
   self.button2SquareList[square] = pushButton
   self.pushButtonList.append(pushButton)
 
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_clicked(self):
   sendingButton = self.sender()
   square = self.button2SquareList.index(sendingButton)
@@ -388,7 +385,7 @@ def showStatus(board):
  for n, move in enumerate(board.move_stack):
   print('{}. {}'.format(n, move.uci()))
 
-class MzClassApplication(PyQt5.QtWidgets.QApplication):
+class MzClassApplication(QtWidgets.QApplication):
  def __init__(self, argv : List[str], notifyFct : Callable[[str], None] = print) -> None: 
   super(MzClassApplication, self).__init__(argv)
   self.notifyFct = notifyFct
@@ -403,11 +400,11 @@ def runFenBuilder(notifyFct : Optional[Callable[[str], None]] = None):
  if notifyFct is not None:
   qApp = MzClassApplication(sys.argv)
  else:
-  qApp = PyQt5.QtWidgets.QApplication(sys.argv)
+  qApp = QtWidgets.QApplication(sys.argv)
  chessMainWindow = BuildFenClass()
  chessMainWindow.show()
  chessMainWindow.setup()
- qApp.exec_()
+ qApp.exec()
 
 def _runFenBuilder():
  print('Hello, world')

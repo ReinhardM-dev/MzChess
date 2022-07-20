@@ -1,29 +1,28 @@
 from typing import Dict, Optional, Any
 import os,  os.path
 
-import PyQt5.QtCore
-import PyQt5.QtGui
-import PyQt5.QtWidgets
+from PyQt5 import QtWidgets, QtCore
+from PyQt5 import uic
 
-import Ui_configureEngineOptions
-
-class ConfigureEngineOptions(PyQt5.QtWidgets.QDialog, Ui_configureEngineOptions.Ui_Dialog):
- fileDialogOptions = PyQt5.QtWidgets.QFileDialog.Options() | PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog
- fileDialogFilters = PyQt5.QtCore.QDir.AllDirs \
-                      | PyQt5.QtCore.QDir.Files \
-                      | PyQt5.QtCore.QDir.NoDotAndDotDot \
-                      | PyQt5.QtCore.QDir.Hidden
+class ConfigureEngineOptions(QtWidgets.QDialog):
+ fileDialogOptions = QtWidgets.QFileDialog.Options() | QtWidgets.QFileDialog.DontUseNativeDialog
+ fileDialogFilters = QtCore.QDir.AllDirs \
+                      | QtCore.QDir.Files \
+                      | QtCore.QDir.NoDotAndDotDot \
+                      | QtCore.QDir.Hidden
  readOnlyOptions = ['UCI_Chess960', 'UCI_AnalyseMode', 'MultiPV']
- checkState = {'false' : PyQt5.QtCore.Qt.Unchecked, '0' : PyQt5.QtCore.Qt.Unchecked, 
-                      'true' :  PyQt5.QtCore.Qt.Checked,  '1' : PyQt5.QtCore.Qt.Unchecked}
+ checkState = {'false' : QtCore.Qt.Unchecked, '0' : QtCore.Qt.Unchecked, 
+                      'true' :  QtCore.Qt.Checked,  '1' : QtCore.Qt.Unchecked}
 
  def __init__(self, parent = None):
   super(ConfigureEngineOptions, self).__init__(parent)
-  self.setupUi(self)
+  fileDirectory = os.path.dirname(os.path.abspath(__file__))
+  uic.loadUi(os.path.join(fileDirectory, 'configureEngineOptions.ui'), self)
+
   self.tableWidget.setColumnCount(3)  
   self.tableWidget.setHorizontalHeaderLabels(['','Option', 'Value'])
   self.tableWidget.horizontalHeader().setStretchLastSection(True)
-  self.tableWidget.setSelectionBehavior(PyQt5.QtWidgets.QAbstractItemView.SelectRows)
+  self.tableWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
   self.buttonBox.accepted.connect(self.accept)
   self.buttonBox.rejected.connect(self.reject)
  
@@ -35,7 +34,7 @@ class ConfigureEngineOptions(PyQt5.QtWidgets.QDialog, Ui_configureEngineOptions.
   else:
    self.setWindowTitle('Configure Options: {}'.format(name))
   self.tableWidget.setRowCount(len(engineOptionsDict))
-  test = PyQt5.QtWidgets.QLabel()
+  test = QtWidgets.QLabel()
   maxWidth = 0
   self.engineOptionsDict = engineOptionsDict
   self.optionsDict = dict()
@@ -45,8 +44,8 @@ class ConfigureEngineOptions(PyQt5.QtWidgets.QDialog, Ui_configureEngineOptions.
   self.btnList = list()
   for row, key2Opts in enumerate(engineOptionsDict.items()):
    key, optDict = key2Opts
-   maxWidth = max(maxWidth, test.fontMetrics().size(PyQt5.QtCore.Qt.TextSingleLine, key).width())
-   nameLabel = PyQt5.QtWidgets.QLabel(str(key))
+   maxWidth = max(maxWidth, test.fontMetrics().size(QtCore.Qt.TextSingleLine, key).width())
+   nameLabel = QtWidgets.QLabel(str(key))
    self.btnList.append(None)
    type = optDict['type']
    if 'default' in optDict:
@@ -55,38 +54,38 @@ class ConfigureEngineOptions(PyQt5.QtWidgets.QDialog, Ui_configureEngineOptions.
     else:
      value = optDict['default'] 
    if type == 'check':
-    item = PyQt5.QtWidgets.QCheckBox()
+    item = QtWidgets.QCheckBox()
     item.setCheckState(self.checkState[value])
     item.stateChanged.connect(self.on_checkBox_stateChanged)
    elif type == 'spin':
-    item = PyQt5.QtWidgets.QSpinBox()
+    item = QtWidgets.QSpinBox()
     itemRange = optDict['range']
     item.setMinimum(itemRange.start)
     item.setMaximum(itemRange.stop - 1)
     item.setValue(int(value))
     item.valueChanged.connect(self.on_spinBox_changed)
    elif type == 'combo':
-    item = PyQt5.QtWidgets.QComboBox()
+    item = QtWidgets.QComboBox()
     varList = optDict['varList']
     item.addItems(varList)
     item.setCurrentIndex(varList.index(value))
     item.currentTextChanged.connect(self.on_comboBox_changed)
    elif type == 'button':
-    item = PyQt5.QtWidgets.QLabel('<no parameter>')
+    item = QtWidgets.QLabel('<no parameter>')
    elif type == 'string':
     if 'file' in key.lower() or 'path' in key.lower():
-     browsePushButton = PyQt5.QtWidgets.QPushButton(self)
-     browsePushButton.setIcon(self.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogSaveButton))
+     browsePushButton = QtWidgets.QPushButton(self)
+     browsePushButton.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DialogSaveButton))
      self.tableWidget.setCellWidget(row, 0, browsePushButton)
      browsePushButton.clicked.connect(self.on_browsePushButton_clicked)
     self.btnList[-1] = browsePushButton
-    item = PyQt5.QtWidgets.QLineEdit()
+    item = QtWidgets.QLineEdit()
     item.setText(value)
     item.editingFinished.connect(self.on_string_editingFinished)
    else:
     raise ValueError('ConfigureEngineOptions/run: improper type = {}'.format(type))
    if self.btnList[-1] is None:
-    self.tableWidget.setCellWidget(row, 0, PyQt5.QtWidgets.QLabel(''))
+    self.tableWidget.setCellWidget(row, 0, QtWidgets.QLabel(''))
    self.tableWidget.setCellWidget(row, 1, nameLabel)
    self.tableWidget.setCellWidget(row, 2, item)
    self.itemList.append(item)
@@ -94,7 +93,7 @@ class ConfigureEngineOptions(PyQt5.QtWidgets.QDialog, Ui_configureEngineOptions.
   self.tableWidget.horizontalHeader().resizeSection(0, self.tableWidget.rowHeight(0))
   self.optionsDict = dict()
   self.tableWidget.update()
-  PyQt5.QtCore.QCoreApplication.processEvents()
+  QtCore.QCoreApplication.processEvents()
   if self.exec():
    return self.optionsDict
   else:
@@ -106,32 +105,32 @@ class ConfigureEngineOptions(PyQt5.QtWidgets.QDialog, Ui_configureEngineOptions.
   else:
    self.optionsDict.pop(key, None)
  
- @PyQt5.QtCore.pyqtSlot(int)
+ @QtCore.pyqtSlot(int)
  def on_checkBox_stateChanged(self, state):
   item = self.sender()  
   row = self.itemList.index(item)
   key = self.tableWidget.cellWidget(row, 1).text()
-  if state == PyQt5.QtCore.Qt.Checked:
+  if state == QtCore.Qt.Checked:
    value = 'true'
   else:
    value = 'false'
   self._toOptionsDict(key,  value)
    
- @PyQt5.QtCore.pyqtSlot(int)
+ @QtCore.pyqtSlot(int)
  def on_spinBox_changed(self, value):
   item = self.sender()  
   row = self.itemList.index(item)
   key = self.tableWidget.cellWidget(row, 1).text()
   self._toOptionsDict(key,  value)
 
- @PyQt5.QtCore.pyqtSlot(str)
+ @QtCore.pyqtSlot(str)
  def on_comboBox_changed(self, value):
   item = self.sender()  
   row = self.itemList.index(item)
   key = self.tableWidget.cellWidget(row, 1).text()
   self._toOptionsDict(key,  value)
 
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_string_editingFinished(self):
   item = self.sender()  
   row = self.itemList.index(item)
@@ -139,7 +138,7 @@ class ConfigureEngineOptions(PyQt5.QtWidgets.QDialog, Ui_configureEngineOptions.
   value = item.text()
   self._toOptionsDict(key,  value)
    
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_browsePushButton_clicked(self):
   item = self.sender()  
   row = self.btnList.index(item)
@@ -147,18 +146,18 @@ class ConfigureEngineOptions(PyQt5.QtWidgets.QDialog, Ui_configureEngineOptions.
   key = keyLabel.text()
   valueLabel = self.tableWidget.cellWidget(row, 2)
   value = valueLabel.text()
-  fDialog = PyQt5.QtWidgets.QFileDialog()
+  fDialog = QtWidgets.QFileDialog()
   fDialog.setOptions(self.fileDialogOptions)
   fDialog.setFilter(self.fileDialogFilters)
   if 'file' in key.lower(): 
-   fDialog.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
+   fDialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
    fDialog.setWindowTitle("Set File ...")
    if len(value) > 0:
     head, tail = os.path.split(value)
     fDialog.setDirectory(head)
     fDialog.selectFile(tail)
   else:
-   fDialog.setFileMode(PyQt5.QtWidgets.QFileDialog.Directory)
+   fDialog.setFileMode(QtWidgets.QFileDialog.Directory)
    fDialog.setWindowTitle("Set Directory ...")
    if len(value) > 0:
     head, tail = os.path.split(value)
@@ -169,11 +168,11 @@ class ConfigureEngineOptions(PyQt5.QtWidgets.QDialog, Ui_configureEngineOptions.
    valueLabel.setText(value)
    self._toOptionsDict(key,  value)
  
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_cancelPushButton_clicked(self):
   self.done(False)
   
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_okPushButton_clicked(self):
   self.done(True)
 
@@ -216,8 +215,8 @@ if __name__ == "__main__":
 
  changedOptions = { 'UCI_Elo' : 1410, 'Ponder' :  'true'}
 
- app = PyQt5.QtWidgets.QApplication([])
+ app = QtWidgets.QApplication([])
  dialog = ConfigureEngineOptions()
  dialog.run(engineOptionsDict, changedOptions = changedOptions)
  
- sys.exit(app.exec_())
+ sys.exit(app.exec())

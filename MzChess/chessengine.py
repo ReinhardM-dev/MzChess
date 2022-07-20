@@ -8,7 +8,7 @@ import time
 import re
 from typing import Any, Dict, Callable, Iterable, List, Optional, Tuple, Type, Union
 
-import PyQt5.QtCore
+from PyQt5 import QtCore
 
 import chess
 import chess.engine
@@ -16,7 +16,7 @@ import chess.engine
 PGNCmd_REGEX = re.compile(r'\[(%[a-z]*)?[ ]+([^\n\t \]]+)\]')
 PGNEval_REGEX = re.compile(r'\[(%|%eval)[ ]+([^\n\t \]]+)\]')
 
-class ChessEngine(PyQt5.QtCore.QObject):
+class ChessEngine(QtCore.QObject):
  '''A Universal Chess Interface (`UCI`_) engine using (`QProcess`_)
 
 :param engine2Option: a pair of a path to the executable and *dict* of the changed options
@@ -29,13 +29,13 @@ class ChessEngine(PyQt5.QtCore.QObject):
 .. _QProcess: https://doc.qt.io/qt-5/qprocess.html
 .. _chess.engine.Limit: https://python-chess.readthedocs.io/en/latest/engine.html
  '''
- bestMoveScoreSignal : PyQt5.QtCore.pyqtSignal = PyQt5.QtCore.pyqtSignal(chess.Move, str)
+ bestMoveScoreSignal : QtCore.pyqtSignal = QtCore.pyqtSignal(chess.Move, str)
 
  def __init__(self, engine2Option : Tuple[os.PathLike, Dict[str, Union[str, int, bool, None]]], 
    limit : chess.engine.Limit = chess.engine.Limit(depth = 10), 
    timeout_msec : int = 1000, 
    log : Optional[Callable[[str], None]] = None, 
-   parent : Optional[PyQt5.QtCore.QObject] = None) -> None:
+   parent : Optional[QtCore.QObject] = None) -> None:
   super(ChessEngine, self).__init__(parent)
   executable, optionsDict = engine2Option
   if not (os.path.isfile(executable) and os.access(executable, os.X_OK )):
@@ -44,12 +44,12 @@ class ChessEngine(PyQt5.QtCore.QObject):
   self.setLog(log)
   self.timeout_msec = max(int(timeout_msec), 10)
   self.stdoutLines = list()
-  self.p = PyQt5.QtCore.QProcess()  # Keep a reference to the QProcess (e.g. on self) while it's running.
+  self.p = QtCore.QProcess()  # Keep a reference to the QProcess (e.g. on self) while it's running.
   self.p.readyReadStandardOutput.connect(self._fromStdout)
   self.p.readyReadStandardError.connect(self._fromStdout)
   self.stdout = ''
   self.stdoutLines = list()
-  self.p.start(executable, PyQt5.QtCore.QIODevice.ReadWrite | PyQt5.QtCore.QIODevice.Text)
+  self.p.start(executable, QtCore.QIODevice.ReadWrite | QtCore.QIODevice.Text)
   while not self.p.waitForStarted(msecs = self.timeout_msec):
    self._log('ChessEngine: slow write, {} msec elapsed'.format(self.timeout_msec))
   self.readyok = True
@@ -57,7 +57,7 @@ class ChessEngine(PyQt5.QtCore.QObject):
   start = int(round(time.time() * 1000))
   loop = 1
   while 'idDict' not in vars(self) or 'optionsDict' not in vars(self):
-   PyQt5.QtCore.QCoreApplication.processEvents()
+   QtCore.QCoreApplication.processEvents()
    elapsed = int(round(time.time() * 1000)) - start
    if elapsed > 3*self.timeout_msec:
     self._log('ChessEngine: long wait for uci response, {}x looped, {} msec elapsed'.format(loop, elapsed))
@@ -169,7 +169,7 @@ class ChessEngine(PyQt5.QtCore.QObject):
 
 :returns: boolean indicating the response
   '''
-  return self.p.state() == PyQt5.QtCore.QProcess.Running and self.readyok
+  return self.p.state() == QtCore.QProcess.Running and self.readyok
   
  #  Parser --------------------------------------------------------------------------------------
 
@@ -532,8 +532,8 @@ if __name__ == "__main__":
 
  def waitForData(engine):
   for i in range(100):
-   PyQt5.QtCore.QThread.msleep(engine.timeout_msec)
-   PyQt5.QtCore.QCoreApplication.processEvents()
+   QtCore.QThread.msleep(engine.timeout_msec)
+   QtCore.QCoreApplication.processEvents()
    if engine.isReady():
     return
    print('----> waiting {} * {} ms'.format(i, engine.timeout_msec))
@@ -639,10 +639,10 @@ if __name__ == "__main__":
    f.write('\n'.join(fen2score))
   print('Result filed @ {}'.format(fscFile))
 
- app = PyQt5.QtCore.QCoreApplication(sys.argv)
+ app = QtCore.QCoreApplication(sys.argv)
 
- PyQt5.QtCore.QTimer.singleShot(10, runChessEngine)
- # PyQt5.QtCore.QTimer.singleShot(10, scoreECOTable)
+ QtCore.QTimer.singleShot(10, runChessEngine)
+ # QtCore.QTimer.singleShot(10, scoreECOTable)
  
- app.exec_()
+ app.exec()
  print('completed')

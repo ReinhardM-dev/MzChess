@@ -4,7 +4,7 @@
 '''
 
 from typing import Callable, List, Union, Optional, Tuple
-import PyQt5.QtCore
+from PyQt5 import QtCore
 
 import chess, chess.pgn
 from chessengine import ChessEngine, PGNEval_REGEX
@@ -199,14 +199,14 @@ class Annotator():
    gameNode = gameNode.next()
   return game
 
-class AnnotateEngine(PyQt5.QtCore.QObject):
+class AnnotateEngine(QtCore.QObject):
  '''A wrapper class collecting score and variant (pv) data from an engine 
 
 :param notifyFunction: print-like function used for notification
  '''
  def __init__(self, 
                     notifyFunction : Optional[Callable[[str], None]] = None, 
-                    parent : Optional[PyQt5.QtCore.QObject] = None) -> None:
+                    parent : Optional[QtCore.QObject] = None) -> None:
   super(AnnotateEngine, self).__init__(parent)
   self.notifyFunction = notifyFunction
 
@@ -228,7 +228,7 @@ class AnnotateEngine(PyQt5.QtCore.QObject):
   self.hintPLYs = hintPLYs
   self.multiPV = multiPV
 
- @PyQt5.QtCore.pyqtSlot(chess.Move, str)
+ @QtCore.pyqtSlot(chess.Move, str)
  def _bestMoveScoreAvailable(self, move : chess.Move, score : str):
   if len(score) == 0:
    score = None
@@ -288,7 +288,7 @@ class AnnotateEngine(PyQt5.QtCore.QObject):
   if not self._startNext(isNew = True):
    return False
   while (self.numberOfPlys is None or len(self.scoreListList) < self.numberOfPlys) and self.gameNode is not None:
-   PyQt5.QtCore.QCoreApplication.processEvents()
+   QtCore.QCoreApplication.processEvents()
   return True
 
 if __name__ == "__main__":
@@ -300,7 +300,7 @@ if __name__ == "__main__":
  import configureEngine
  from pgnParse import read_game
 
- app = PyQt5.QtCore.QCoreApplication(sys.argv)
+ app = QtCore.QCoreApplication(sys.argv)
 
  fileDirectory = os.path.dirname(os.path.abspath(__file__))
  os.chdir(fileDirectory)

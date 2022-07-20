@@ -31,14 +31,11 @@ import copy
 import configparser
 import re
 
-import PyQt5.QtCore
-import PyQt5.QtGui
-import PyQt5.QtWidgets
+from PyQt5 import QtWidgets, QtCore
+from PyQt5 import uic
 
 from chessengine import ChessEngine
 from configureEngineOptions import ConfigureEngineOptions 
-
-import Ui_configureEngine
 
 intRe = re.compile(r"^[+\-]?[0-9]+$")
 boolRe = re.compile(r"^(True|False)$")
@@ -80,29 +77,31 @@ def saveEngineSettings(settings : configparser.ConfigParser, engineDict : Dict[s
   settings[key] = optionsDict
   settings[key]['executable'] = executable
 
-class ConfigureEngine(PyQt5.QtWidgets.QDialog, Ui_configureEngine.Ui_Dialog):
- fileDialogOptions = PyQt5.QtWidgets.QFileDialog.Options() \
-                        | PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog
- fileDialogFilters = PyQt5.QtCore.QDir.AllDirs \
-                      | PyQt5.QtCore.QDir.Files \
-                      | PyQt5.QtCore.QDir.NoDotAndDotDot \
-                      | PyQt5.QtCore.QDir.Hidden
+class ConfigureEngine(QtWidgets.QDialog):
+ fileDialogOptions = QtWidgets.QFileDialog.Options() \
+                        | QtWidgets.QFileDialog.DontUseNativeDialog
+ fileDialogFilters = QtCore.QDir.AllDirs \
+                      | QtCore.QDir.Files \
+                      | QtCore.QDir.NoDotAndDotDot \
+                      | QtCore.QDir.Hidden
 
- def __init__(self, parent : Optional[PyQt5.QtCore.QObject] = None):
+ def __init__(self, parent : Optional[QtCore.QObject] = None):
   super(ConfigureEngine, self).__init__(parent)
-  self.setupUi(self)
+  fileDirectory = os.path.dirname(os.path.abspath(__file__))
+  uic.loadUi(os.path.join(fileDirectory, 'configureEngine.ui'), self)
+
   self.engineDict = dict()
   self.log = False
   self.directories = list()
   self.engineTableWidget.horizontalHeader().setStretchLastSection(True)
-  self.engineTableWidget.setSelectionBehavior(PyQt5.QtWidgets.QAbstractItemView.SelectRows)
-  self.browsePushButton.setIcon(self.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogSaveButton))
+  self.engineTableWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+  self.browsePushButton.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DialogSaveButton))
   self.engineDetails = dict()
 
- @PyQt5.QtCore.pyqtSlot(str)
+ @QtCore.pyqtSlot(str)
  def notifyError(self, msg):
-  msgBox = PyQt5.QtWidgets.QMessageBox()
-  msgBox.setIcon(PyQt5.QtWidgets.QMessageBox.Critical)
+  msgBox = QtWidgets.QMessageBox()
+  msgBox.setIcon(QtWidgets.QMessageBox.Critical)
   msgBox.setText(msg)
   msgBox.setWindowTitle("Error")
   msgBox.exec()
@@ -111,13 +110,13 @@ class ConfigureEngine(PyQt5.QtWidgets.QDialog, Ui_configureEngine.Ui_Dialog):
   self.engineTableWidget.setRowCount(len(self.engineDict))
   for row, n2ec in enumerate(self.engineDict.items()):
    name, ec = n2ec
-   executable = ec[0]
+   executable, options = ec[0]
    if not (os.path.isfile(executable) and os.access(executable, os.X_OK )):
     executable = 'not found'
    else:
     self.directories.append(os.path.dirname(executable))
-   self.engineTableWidget.setCellWidget(row, 0, PyQt5.QtWidgets.QLabel(name))
-   self.engineTableWidget.setCellWidget(row, 1, PyQt5.QtWidgets.QLabel(executable))
+   self.engineTableWidget.setCellWidget(row, 0, QtWidgets.QLabel(name))
+   self.engineTableWidget.setCellWidget(row, 1, QtWidgets.QLabel(executable))
   self.executableLineEdit.setText('')
   self.nameLineEdit.setText('')
 
@@ -134,10 +133,10 @@ class ConfigureEngine(PyQt5.QtWidgets.QDialog, Ui_configureEngine.Ui_Dialog):
   
  def ignoreIsChanged(self) -> None:
   if self.isChanged:
-   msgBox = PyQt5.QtWidgets.QMessageBox()
-   msgBox.setIcon(PyQt5.QtWidgets.QMessageBox.Critical)
-   msgBox.addButton(PyQt5.QtWidgets.QMessageBox.No)
-   msgBox.addButton(PyQt5.QtWidgets.QMessageBox.Yes)
+   msgBox = QtWidgets.QMessageBox()
+   msgBox.setIcon(QtWidgets.QMessageBox.Critical)
+   msgBox.addButton(QtWidgets.QMessageBox.No)
+   msgBox.addButton(QtWidgets.QMessageBox.Yes)
    msgBox.setText('Ignore ?')
    msgBox.setWindowTitle("Unsaved content detected")
    rc = msgBox.exec()
@@ -152,16 +151,16 @@ class ConfigureEngine(PyQt5.QtWidgets.QDialog, Ui_configureEngine.Ui_Dialog):
   except:
    isOK = False
   if not isOK:
-   msgBox = PyQt5.QtWidgets.QMessageBox()
-   msgBox.setIcon(PyQt5.QtWidgets.QMessageBox.Critical)
-   msgBox.addButton(PyQt5.QtWidgets.QMessageBox.Ok)
+   msgBox = QtWidgets.QMessageBox()
+   msgBox.setIcon(QtWidgets.QMessageBox.Critical)
+   msgBox.addButton(QtWidgets.QMessageBox.Ok)
    msgBox.setText('{} is not an UCI engine'.format(executable))
    msgBox.setWindowTitle("Error")
    msgBox.exec()
    return None
   return engine
  
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_detailsPushButton_clicked(self):
   executable = self.executableLineEdit.text()   
   if len(executable) == 0:
@@ -176,10 +175,10 @@ class ConfigureEngine(PyQt5.QtWidgets.QDialog, Ui_configureEngine.Ui_Dialog):
     self.engineDetails = newEngineDetails
     self.isChanged = True
 
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_browsePushButton_clicked(self):
-  fDialog = PyQt5.QtWidgets.QFileDialog()
-  fDialog.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
+  fDialog = QtWidgets.QFileDialog()
+  fDialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
   fDialog.setOptions(self.fileDialogOptions)
   fDialog.setFilter(self.fileDialogFilters)
   fDialog.setWindowTitle("Load Engine Executable ...")
@@ -200,28 +199,28 @@ class ConfigureEngine(PyQt5.QtWidgets.QDialog, Ui_configureEngine.Ui_Dialog):
     self.executableLineEdit.setText(executable)
     self.isChanged = True
 
- @PyQt5.QtCore.pyqtSlot(int, int)
+ @QtCore.pyqtSlot(int, int)
  def on_engineTableWidget_cellClicked(self, row, column):
   if not self.ignoreIsChanged():
    return  
   name = self.engineTableWidget.cellWidget(row, 0).text()
   self.nameLineEdit.setText(name)
-  self.executableLineEdit.setText(self.engineDict[name][0])
+  self.executableLineEdit.setText(self.engineDict[name][0][0])
   self.engineDetails = self.engineDict[name][1]
   self.selectedRow = row
 
- @PyQt5.QtCore.pyqtSlot(str)
+ @QtCore.pyqtSlot(str)
  def on_nameLineEdit_textEdited(self, newName):
   self.isChanged = True
 
- @PyQt5.QtCore.pyqtSlot(str)
+ @QtCore.pyqtSlot(str)
  def on_executableLineEdit_textEdited(self, newExecutable):
   if self.checkEngine(newExecutable) is None:
    self.executableLineEdit.setText('')
    self.engineDetails = dict()
   self.isChanged = True
 
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_savePushButton_clicked(self):
   name = self.nameLineEdit.text()
   executable = self.executableLineEdit.text()
@@ -234,7 +233,7 @@ class ConfigureEngine(PyQt5.QtWidgets.QDialog, Ui_configureEngine.Ui_Dialog):
   self._fillForm()
   self.isChanged = False
  
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_removePushButton_clicked(self):
   if not self.ignoreIsChanged():
    return
@@ -243,11 +242,11 @@ class ConfigureEngine(PyQt5.QtWidgets.QDialog, Ui_configureEngine.Ui_Dialog):
   self.engineTableWidget.removeRow(self.selectedRow)
   self.selectedRow = None
   
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_cancelPushButton_clicked(self):
   self.done(False)
   
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_okPushButton_clicked(self):
   if self.ignoreIsChanged():
    self.done(True)
@@ -257,7 +256,7 @@ if __name__ == "__main__":
  import sys
  import configparser
 
- qApp=PyQt5.QtWidgets.QApplication(sys.argv)   
+ qApp=QtWidgets.QApplication(sys.argv)   
 
  fileDirectory = os.path.dirname(os.path.abspath(__file__))
  os.chdir(fileDirectory)
@@ -276,4 +275,4 @@ if __name__ == "__main__":
  newEngineDict = configureEngine.run(engineDict = engineDict, log = True)
  print('------- new')
  print(newEngineDict)
- qApp.exec_()
+ qApp.exec()

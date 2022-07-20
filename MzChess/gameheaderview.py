@@ -28,9 +28,7 @@ import copy
 import datetime
 from enum import IntEnum, unique
 
-import PyQt5.QtCore
-import PyQt5.QtGui
-import PyQt5.QtWidgets
+from PyQt5 import QtWidgets,  QtCore
 
 import chess, chess.pgn
 
@@ -46,7 +44,7 @@ class KeyType(IntEnum):
  PLAYER = 7
  TITLE = 8
 
-class GameHeaderView(PyQt5.QtWidgets.QTableWidget):
+class GameHeaderView(QtWidgets.QTableWidget):
  '''Game Header Editor object
  '''
  stdKey2ValueTypeDict = {
@@ -102,7 +100,7 @@ class GameHeaderView(PyQt5.QtWidgets.QTableWidget):
   self.siteList = ['?']
   self.playerList = ['?']
   
- def setup(self, notifyGameHeadersChangedSignal  : Optional[PyQt5.QtCore.pyqtSignal] = None, 
+ def setup(self, notifyGameHeadersChangedSignal  : Optional[QtCore.pyqtSignal] = None, 
                  eventList : List[str] = list(), siteList : List[str] = list(), playerList : List[str] = list()) -> None:
   self.eventList = ['?'] + eventList
   self.siteList = ['?'] + siteList
@@ -126,12 +124,12 @@ class GameHeaderView(PyQt5.QtWidgets.QTableWidget):
      hElements.append(el)
   return hElements
 
- def _createCompleteEdit(self, selList : List[str], value : Any) -> PyQt5.QtWidgets.QLineEdit:
-  completer = PyQt5.QtWidgets.QCompleter(selList)
-  completer.setCaseSensitivity(PyQt5.QtCore.Qt.CaseInsensitive)
-  completer.setFilterMode(PyQt5.QtCore.Qt.MatchContains)
-  completer.setCompletionMode(PyQt5.QtWidgets.QCompleter.InlineCompletion)
-  item = PyQt5.QtWidgets.QLineEdit(str(value))
+ def _createCompleteEdit(self, selList : List[str], value : Any) -> QtWidgets.QLineEdit:
+  completer = QtWidgets.QCompleter(selList)
+  completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+  completer.setFilterMode(QtCore.Qt.MatchContains)
+  completer.setCompletionMode(QtWidgets.QCompleter.InlineCompletion)
+  item = QtWidgets.QLineEdit(str(value))
   item.setCompleter(completer)
   item.editingFinished.connect(self.on_editingFinished)
   return item
@@ -143,20 +141,20 @@ class GameHeaderView(PyQt5.QtWidgets.QTableWidget):
   self.setColumnCount(2)
   for row, self.defaultKeyValueType in enumerate(keyValueTypeList):
    key, value, type = self.defaultKeyValueType
-   item = PyQt5.QtWidgets.QLabel(str(key))
+   item = QtWidgets.QLabel(str(key))
    self.setCellWidget(row, 0, item)
-  test = PyQt5.QtWidgets.QLabel()
-  zeroWidth = test.fontMetrics().size(PyQt5.QtCore.Qt.TextSingleLine, '0').width()
+  test = QtWidgets.QLabel()
+  zeroWidth = test.fontMetrics().size(QtCore.Qt.TextSingleLine, '0').width()
   self.setColumnWidth(0, 20*zeroWidth)
   
   self.itemList = list()
   for row, self.defaultKeyValueType in enumerate(keyValueTypeList):
    key, value, type = self.defaultKeyValueType
    if type == KeyType.STR:
-    item = PyQt5.QtWidgets.QLineEdit(str(value))
+    item = QtWidgets.QLineEdit(str(value))
     item.editingFinished.connect(self.on_editingFinished)
    elif type == KeyType.LABEL:
-    item = PyQt5.QtWidgets.QLabel(str(value))
+    item = QtWidgets.QLabel(str(value))
     item.setStyleSheet("background-color : white; color : gray;")
     if key == 'PlyCount':
      self.plyCountLabel = item
@@ -165,21 +163,21 @@ class GameHeaderView(PyQt5.QtWidgets.QTableWidget):
    elif type == KeyType.DATE:
     try:
      datetime.date.fromisoformat(value.replace('.','-'))
-     date = PyQt5.QtCore.QDate.fromString(value, "yyyy.MM.dd")
+     date = QtCore.QDate.fromString(value, "yyyy.MM.dd")
     except:
-     date = PyQt5.QtCore.QDate.currentDate()
+     date = QtCore.QDate.currentDate()
      self.gameHeaders[key] = date.toString('yyyy.MM.dd')
-    item = PyQt5.QtWidgets.QDateEdit(date)
+    item = QtWidgets.QDateEdit(date)
     item.dateChanged.connect(self.on_dateChanged)
    elif type == KeyType.TIME:
     try:
-     _time = PyQt5.QtCore.QTime.fromString(value, "hh:mm:ss")
+     _time = QtCore.QTime.fromString(value, "hh:mm:ss")
     except:
-     _time = PyQt5.QtCore.QTime.currentTime()
-    item = PyQt5.QtWidgets.QTimeEdit(_time)
+     _time = QtCore.QTime.currentTime()
+    item = QtWidgets.QTimeEdit(_time)
     item.timeChanged.connect(self.on_timeChanged)
    elif type == KeyType.INT:
-    item = PyQt5.QtWidgets.QSpinBox()
+    item = QtWidgets.QSpinBox()
     item.setMaximum(4000)
     item.setSpecialValueText('-')
     item.valueChanged.connect(self.on_spinBox_changed)
@@ -258,32 +256,32 @@ class GameHeaderView(PyQt5.QtWidgets.QTableWidget):
    keyValueTypeList.append((key, value, type))
   self._showTable(keyValueTypeList)
  
- def _getKV(self) -> Tuple[int, str, PyQt5.QtWidgets.QLineEdit]:
+ def _getKV(self) -> Tuple[int, str, QtWidgets.QLineEdit]:
   item = self.sender()
   row = self.itemList.index(item)
   key = self.cellWidget(row, 0).text()
   return key, self.cellWidget(row, 1)
   
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_editingFinished(self):
   key, valueItem = self._getKV()
   text = valueItem.text().strip(' \t\n')
   self.gameHeaders[key] = text
   self._emitHeader()
   
- @PyQt5.QtCore.pyqtSlot(PyQt5.QtCore.QDate)
+ @QtCore.pyqtSlot(QtCore.QDate)
  def on_dateChanged(self, date):
   key, _ = self._getKV()
   self.gameHeaders[key] = date.toString('yyyy.MM.dd')
   self._emitHeader()
 
- @PyQt5.QtCore.pyqtSlot(PyQt5.QtCore.QTime)
+ @QtCore.pyqtSlot(QtCore.QTime)
  def on_timeChanged(self, _time):
   key, _ = self._getKV()
   self.gameHeaders[key] = _time.toString('hh:mm:ss')
   self._emitHeader()
 
- @PyQt5.QtCore.pyqtSlot(int)
+ @QtCore.pyqtSlot(int)
  def on_spinBox_changed(self, value):
   key, _ = self._getKV()
   if value != 0:
@@ -322,7 +320,7 @@ if __name__ == "__main__":
  
  pgn = io.StringIO(newData)
  game = read_game(pgn)
- app = PyQt5.QtWidgets.QApplication([])
+ app = QtWidgets.QApplication([])
  tbl = GameHeaderView()
  tbl.setup(
    eventList = ["Wöchentliche Schachmeisterschaften"], 

@@ -23,19 +23,17 @@ opens which allows to change the contents
   :alt: Game Editor
 '''
 from typing import Optional, Set
-import PyQt5.QtCore
-import PyQt5.QtGui
-import PyQt5.QtWidgets
+from PyQt5 import QtWidgets, QtGui, QtCore
 
 import chess, chess.pgn
 from chessengine import PGNEval_REGEX
 from specialDialogs import ButtonLine, TextEdit, treeWidgetItemPos
 
-class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
+class GameTreeView(QtWidgets.QTreeWidget):
  '''Game Editor object
  '''
- itemFlags = PyQt5.QtCore.Qt.ItemIsEnabled | PyQt5.QtCore.Qt.ItemIsSelectable
- inactiveBrush = PyQt5.QtGui.QBrush(PyQt5.QtGui.QColor('lightgray'))
+ itemFlags = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+ inactiveBrush = QtGui.QBrush(QtGui.QColor('lightgray'))
  colorChars = ('black', 'white')
  endGameSymbols = ['1-0', '0-1', '1/2-1/2', '*']
  endGameDescription = { '1-0'      : 'White wins',
@@ -81,8 +79,8 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
 
  def __init__(self, parent = None) -> None:
   super(GameTreeView, self).__init__(parent)
-  self.setSelectionBehavior(PyQt5.QtWidgets.QAbstractItemView.SelectRows)
-  self.setSelectionMode(PyQt5.QtWidgets.QAbstractItemView.SingleSelection)
+  self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+  self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
   self.notifyGameNodeSelectedSignal = None
   self.notifyGameChangedSignal = None
   self._clear()
@@ -103,8 +101,8 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   self.commentEdit = TextEdit('Comment ...', pointSize = 10)
   
  def _resetColumnWidth(self) -> None:
-  test = PyQt5.QtWidgets.QLabel()
-  self.zeroWidth = test.fontMetrics().size(PyQt5.QtCore.Qt.TextSingleLine, '0').width()
+  test = QtWidgets.QLabel()
+  self.zeroWidth = test.fontMetrics().size(QtCore.Qt.TextSingleLine, '0').width()
   # self.setColumnWidth(1, 20*zeroWidth)
   self.depth = 0
   self.setColumnWidth(0, 15*self.zeroWidth)
@@ -112,7 +110,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   self.setColumnWidth(2, 8*self.zeroWidth)
   self.setColumnWidth(3, 8*self.zeroWidth)
   
- @PyQt5.QtCore.pyqtSlot(PyQt5.QtWidgets.QTreeWidgetItem)
+ @QtCore.pyqtSlot(QtWidgets.QTreeWidgetItem)
  def on_itemExpanded(self, widgetItem):
   depth = -1
   while widgetItem is not None:
@@ -128,8 +126,8 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   self.gameVariantItemList = list()
   super(GameTreeView, self).clear()
 
- def setup(self, notifyGameNodeSelectedSignal : Optional[PyQt5.QtCore.pyqtSignal], 
-                       notifyGameChangedSignal : Optional[PyQt5.QtCore.pyqtSignal]) -> None:
+ def setup(self, notifyGameNodeSelectedSignal : Optional[QtCore.pyqtSignal], 
+                       notifyGameChangedSignal : Optional[QtCore.pyqtSignal]) -> None:
   '''Set up of the game editor
   
 :param notifyGameNodeSelectedSignal: signal to be emitted if a game node is selected
@@ -153,7 +151,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   parent = gameNode.parent.variations[0]
   parentIndex = self.gameNodeList.index(parent)
   parentItem = self.gameItemList[parentIndex]
-  newVariant = PyQt5.QtWidgets.QTreeWidgetItem()
+  newVariant = QtWidgets.QTreeWidgetItem()
   for column in range(1, 4):
    newVariant.setBackground(column, self.inactiveBrush)
   newVariant.setFlags(self.itemFlags)
@@ -173,7 +171,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   self.addGameNodes(gameNode, parentItem = newVariant)
 
  def addGameNodes(self, gameNode :  chess.pgn.GameNode,  
-                                     parentItem : Optional[PyQt5.QtWidgets.QTreeWidgetItem] = None) -> None:
+                                     parentItem : Optional[QtWidgets.QTreeWidgetItem] = None) -> None:
   '''Adds 1 or more nodes, parent node of first node must exist in the editor
   
 :param gameNode: game node to be added (must be main_variation !!)
@@ -198,7 +196,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
     parentItem = parentItem.parent()
   board = gameNode.parent.board()
   while gameNode is not None: 
-   newNode = PyQt5.QtWidgets.QTreeWidgetItem()
+   newNode = QtWidgets.QTreeWidgetItem()
    newNode.setFlags(self.itemFlags)
    parent = gameNode.parent
    san = board.san(gameNode.move)
@@ -273,7 +271,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
   '''
   self._clear()
   self.game = game
-  master = PyQt5.QtWidgets.QTreeWidgetItem()
+  master = QtWidgets.QTreeWidgetItem()
   master.setFlags(self.itemFlags)
   master.setText(4, self.game.comment)
   self.addTopLevelItem(master)
@@ -294,7 +292,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
    selIndex = self.gameNodeList.index(gameNode)
   if selIndex > 0:
    self.expandItem(self.gameItemList[selIndex])
-  self.setCurrentItem(self.gameItemList[selIndex], 0, PyQt5.QtCore.QItemSelectionModel.SelectCurrent)
+  self.setCurrentItem(self.gameItemList[selIndex], 0, QtCore.QItemSelectionModel.SelectCurrent)
 
  def selectSubnodeItem(self, gameNode : chess.pgn.GameNode, next : bool = True):
   '''Selects the next or previous variant
@@ -345,7 +343,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
    newNAGs .add(nag)
   return newNAGs
   
- def _editComment(self, item :  PyQt5.QtWidgets.QTreeWidgetItem) -> str:
+ def _editComment(self, item :  QtWidgets.QTreeWidgetItem) -> str:
   self.commentEdit.setText(item.text(4).replace('\\n','\n'))
   if not self.commentEdit.exec():
    return None
@@ -356,7 +354,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
    comment = '[%eval {}] {}'.format(score, comment)
   return comment
 
- @PyQt5.QtCore.pyqtSlot(PyQt5.QtCore.QModelIndex)
+ @QtCore.pyqtSlot(QtCore.QModelIndex)
  def on_clicked(self, index):
   item = self.itemFromIndex(index)
   column = index.column()
@@ -411,7 +409,7 @@ class GameTreeView(PyQt5.QtWidgets.QTreeWidget):
     return
   self._emitGameChanged()
   
- def _isVariant(self, item : PyQt5.QtWidgets.QTreeWidgetItem) -> bool:
+ def _isVariant(self, item : QtWidgets.QTreeWidgetItem) -> bool:
   isTrue = False
   parent = item
   while parent is not None:
@@ -513,7 +511,6 @@ if __name__ == "__main__":
  from pgnParse import read_game
 
  if False:
-  isNewGame = False
   newData = """[Event "matein2"]
 [Site "problem solved"]
 [Date "????.??.??"]
@@ -521,41 +518,37 @@ if __name__ == "__main__":
 [White "?"]
 [Black "?"]
 [Result "*"]
-[SetUp "1"]
+[Comment "1"]
 [PlyCount "0"]
 [FEN "1k6/Rp1K4/1P5P/8/P7/3pP3/1p1P4/8 w - - 0 1"]
   
 1.h7 b1=Q! $20 {[% -4.80]} 2.h8=R# *"""
  else:
-  isNewGame = True
-  ps = "C:/Users/Reinh/OneDrive/Dokumente/Schach/kingsPawn.pgn"
+  import os.path
+  fileDirectory = os.path.dirname(os.path.abspath(__file__))
+  ps = os.path.join(fileDirectory, 'training', 'openings', 'kingsPawn.pgn')
   with open(ps, mode = 'r',  encoding = 'utf-8') as f:
    newData = f.read()
  
  pgn = io.StringIO(newData)
  game = read_game(pgn)
- app = PyQt5.QtWidgets.QApplication([])
+ app = QtWidgets.QApplication([])
 
  tree = GameTreeView()
  
- msgSc = PyQt5.QtWidgets.QShortcut(PyQt5.QtGui.QKeySequence('Ctrl+U'), tree)
+ msgSc = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+U'), tree)
  msgSc.activated.connect(tree.promoteVariant)
 
- msgSc = PyQt5.QtWidgets.QShortcut(PyQt5.QtGui.QKeySequence('Ctrl+D'), tree)
+ msgSc = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+D'), tree)
  msgSc.activated.connect(tree.demoteVariant)
 
- msgSc = PyQt5.QtWidgets.QShortcut(PyQt5.QtGui.QKeySequence('Ctrl+X'), tree)
+ msgSc = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+X'), tree)
  msgSc.activated.connect(tree.removeVariant)
 
- msgSc = PyQt5.QtWidgets.QShortcut(PyQt5.QtGui.QKeySequence('Ctrl+M'), tree)
+ msgSc = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+M'), tree)
  msgSc.activated.connect(tree.promoteVariant2Main)
 
  tree.setGame(game)
- if isNewGame:
-  newVariant = game.add_variation(chess.Move.from_uci('a2a3'), comment = 'move #1', starting_comment = 'variant', nags = [2, 17]) 
-  tree.addGameNodes(newVariant)
-  gameNode = newVariant.add_variation(chess.Move.from_uci('a7a6'), comment = 'move #2', starting_comment = '???', nags = [3, 20]) 
-  tree.addGameNodes(gameNode)
  tree.resize(500,400)
  tree.show()
- sys.exit(app.exec_())
+ sys.exit(app.exec())

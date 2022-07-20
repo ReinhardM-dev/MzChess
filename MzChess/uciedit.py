@@ -1,11 +1,9 @@
 import re
 
-import PyQt5.QtCore
-import PyQt5.QtGui
-import PyQt5.QtWidgets
+from PyQt5 import QtWidgets, QtGui
 
 
-class UCIHighlighter(PyQt5.QtGui.QSyntaxHighlighter):
+class UCIHighlighter(QtGui.QSyntaxHighlighter):
  sendKeywords = ['uci', 'debug', 'isready', 'register', 'ucinewgame', 'position', 'go', 'ponderhit', 'quit']
  receiveKeywords = ['id', 'uciok', 'isready', 'readyok', 'bestmove', 'registration', 'copyprotection', 'info', 'option']
  infoKeywords = ['depth', 'score', 'pv']
@@ -24,13 +22,13 @@ class UCIHighlighter(PyQt5.QtGui.QSyntaxHighlighter):
    (receivePattern, receiveFmt), 
    (infoPattern, infoFmt)]
 
- def _charFormat(self, color : str = 'black', isBold : bool = False,  isItalic : bool = False) -> PyQt5.QtGui.QTextCharFormat:
-  charFormat = PyQt5.QtGui.QTextCharFormat()
-  _color = PyQt5.QtGui.QColor()
+ def _charFormat(self, color : str = 'black', isBold : bool = False,  isItalic : bool = False) -> QtGui.QTextCharFormat:
+  charFormat = QtGui.QTextCharFormat()
+  _color = QtGui.QColor()
   _color.setNamedColor(color)
   charFormat.setForeground(_color)
   if isBold:
-   charFormat.setFontWeight(PyQt5.QtGui.QFont.Bold)
+   charFormat.setFontWeight(QtGui.QFont.Bold)
   if isItalic:
    charFormat.setFontItalic(True)
   return charFormat
@@ -41,7 +39,7 @@ class UCIHighlighter(PyQt5.QtGui.QSyntaxHighlighter):
     self.setFormat(match.start(), match.end() - match.start(), charFormat)
   
 
-class QUCIEdit(PyQt5.QtWidgets.QTextEdit):
+class QUCIEdit(QtWidgets.QTextEdit):
  def __init__(self, parent = None) -> None:
   super(QUCIEdit, self).__init__(parent)
   
@@ -54,8 +52,8 @@ ChessEngine/_fromStdout: stdout< info depth 1 seldepth 1 multipv 1 score cp -435
 info depth 2 seldepth 2 multipv 1 score cp -415 nodes 120 nps 120000 tbhits 0 time 1 pv c6b4 a2a3
 '''
 
- app = PyQt5.QtWidgets.QApplication([])
+ app = QtWidgets.QApplication([])
  editor = QUCIEdit()
  editor.setPlainText(data)
  editor.show()
- app.exec_()
+ app.exec()

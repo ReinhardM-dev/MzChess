@@ -47,15 +47,12 @@ It is possible to control the zoom of the *Score* axis. The GUI with an ongoing 
 from typing import Optional
 
 import math
-import PyQt5.QtCore
-import PyQt5.QtGui
-import PyQt5.QtWidgets
-import PyQt5.QtChart
+from PyQt5 import QtChart, QtWidgets, QtGui, QtCore
 
 import chess, chess.pgn
 from chessengine import PGNEval_REGEX
 
-class ScorePlot(PyQt5.QtChart.QChartView):
+class ScorePlot(QtChart.QChartView):
  '''Score plot object
  '''
  piecePawnScoreDict = {
@@ -66,22 +63,22 @@ class ScorePlot(PyQt5.QtChart.QChartView):
   chess.QUEEN : 9
  }
  seriesPens = {
-  'Material' : PyQt5.QtGui.QPen(PyQt5.QtGui.QBrush(PyQt5.QtCore.Qt.blue), 1), 
-  'Engine' : PyQt5.QtGui.QPen(PyQt5.QtGui.QBrush(PyQt5.QtCore.Qt.red), 1), 
-  None : PyQt5.QtGui.QPen(PyQt5.QtGui.QBrush(PyQt5.QtCore.Qt.gray), 2, PyQt5.QtCore.Qt.DotLine)}
+  'Material' : QtGui.QPen(QtGui.QBrush(QtCore.Qt.blue), 1), 
+  'Engine' : QtGui.QPen(QtGui.QBrush(QtCore.Qt.red), 1), 
+  None : QtGui.QPen(QtGui.QBrush(QtCore.Qt.gray), 2, QtCore.Qt.DotLine)}
   
- axesPen = PyQt5.QtGui.QPen(PyQt5.QtGui.QBrush(PyQt5.QtCore.Qt.blue), 2)
- axesBrush = PyQt5.QtGui.QBrush(PyQt5.QtCore.Qt.black)
+ axesPen = QtGui.QPen(QtGui.QBrush(QtCore.Qt.blue), 2)
+ axesBrush = QtGui.QBrush(QtCore.Qt.black)
  mateScore = 100
 
- PyQt5.QtGui.QColor(PyQt5.QtCore.Qt.blue)
+ QtGui.QColor(QtCore.Qt.blue)
 
- def __init__(self, parent : Optional[PyQt5.QtCore.QObject] = None) -> None:
+ def __init__(self, parent : Optional[QtCore.QObject] = None) -> None:
   super(ScorePlot, self).__init__(parent)
-  self.setRenderHint(PyQt5.QtGui.QPainter.Antialiasing)
-  self.setRubberBand(PyQt5.QtChart.QChartView.VerticalRubberBand)
+  self.setRenderHint(QtGui.QPainter.Antialiasing)
+  self.setRubberBand(QtChart.QChartView.VerticalRubberBand)
  
- def setup(self, notifyGameNodeSelectedSignal : Optional[PyQt5.QtCore.pyqtSignal] = None):
+ def setup(self, notifyGameNodeSelectedSignal : Optional[QtCore.pyqtSignal] = None):
   '''Set up of the score
   
 :param notifyGameNodeSelectedSignal: signal to be emitted if a game node is selected
@@ -90,17 +87,17 @@ class ScorePlot(PyQt5.QtChart.QChartView):
    return
   self.notifyGameNodeSelectedSignal = notifyGameNodeSelectedSignal 
   if self.notifyGameNodeSelectedSignal is not None:
-   scUp = PyQt5.QtWidgets.QShortcut(self)
-   scUp.setKey(PyQt5.QtCore.Qt.Key_Up)
+   scUp = QtWidgets.QShortcut(self)
+   scUp.setKey(QtCore.Qt.Key_Up)
    scUp.activated.connect(self.on_sc_activated)
-   scDown = PyQt5.QtWidgets.QShortcut(self)
-   scDown.setKey(PyQt5.QtCore.Qt.Key_Down)
+   scDown = QtWidgets.QShortcut(self)
+   scDown.setKey(QtCore.Qt.Key_Down)
    scDown.activated.connect(self.on_sc_activated)
  
- def _setupChart(self, notifyGameNodeSelectedSignal : Optional[PyQt5.QtCore.pyqtSignal] = None):
+ def _setupChart(self, notifyGameNodeSelectedSignal : Optional[QtCore.pyqtSignal] = None):
   self._createChart()
-  self.xAxis = self._addAxis(PyQt5.QtCore.Qt.AlignBottom, title = 'Move')
-  self.yAxis = self._addAxis(PyQt5.QtCore.Qt.AlignLeft, title = 'Score [pawns]')
+  self.xAxis = self._addAxis(QtCore.Qt.AlignBottom, title = 'Move')
+  self.yAxis = self._addAxis(QtCore.Qt.AlignLeft, title = 'Score [pawns]')
   self.materialSeries = self._addSeries('Material', isLineSeries = True)
   self.engineSeries = self._addSeries('Engine', isLineSeries = True)
   self.selectedGameNode = None
@@ -129,7 +126,7 @@ class ScorePlot(PyQt5.QtChart.QChartView):
 :param patch: specified patch number
 :returns: True, if the actual Qt-version is smaller or equal than the specified version
   '''
-  qtMajor, qtMinor, qtPatch = list(map(int, PyQt5.QtCore.QT_VERSION_STR.split('.')))
+  qtMajor, qtMinor, qtPatch = list(map(int, QtCore.QT_VERSION_STR.split('.')))
   return not (qtMajor < major \
               or (qtMajor == major and qtMinor < minor) \
               or (qtMajor == major and qtMinor == minor and qtPatch <= patch))
@@ -143,10 +140,10 @@ class ScorePlot(PyQt5.QtChart.QChartView):
   return 100
   
  def _createChart(self, 
-   bColor = PyQt5.QtCore.Qt.lightGray, 
-   paColor = PyQt5.QtCore.Qt.white, 
-   legendPosition = PyQt5.QtCore.Qt.AlignBottom) -> None:
-  self.chart = PyQt5.QtChart.QChart()
+   bColor = QtCore.Qt.lightGray, 
+   paColor = QtCore.Qt.white, 
+   legendPosition = QtCore.Qt.AlignBottom) -> None:
+  self.chart = QtChart.QChart()
   self.chart.setBackgroundBrush(bColor)
   self.chart.setPlotAreaBackgroundBrush(paColor)
   self.chart.setPlotAreaBackgroundVisible(True)
@@ -154,40 +151,40 @@ class ScorePlot(PyQt5.QtChart.QChartView):
   self.chart.legend().setAlignment(legendPosition)
   self.setChart(self.chart)
 
- def _addSeries(self, name : Optional[str] = None, isLineSeries : bool = True) -> PyQt5.QtChart.QLineSeries:
+ def _addSeries(self, name : Optional[str] = None, isLineSeries : bool = True) -> QtChart.QLineSeries:
   if isLineSeries:
-   series = PyQt5.QtChart.QLineSeries(self.chart)
+   series = QtChart.QLineSeries(self.chart)
    if name is not None:
     series.setName(name)
    series.setPen(self.seriesPens[name])
   else:
-   series = PyQt5.QtChart.QScatterSeries(self.chart)
+   series = QtChart.QScatterSeries(self.chart)
    series.setPen(self.axesPen)
   self.chart.addSeries(series)
   series.attachAxis(self.xAxis)
   series.attachAxis(self.yAxis)
   return series
 
- def _addTextLabel(self) -> PyQt5.QtWidgets.QGraphicsSimpleTextItem:
+ def _addTextLabel(self) -> QtWidgets.QGraphicsSimpleTextItem:
   label = self.scene().addSimpleText('')
   label.hide()
   return label
 
- def _addAxis(self, alignment : PyQt5.QtCore.Qt.AlignmentFlag, title: str = '') -> PyQt5.QtChart.QValueAxis:
-  axis = PyQt5.QtChart.QValueAxis()
+ def _addAxis(self, alignment : QtCore.Qt.AlignmentFlag, title: str = '') -> QtChart.QValueAxis:
+  axis = QtChart.QValueAxis()
   axis.setLinePen(self.axesPen)
   axis.setLabelsBrush(self.axesBrush)
   axis.setGridLineVisible(True)
   axis.setMinorTickCount(5)
   if self.minQtVersion(5, 12):
-   axis.setTickType(PyQt5.QtChart.QValueAxis.TicksDynamic)
+   axis.setTickType(QtChart.QValueAxis.TicksDynamic)
    axis.setTickAnchor(0)
   if len(title) > 0: 
    axis.setTitleText(title)
   self.chart.addAxis(axis, alignment)
   return axis
   
- def _setRange(self, axis : PyQt5.QtChart.QValueAxis, minV : float, maxV : float ) -> None:
+ def _setRange(self, axis : QtChart.QValueAxis, minV : float, maxV : float ) -> None:
   assert maxV > minV, '{} > {} required'.format(maxV, minV)
   if maxV - minV < 5:
    delta = 1
@@ -237,14 +234,14 @@ class ScorePlot(PyQt5.QtChart.QChartView):
   width = int(width)
   height = int(sourceRect.height() * width / sourceRect.width())
   bgColor = self.scene().views()[0].backgroundBrush().color().toRgb()
-  plt = PyQt5.QtGui.QImage(width, height,  PyQt5.QtGui.QImage.Format_RGB32)
+  plt = QtGui.QImage(width, height,  QtGui.QImage.Format_RGB32)
   plt.fill(bgColor)
-  painter = PyQt5.QtGui.QPainter()
+  painter = QtGui.QPainter()
   painter.begin(plt)
-  painter.setRenderHint(PyQt5.QtGui.QPainter.Antialiasing)
+  painter.setRenderHint(QtGui.QPainter.Antialiasing)
   self.render(painter)
   painter.end()
-  clipboard = PyQt5.QtWidgets.QApplication.clipboard()
+  clipboard = QtWidgets.QApplication.clipboard()
   clipboard.setImage(plt)
 
  def selectNodeItem(self, gameNode : chess.pgn.GameNode) -> None:
@@ -294,7 +291,7 @@ class ScorePlot(PyQt5.QtChart.QChartView):
       pawnScore += self.piecePawnScoreDict[piece.piece_type]
      else:
       pawnScore -= self.piecePawnScoreDict[piece.piece_type]
-   materialData.append(PyQt5.QtCore.QPointF((ply +1)/2, pawnScore))
+   materialData.append(QtCore.QPointF((ply +1)/2, pawnScore))
    self.minY = min(self.minY, pawnScore)
    self.maxY = max(self.maxY, pawnScore)
    match = PGNEval_REGEX.search(gameNode.comment)
@@ -306,7 +303,7 @@ class ScorePlot(PyQt5.QtChart.QChartView):
      except:
       engineScore = float(engineScore[1:])
       engineScore = math.copysign(1,engineScore) * (self.mateScore - abs(engineScore))
-     engineData.append(PyQt5.QtCore.QPointF((ply +1)/2, engineScore))
+     engineData.append(QtCore.QPointF((ply +1)/2, engineScore))
      self.engineDict[nMaterial] = nEngine
      self.minY = min(self.minY, engineScore)
      self.maxY = max(self.maxY, engineScore)
@@ -383,24 +380,24 @@ class ScorePlot(PyQt5.QtChart.QChartView):
    self.engineSeries.setName('Engine')
   self.selectNodeItem(gameNode)
  
- @PyQt5.QtCore.pyqtSlot()
+ @QtCore.pyqtSlot()
  def on_sc_activated(self):
   if self.selectedGameNode is not None:
    sendingSC = self.sender()
-   if sendingSC.key() == PyQt5.QtCore.Qt.Key_Down:
+   if sendingSC.key() == QtCore.Qt.Key_Down:
     newGameNode = self.selectedGameNode.next()
    else:
     newGameNode = self.selectedGameNode.parent
    if newGameNode is not None:
     self.notifyGameNodeSelectedSignal.emit(newGameNode)
 
- @PyQt5.QtCore.pyqtSlot(PyQt5.QtGui.QMouseEvent)
+ @QtCore.pyqtSlot(QtGui.QMouseEvent)
  def mouseReleaseEvent(self, e):
   plies = self.materialSeries.count()
   if plies == 0:
    return
   super(ScorePlot, self).mouseReleaseEvent(e)
-  if e.button() == PyQt5.QtCore.Qt.RightButton:
+  if e.button() == QtCore.Qt.RightButton:
    self.chart.zoomReset()
 
   self._setRange(self.xAxis, 1, plies / 2)
@@ -410,12 +407,10 @@ class ScorePlot(PyQt5.QtChart.QChartView):
 
 if __name__ == "__main__":
  import io, sys
- import PyQt5.QtGui
- import PyQt5.QtWidgets
  from pgnParse import read_game
 
 
- class _My(PyQt5.QtWidgets.QMainWindow):
+ class _My(QtWidgets.QMainWindow):
   def __init__(self, game):
    super().__init__()
    self.setWindowTitle('self.chart Formatting Demo')
@@ -438,11 +433,11 @@ if __name__ == "__main__":
 
  pgn = io.StringIO(newData)
  game = read_game(pgn)
- app = PyQt5.QtWidgets.QApplication([])
+ app = QtWidgets.QApplication([])
  plotWindow = _My(game)
  plotWindow.show()
  plotWindow.setup()
- sys.exit(app.exec_())
+ sys.exit(app.exec())
 
 
 

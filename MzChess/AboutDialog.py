@@ -1,12 +1,12 @@
-import PyQt5.QtWidgets
 from sys import version_info
-from PyQt5.QtCore import QT_VERSION_STR, PYQT_VERSION_STR
+import os.path
+from PyQt5 import QtWidgets,  QtCore
+from PyQt5 import uic
 
 import chess
 import ply
 
-import Ui_AboutDialog
-class AboutDialog(PyQt5.QtWidgets.QDialog, Ui_AboutDialog.Ui_AboutDialog):
+class AboutDialog(QtWidgets.QDialog):
  """
  Class documentation goes here.
  """
@@ -18,7 +18,8 @@ class AboutDialog(PyQt5.QtWidgets.QDialog, Ui_AboutDialog.Ui_AboutDialog):
   @type QWidget
   """
   super(AboutDialog, self).__init__(parent)
-  self.setupUi(self)
+  fileDirectory = os.path.dirname(os.path.abspath(__file__))
+  uic.loadUi(os.path.join(fileDirectory, 'AboutDialog.ui'), self)
 
  def setup(self, 
   pgm = None, 
@@ -28,15 +29,16 @@ class AboutDialog(PyQt5.QtWidgets.QDialog, Ui_AboutDialog.Ui_AboutDialog):
   self.shoeboxVersionLabel.setText('V' + version)
   self.shoeboxDateLabel.setText(dateString)
   self.pythonVersionLabel.setText('V' + str(version_info[0]) + '.' + str(version_info[1]) + '.' + str(version_info[2]) ) 
-  self.qtVersionLabel.setText('V' + QT_VERSION_STR ) 
-  self.pyqt5VersionLabel.setText('V' + PYQT_VERSION_STR )
+  self.qtVersionLabel.setText('V' + QtCore.QT_VERSION_STR ) 
+  self.pyqt5VersionLabel.setText('V' + QtCore.PYQT_VERSION_STR )
   self.chessVersionLabel.setText('V' + chess.__version__)
   self.plyVersionLabel.setText('V' + ply.__version__)
 
 if __name__ == "__main__":
  import sys
- app =  PyQt5.QtWidgets.QApplication(sys.argv)
+
+ app =  QtWidgets.QApplication(sys.argv)
  dialog = AboutDialog()
- dialog.setup()
+ dialog.setup('About')
  dialog.show()
- sys.exit(app.exec_())
+ sys.exit(app.exec())

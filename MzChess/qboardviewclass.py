@@ -43,10 +43,7 @@ It seem that ``b8-d8`` is the best move, but it is dubious ...
 from typing import Optional
 import os
 
-import PyQt5.QtCore
-import PyQt5.QtGui
-import PyQt5.QtWidgets
-import PyQt5.QtSvg
+from PyQt5 import QtSvg, QtWidgets, QtGui, QtCore
 
 import chess, chess.pgn
 import chessengine
@@ -65,24 +62,24 @@ def showStatus(board):
  for n, move in enumerate(board.move_stack):
   print('{}. {}'.format(n, move.uci()))
 
-class QBoardViewClass(PyQt5.QtWidgets.QGraphicsView):
+class QBoardViewClass(QtWidgets.QGraphicsView):
  '''The *chessboard* is based on Qt's QGraphicsView.
  '''
 
  def __init__(self, parent = None) -> None:
   super(QBoardViewClass, self).__init__(parent)
-  self.setFocusPolicy(PyQt5.QtCore.Qt.StrongFocus)
+  self.setFocusPolicy(QtCore.Qt.StrongFocus)
   self.border = 0
   self.game = Game()
   self.setMouseTracking(True)
   self.setScene(self.game)
   
- def setup(self, notifyNewGameNodeSignal : Optional[PyQt5.QtCore.pyqtSignal] = None, 
-                       notifyGameNodeSelectedSignal : Optional[PyQt5.QtCore.pyqtSignal] = None, 
-                      materialLabel : Optional[PyQt5.QtWidgets.QLabel] = None, 
-                      squareLabel : Optional[PyQt5.QtWidgets.QLabel] = None, 
-                      turnFrame : Optional[PyQt5.QtWidgets.QFrame]  = None, 
-                      hintLabel : Optional[PyQt5.QtWidgets.QLabel]  = None, 
+ def setup(self, notifyNewGameNodeSignal : Optional[QtCore.pyqtSignal] = None, 
+                       notifyGameNodeSelectedSignal : Optional[QtCore.pyqtSignal] = None, 
+                      materialLabel : Optional[QtWidgets.QLabel] = None, 
+                      squareLabel : Optional[QtWidgets.QLabel] = None, 
+                      turnFrame : Optional[QtWidgets.QFrame]  = None, 
+                      hintLabel : Optional[QtWidgets.QLabel]  = None, 
                       flipped : bool = False) -> None:
   '''Set up of the game editor
   
@@ -160,26 +157,26 @@ class QBoardViewClass(PyQt5.QtWidgets.QGraphicsView):
   return self.game.previousMove()
 
  def _configureScene(self):
-  self.fitInView(PyQt5.QtCore.QRectF(0, 0, 8 * Game.pieceSize, 8 * Game.pieceSize), mode = PyQt5.QtCore.Qt.KeepAspectRatio)
+  self.fitInView(QtCore.QRectF(0, 0, 8 * Game.pieceSize, 8 * Game.pieceSize), mode = QtCore.Qt.KeepAspectRatio)
   # self.setScene(self.game)
   
  def resizeEvent(self, ev) -> None:
   # print('oldSize = {}, size = {}'.format(ev.oldSize(), ev.size()))
-  PyQt5.QtWidgets.QGraphicsView.resizeEvent(self, ev)
+  QtWidgets.QGraphicsView.resizeEvent(self, ev)
   self._configureScene()
   if self.game.pressedPiece is None:
    self.game.draw_board()
    
- @PyQt5.QtCore.pyqtSlot(PyQt5.QtGui.QKeyEvent)
+ @QtCore.pyqtSlot(QtGui.QKeyEvent)
  def keyPressEvent(self, ev):
-  if ev.key() == PyQt5.QtCore.Qt.Key_Up:
+  if ev.key() == QtCore.Qt.Key_Up:
    newGameNode = self.game.gameNode.parent
   else:
    newGameNode = self.game.gameNode.next()
   if newGameNode is not None:
    self.notifyGameNodeSelectedSignal.emit(newGameNode)
 
-class Piece(PyQt5.QtSvg.QGraphicsSvgItem):
+class Piece(QtSvg.QGraphicsSvgItem):
  '''Internal class
  '''
  piecesDirectory = os.path.join(os.path.dirname(os.path.abspath(__file__)), ':/pieces/')
@@ -200,22 +197,22 @@ class Piece(PyQt5.QtSvg.QGraphicsSvgItem):
   svgPath = os.path.join(fileDirectory , 'pieces', 
     '{}-{}.svg'.format(self.colorChars[self.llPiece.color], chess.piece_name(self.llPiece.piece_type)))
   super(Piece, self).__init__(svgPath, parent)
-  self.setFlags(PyQt5.QtWidgets.QGraphicsItem.ItemIsMovable | PyQt5.QtWidgets.QGraphicsItem.ItemIsSelectable)
+  self.setFlags(QtWidgets.QGraphicsItem.ItemIsMovable | QtWidgets.QGraphicsItem.ItemIsSelectable)
   bwidth = self.boundingRect().width()
   self.setScale(size/bwidth)
   # self.setAcceptHoverEvents(True)
-  self.setCacheMode(PyQt5.QtWidgets.QGraphicsItem.NoCache)
+  self.setCacheMode(QtWidgets.QGraphicsItem.NoCache)
   self.setZValue(1)
 
-class Game(PyQt5.QtWidgets.QGraphicsScene):
+class Game(QtWidgets.QGraphicsScene):
  '''Internal class
  '''
- whiteSquareBrush = PyQt5.QtGui.QBrush( PyQt5.QtCore.Qt.white, PyQt5.QtCore.Qt.SolidPattern)
- blackSquareBrush = PyQt5.QtGui.QBrush( PyQt5.QtCore.Qt.gray, PyQt5.QtCore.Qt.SolidPattern)
- goodSquareBrush = PyQt5.QtGui.QBrush( PyQt5.QtCore.Qt.green, PyQt5.QtCore.Qt.SolidPattern)
- intermediateSquareBrush = PyQt5.QtGui.QBrush( PyQt5.QtCore.Qt.yellow, PyQt5.QtCore.Qt.SolidPattern)
- badSquareBrush = PyQt5.QtGui.QBrush( PyQt5.QtCore.Qt.red, PyQt5.QtCore.Qt.SolidPattern)
- requestHint = PyQt5.QtCore.pyqtSignal(str)
+ whiteSquareBrush = QtGui.QBrush( QtCore.Qt.white, QtCore.Qt.SolidPattern)
+ blackSquareBrush = QtGui.QBrush( QtCore.Qt.gray, QtCore.Qt.SolidPattern)
+ goodSquareBrush = QtGui.QBrush( QtCore.Qt.green, QtCore.Qt.SolidPattern)
+ intermediateSquareBrush = QtGui.QBrush( QtCore.Qt.yellow, QtCore.Qt.SolidPattern)
+ badSquareBrush = QtGui.QBrush( QtCore.Qt.red, QtCore.Qt.SolidPattern)
+ requestHint = QtCore.pyqtSignal(str)
  pieceSize = 45
  leipzigEncodeDict = {
    'P' : 'p', 'N' : 'n', 'B' : 'b', 'R' : 'r', 'Q' : 'q', 
@@ -228,7 +225,7 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
  def __init__(self, parent = None) -> None:
   super(Game, self).__init__(parent)
   
-  self.timer = PyQt5.QtCore.QTimer()
+  self.timer = QtCore.QTimer()
   self.timer.timeout.connect(self.flushHint)
   self.requestHint.connect(self.hintRequested)
   self.hintDelay = 100
@@ -249,11 +246,11 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
   self.turnFrame = None
   self.hintLabel = None
   
- def setup(self, notifyNewGameNodeSignal : Optional[PyQt5.QtCore.pyqtSignal] = None, 
-                      materialLabel : Optional[PyQt5.QtWidgets.QLabel] = None, 
-                      squareLabel : Optional[PyQt5.QtWidgets.QLabel] = None, 
-                      turnFrame : Optional[PyQt5.QtWidgets.QFrame]  = None, 
-                      hintLabel : Optional[PyQt5.QtWidgets.QLabel]  = None, 
+ def setup(self, notifyNewGameNodeSignal : Optional[QtCore.pyqtSignal] = None, 
+                      materialLabel : Optional[QtWidgets.QLabel] = None, 
+                      squareLabel : Optional[QtWidgets.QLabel] = None, 
+                      turnFrame : Optional[QtWidgets.QFrame]  = None, 
+                      hintLabel : Optional[QtWidgets.QLabel]  = None, 
                       flipped : bool = False, 
                       gameNode : Optional[chess.pgn.GameNode]= None) -> None:
   self.notifyNewGameNodeSignal = notifyNewGameNodeSignal
@@ -271,8 +268,8 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
   self.showTurn(board)
   self.pressedPiece = None
   
- def boardRect(self) -> PyQt5.QtCore.QRectF:
-  return PyQt5.QtCore.QRectF(0, 0, 8 * self.pieceSize, 8 * self.pieceSize)
+ def boardRect(self) -> QtCore.QRectF:
+  return QtCore.QRectF(0, 0, 8 * self.pieceSize, 8 * self.pieceSize)
 
  def setDrawOptions(self, enable : bool) -> None:
   self.drawOptions = enable
@@ -386,12 +383,12 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
   elementWidth = self.pieceSize
   for row in range(8):
    for col in range(8):
-    rect = PyQt5.QtWidgets.QGraphicsRectItem( row * elementWidth, col * elementWidth, elementWidth, elementWidth)
+    rect = QtWidgets.QGraphicsRectItem( row * elementWidth, col * elementWidth, elementWidth, elementWidth)
     if row % 2 == col % 2:
      rect.setBrush( self.whiteSquareBrush )
     else:
      rect.setBrush( self.blackSquareBrush )
-    rect.setCacheMode(PyQt5.QtWidgets.QGraphicsItem.NoCache)
+    rect.setCacheMode(QtWidgets.QGraphicsItem.NoCache)
     rect.setZValue(0)
     self.addItem(rect)
   if flipped is not None:
@@ -419,13 +416,13 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
  def draw_drawOptions(self) -> None:
   if len(self.legal_targets) == 0 or not self.drawOptions:
    return 
-  elementSize = PyQt5.QtCore.QSizeF(self.pieceSize, self.pieceSize)
+  elementSize = QtCore.QSizeF(self.pieceSize, self.pieceSize)
   board = self.gameNode.board()
   self.drawOptionsGroup = len(self.legal_targets)*[None]
   for n, chessSquare in enumerate(self.legal_targets):
-   self.drawOptionsGroup[n] = PyQt5.QtWidgets.QGraphicsRectItem(
-              PyQt5.QtCore.QRectF(self.getScenePos(chessSquare), elementSize))
-   self.drawOptionsGroup[n].setCacheMode(PyQt5.QtWidgets.QGraphicsItem.NoCache)
+   self.drawOptionsGroup[n] = QtWidgets.QGraphicsRectItem(
+              QtCore.QRectF(self.getScenePos(chessSquare), elementSize))
+   self.drawOptionsGroup[n].setCacheMode(QtWidgets.QGraphicsItem.NoCache)
    if board.is_attacked_by(not board.turn, chessSquare):
     self.drawOptionsGroup[n].setBrush(self.badSquareBrush)
    else:
@@ -446,16 +443,16 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
  def draw_warnOfDanger(self) -> None:
   if not self.warnOfDanger:
    return 
-  elementSize = PyQt5.QtCore.QSizeF(self.pieceSize, self.pieceSize)
+  elementSize = QtCore.QSizeF(self.pieceSize, self.pieceSize)
   square2ScoreDict = warnOfDanger.warnOfDanger(self.gameNode)
   if square2ScoreDict is None or len(square2ScoreDict) == 0:
    return
   self.warnOfDangerGroup = len(square2ScoreDict)*[None]
   for n, chessSquare in enumerate(square2ScoreDict):
    score = square2ScoreDict[chessSquare]
-   self.warnOfDangerGroup[n] = PyQt5.QtWidgets.QGraphicsRectItem(
-              PyQt5.QtCore.QRectF(self.getScenePos(chessSquare), elementSize))
-   self.warnOfDangerGroup[n].setCacheMode(PyQt5.QtWidgets.QGraphicsItem.NoCache)
+   self.warnOfDangerGroup[n] = QtWidgets.QGraphicsRectItem(
+              QtCore.QRectF(self.getScenePos(chessSquare), elementSize))
+   self.warnOfDangerGroup[n].setCacheMode(QtWidgets.QGraphicsItem.NoCache)
    if score > 0:
     self.warnOfDangerGroup[n].setBrush(self.badSquareBrush)
    elif score == 0:
@@ -474,7 +471,7 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
    pass
   self.warnOfDangerGroup = list()
    
- def getScenePos(self, chessSquare : int, center : bool = False) -> PyQt5.QtCore.QPointF:
+ def getScenePos(self, chessSquare : int, center : bool = False) -> QtCore.QPointF:
   if chessSquare < 0 or chessSquare > 63:
    return None 
   if center:
@@ -487,11 +484,11 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
   else:
    row = 7 - chess.square_rank(chessSquare)
    col = chess.square_file(chessSquare)
-  return PyQt5.QtCore.QPointF(col * self.pieceSize + delta, row * self.pieceSize + delta)
+  return QtCore.QPointF(col * self.pieceSize + delta, row * self.pieceSize + delta)
 
  # -------------------------------------------------------
    
- def getChessSquareAt(self, scenePos : PyQt5.QtCore.QPointF) -> int:
+ def getChessSquareAt(self, scenePos : QtCore.QPointF) -> int:
   iPos = scenePos/self.pieceSize
   if self.flipped:
    id = chess.square(7 - int(iPos.x()), int(iPos.y()))
@@ -531,7 +528,7 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
    self.engine.startPlay()
    self.hintFen = fen
 
- @PyQt5.QtCore.pyqtSlot(chess.Move, str)
+ @QtCore.pyqtSlot(chess.Move, str)
  def bestMoveScoreAvailable(self, move, score):
   if self.hintLabel is not None:
    board = self.gameNode.board()
@@ -549,7 +546,7 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
 
  # -------------------------------------------------------
 
- def mouseMoveEvent(self, qGraphicsSceneMouseEvent : PyQt5.QtWidgets.QGraphicsSceneMouseEvent) -> None:
+ def mouseMoveEvent(self, qGraphicsSceneMouseEvent : QtWidgets.QGraphicsSceneMouseEvent) -> None:
   if self.squareLabel is not None:
    square = self.getChessSquareAt(qGraphicsSceneMouseEvent.scenePos())
    # print('==> mouseMoveEvent: pos = {} => square = {}'.format(qGraphicsSceneMouseEvent.scenePos(), chess.square_name(square)))
@@ -557,42 +554,42 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
     self.squareLabel.setText(chess.square_name(square))
    else:
     self.squareLabel.setText('--')
-  PyQt5.QtWidgets.QGraphicsScene.mouseMoveEvent(self, qGraphicsSceneMouseEvent)
+  QtWidgets.QGraphicsScene.mouseMoveEvent(self, qGraphicsSceneMouseEvent)
 
  def mouseDoubleClickEvent(self, mouseEvent):
   self.mousePressed = False
   # print('==> mouseDoubleClickEvent')
   
- def mousePressEvent(self, qGraphicsSceneMouseEvent : PyQt5.QtWidgets.QGraphicsSceneMouseEvent) -> None:
+ def mousePressEvent(self, qGraphicsSceneMouseEvent : QtWidgets.QGraphicsSceneMouseEvent) -> None:
   self.mousePressed = True
   self.pressedPiece = None
   self.remove_warnOfDanger()
   self.pressedSquareId = self.getChessSquareAt(qGraphicsSceneMouseEvent.scenePos())
   if self.pressedSquareId is not None:
-   self.pressedPiece = self.itemAt(self.getScenePos(self.pressedSquareId), PyQt5.QtGui.QTransform())
+   self.pressedPiece = self.itemAt(self.getScenePos(self.pressedSquareId), QtGui.QTransform())
    # print('==> mousePressEvent: scene = {} => square = {}'.format(qGraphicsSceneMouseEvent.scenePos(), chess.square_name(self.pressedSquareId)))
-   if isinstance(self.pressedPiece,PyQt5.QtWidgets.QGraphicsRectItem):
+   if isinstance(self.pressedPiece,QtWidgets.QGraphicsRectItem):
     self.pressedPiece = None # empty field hitten
   board = self.gameNode.board()
   if not self.gameIsOver:
    self.pressedSquareId = self.getChessSquareAt(qGraphicsSceneMouseEvent.scenePos())
    if self.pressedPiece is not None:
-    self.pressedPiece = self.itemAt(self.getScenePos(self.pressedSquareId), PyQt5.QtGui.QTransform())
+    self.pressedPiece = self.itemAt(self.getScenePos(self.pressedSquareId), QtGui.QTransform())
     self.legal_targets = list()
     for move in list(board.legal_moves):
      if move.from_square == self.pressedSquareId:
       self.legal_targets.append(move.to_square)
     self.attackedPieceDict = dict()
     for pieceID in board.attacks(self.pressedSquareId): 
-     actPiece = self.itemAt(self.getScenePos(pieceID), PyQt5.QtGui.QTransform())
-     if not isinstance(actPiece,PyQt5.QtWidgets.QGraphicsRectItem):
+     actPiece = self.itemAt(self.getScenePos(pieceID), QtGui.QTransform())
+     if not isinstance(actPiece,QtWidgets.QGraphicsRectItem):
       self.attackedPieceDict[pieceID] = actPiece
     self.draw_drawOptions()
-  PyQt5.QtWidgets.QGraphicsScene.mousePressEvent(self, qGraphicsSceneMouseEvent)
+  QtWidgets.QGraphicsScene.mousePressEvent(self, qGraphicsSceneMouseEvent)
 
- def mouseReleaseEvent(self, qGraphicsSceneMouseEvent : PyQt5.QtWidgets.QGraphicsSceneMouseEvent) -> None:
+ def mouseReleaseEvent(self, qGraphicsSceneMouseEvent : QtWidgets.QGraphicsSceneMouseEvent) -> None:
   # print('==> mouseReleaseEvent: mousePressed = {}, scene = {}'.format(self.mousePressed, qGraphicsSceneMouseEvent.scenePos()))
-  PyQt5.QtWidgets.QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
+  QtWidgets.QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
   if self.pressedPiece is None or not self.mousePressed or self.gameIsOver:
    if self.pressedPiece is not None:
     self.pressedPiece.setPos(self.getScenePos(self.pressedSquareId))
@@ -640,8 +637,8 @@ class Game(PyQt5.QtWidgets.QGraphicsScene):
       else:
        rookPos = self.getScenePos(chess.A8)
        rookTargetPos = self.getScenePos(chess.D8)
-     rookPiece = self.itemAt(rookPos, PyQt5.QtGui.QTransform())
-     if isinstance(rookPiece,PyQt5.QtWidgets.QGraphicsRectItem):
+     rookPiece = self.itemAt(rookPos, QtGui.QTransform())
+     if isinstance(rookPiece,QtWidgets.QGraphicsRectItem):
       raise ValueError('UIE: QGraphicsRectItem found')
       rookPiece.setPos(self.getScenePos(releasedSquareId))
      rookPiece.setPos(rookTargetPos )

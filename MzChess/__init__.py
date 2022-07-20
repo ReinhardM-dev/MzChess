@@ -13,10 +13,11 @@ Versions:
  1.2.1      variant bug fixes
  1.2.2      bug fixes
  1.2.3      bug fixes
+ 1.3.0      migrated to uic.loadUI
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2022-04-01"
-__version__ = "1.2.3"
+__date__ = "2022-07-20"
+__version__ = "1.3.0"
 
 __all__ = [
  'AboutDialog', 

@@ -4,7 +4,7 @@ import platform
 import shutil
 import glob
 import os, os.path
-import PyQt5.QtGui
+from PyQt5 import QtGui
 
 def installLeipFont(notify : Optional[Callable[[str], None]] = None) -> None:
  fileDirectory = os.path.dirname(os.path.abspath(__file__))
@@ -27,9 +27,9 @@ def installLeipFont(notify : Optional[Callable[[str], None]] = None) -> None:
   elif notify is not None:
    notify('Chess font {} already installed'.format(leipfontFile))
  else:
-  fDB = PyQt5.QtGui.QFontDatabase()
+  fDB = QtGui.QFontDatabase()
   if 'Chess Leipzig' not in fDB.families():
-   assert PyQt5.QtGui.QFontDatabase.addApplicationFont(leipfontFile) != -1, "installLeipFont: Could not add 'Chess Leipzig' font"
+   assert QtGui.QFontDatabase.addApplicationFont(leipfontFile) != -1, "installLeipFont: Could not add 'Chess Leipzig' font"
    if notify is not None:
     notify('Chess font {} added'.format(leipfontFile))
   elif notify is not None:

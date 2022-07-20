@@ -3,7 +3,7 @@ from typing import Callable, TextIO, List
 import pytest
 
 import os, os.path
-import PyQt5.QtCore
+from PyQt5 import QtCore
 
 import MzChess
 import chess
@@ -12,8 +12,8 @@ def runUciEngine(executable : str, fenList : List[str]) -> None:
  print('runUciEngine: {}\n fenList = {}'.format(executable, fenList))
  def waitForData(engine):
   for i in range(100):
-   PyQt5.QtCore.QThread.msleep(engine.timeout_msec)
-   PyQt5.QtCore.QCoreApplication.processEvents()
+   QtCore.QThread.msleep(engine.timeout_msec)
+   QtCore.QCoreApplication.processEvents()
    if engine.isReady():
     return
    print('----> waiting {} * {} ms'.format(i, engine.timeout_msec))

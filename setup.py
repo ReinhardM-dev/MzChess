@@ -1,7 +1,5 @@
-import subprocess
 import platform
 import shutil
-import glob
 import sys
 import os, os.path
 
@@ -22,28 +20,30 @@ pkgVersion = MzChess.__version__
 
 leipfontFile = os.path.join(packageDirectory, 'pieces', 'LEIPFONT.ttf')
 
-pyQt5Version = '5.11.0'
+pyQt6Version = '6.2.0'
 if platform.system() == 'Linux':
  # this code helps, if the package manager does not create egg files (e.g. debianos.rename('a.txt', 'b.kml') 10)
  install_requires = list()
  try:
-  import PyQt5.QtCore
-  foundPyQt5Version = PyQt5.QtCore.PYQT_VERSION_STR
+  import PyQt6.QtCore
+  foundPyQt6Version = PyQt6.QtCore.PYQT_VERSION_STR
  except:
-  foundPyQt5Version = '0.0.0'
- if version.parse(pyQt5Version) > version.parse(foundPyQt5Version):
-  install_requires = ['PyQt5>={}'.format(pyQt5Version)]
+  print('Install PyQt6 using your Linux Package Manager')
+  quit()
+ if version.parse(pyQt6Version) > version.parse(foundPyQt6Version):
+  install_requires = ['PyQt6>={}'.format(pyQt6Version)]
  try:
-  import PyQt5.QtSvg
+  import PyQt6.QtSvg
  except:
-  print('Install PyQt5.QtSvg using your Linux Package Manager')
+  print('Install PyQt6.QtSvg using your Linux Package Manager')
   quit()
  try:
-  import PyQt5.QtChart
+  import PyQt6.QtCharts
  except:
-  install_requires.append('PyQtChart>={}'.format(pyQt5Version))
+  print('Install PyQt6.QtCharts using your Linux Package Manager')
+  quit()
 else:
- install_requires = ['PyQt5>={}'.format(pyQt5Version), 'PyQtChart>={}'.format(pyQt5Version)]
+ install_requires = ['PyQt6>={}'.format(pyQt6Version), 'PyQt6-PyQtCharts>={}'.format(pyQt6Version)]
 
 install_requires += ['chess>=1.4', 'ply>=3.11']
 
@@ -63,7 +63,7 @@ setup(name = package,
      'eco/*.fsc', 'eco/*.tsv', 'eco/*.txt', 'eco/*.md', 'eco/bin/*',
      'pieces/*.svg', 'pieces/*.ttf', 
      'training/*/*.pgn'] }, 
-  description = 'A Chess GUI using PyQt5',
+  description = 'A Chess GUI using PyQt6',
   long_description = long_description, 
   long_description_content_type="text/x-rst",
   entry_points={ 'gui_scripts': 

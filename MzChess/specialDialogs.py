@@ -1,5 +1,5 @@
 from typing import Union, List, Dict
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 def treeWidgetItemPos(item : QtWidgets.QTreeWidgetItem) -> QtCore.QPoint:
   pos = item.treeWidget().visualItemRect(item).bottomLeft()
@@ -12,7 +12,7 @@ class ButtonLine(QtWidgets.QDialog):
                           pointSize : int = 12, 
                           parent = None) -> None:
   super(ButtonLine, self).__init__(parent)
-  self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowContextHelpButtonHint)
+  self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowType.WindowContextHelpButtonHint)
   self.hBox = QtWidgets.QHBoxLayout()
   self.hBox.setContentsMargins(pointSize // 2, pointSize // 2, pointSize // 2,  pointSize // 2)
   self.hBox.setSpacing(0)
@@ -22,7 +22,7 @@ class ButtonLine(QtWidgets.QDialog):
   fontMetrics = self.fontMetrics()
   self.buttonWidth = 0
   for txt in buttonTexts:
-   self.buttonWidth = max(self.buttonWidth, fontMetrics.size(QtCore.Qt.TextSingleLine, txt).width())
+   self.buttonWidth = max(self.buttonWidth, fontMetrics.size(QtCore.Qt.TextFlag.TextSingleLine, txt).width())
   self.buttonWidth = self.buttonWidth + pointSize
   self.buttonHeight = 2 * pointSize
   self.buttonTextDict = dict()
@@ -46,7 +46,7 @@ class ButtonLine(QtWidgets.QDialog):
   self.children()[buttonID].setFocus()
  
  def _setSizePolicy(self, widget : QtWidgets.QWidget) -> None:
-  sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+  sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
   sizePolicy.setHorizontalStretch(0)
   sizePolicy.setVerticalStretch(0)
   sizePolicy.setHeightForWidth(widget.sizePolicy().hasHeightForWidth())
@@ -71,7 +71,7 @@ class ButtonLine(QtWidgets.QDialog):
 class TextEdit(QtWidgets.QDialog):
  def __init__(self, title : str, pointSize : int = 10, parent = None) -> None:
   super(TextEdit, self).__init__(parent)
-  self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowContextHelpButtonHint)
+  self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowType.WindowContextHelpButtonHint)
   font = QtGui.QFont()
   font.setPointSize(pointSize)
   self.setFont(font)
@@ -79,9 +79,9 @@ class TextEdit(QtWidgets.QDialog):
   self.verticalLayout = QtWidgets.QVBoxLayout(self)
   self.edit = QtWidgets.QPlainTextEdit(self)
   self.buttonBox = QtWidgets.QDialogButtonBox(self)
-  self.buttonBox.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
-  self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-  self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+  self.buttonBox.setLocale(QtCore.QLocale(QtCore.QLocale.Language.English, QtCore.QLocale.Country.UnitedStates))
+  self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+  self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
 
   self.verticalLayout.addWidget(self.edit)
   self.verticalLayout.addWidget(self.buttonBox)
@@ -108,7 +108,7 @@ class TextEdit(QtWidgets.QDialog):
 class ItemSelector(QtWidgets.QDialog):
  def __init__(self, title : str, pointSize : int = 10, parent = None) -> None:
   super(ItemSelector, self).__init__(parent)
-  self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowContextHelpButtonHint)
+  self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowType.WindowContextHelpButtonHint)
   font = QtGui.QFont()
   font.setPointSize(pointSize)
   self.setFont(font)
@@ -116,9 +116,9 @@ class ItemSelector(QtWidgets.QDialog):
   self.verticalLayout = QtWidgets.QVBoxLayout(self)
   self.listWidget = QtWidgets.QListWidget(self)
   self.buttonBox = QtWidgets.QDialogButtonBox(self)
-  self.buttonBox.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
-  self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-  self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+  self.buttonBox.setLocale(QtCore.QLocale(QtCore.QLocale.Language.English, QtCore.QLocale.Country.UnitedStates))
+  self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+  self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
 
   self.verticalLayout.addWidget(self.listWidget)
   self.verticalLayout.addWidget(self.buttonBox)
@@ -131,16 +131,16 @@ class ItemSelector(QtWidgets.QDialog):
   self.listWidget.clear()
   for itemTxt in sorted(allItems):
    item = QtWidgets.QListWidgetItem(itemTxt, self.listWidget)
-   item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+   item.setFlags(item.flags() | QtCore.Qt.ItemFlag.ItemIsUserCheckable)
    if itemTxt in selectedItems:
-    item.setCheckState(QtCore.Qt.Checked)
+    item.setCheckState(QtCore.Qt.CheckState.Checked)
    else:
-    item.setCheckState(QtCore.Qt.Unchecked)
+    item.setCheckState(QtCore.Qt.CheckState.Unchecked)
 
  def selectedItems(self) -> List[str]:
   selItems = list()
-  for item in self.listWidget.findItems('*', QtCore.Qt.MatchWildcard):
-   if item.checkState() == QtCore.Qt.Checked:
+  for item in self.listWidget.findItems('*', QtCore.Qt.MatchFlag.MatchWildcard):
+   if item.checkState() == QtCore.Qt.CheckState.Checked:
     selItems.append(item.text())
   return selItems
 

@@ -218,27 +218,26 @@
     <property name="title">
      <string>File</string>
     </property>
-    <widget class="QMenu" name="menuRecent_PGN">
+    <widget class="QMenu" name="menuRecentDB">
      <property name="title">
       <string>Recent</string>
      </property>
-     <addaction name="actionbla"/>
     </widget>
     <widget class="QMenu" name="menuEncoding">
      <property name="title">
       <string>Encoding</string>
      </property>
-     <addaction name="actionUTF_8"/>
-     <addaction name="actionISO_8859_1"/>
+     <addaction name="actionUTF8"/>
+     <addaction name="actionISO88591"/>
      <addaction name="actionASCII"/>
     </widget>
     <addaction name="menuEncoding"/>
-    <addaction name="actionOpen_PGN"/>
-    <addaction name="menuRecent_PGN"/>
-    <addaction name="actionAppend_to_DB"/>
+    <addaction name="actionOpenDB"/>
+    <addaction name="menuRecentDB"/>
     <addaction name="separator"/>
-    <addaction name="actionSave_PGN"/>
-    <addaction name="actionSave_Game"/>
+    <addaction name="actionSaveDB"/>
+    <addaction name="actionSaveGame"/>
+    <addaction name="actionAppend2DB"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -246,91 +245,91 @@
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionFEN_Builder"/>
-    <addaction name="actionCopy_PGN"/>
-    <addaction name="actionPaste_PGN"/>
+    <addaction name="actionFENBuilder"/>
+    <addaction name="actionCopyFEN"/>
+    <addaction name="actionPasteFEN"/>
     <addaction name="separator"/>
-    <addaction name="actionCopy_FEN"/>
-    <addaction name="actionPaste_FEN"/>
+    <addaction name="actionCopyGame"/>
+    <addaction name="actionPasteGame"/>
     <addaction name="separator"/>
-    <addaction name="actionNext_Move"/>
-    <addaction name="actionPrevious_Move"/>
-    <addaction name="actionUndo_Last_Move"/>
+    <addaction name="actionNextMove"/>
+    <addaction name="actionPreviousMove"/>
+    <addaction name="actionUndoLastMove"/>
     <addaction name="separator"/>
-    <addaction name="actionNext_Variant"/>
-    <addaction name="actionPrevious_Variant"/>
-    <addaction name="actionPromote_Variant"/>
-    <addaction name="actionPromote_Variant_to_Main"/>
-    <addaction name="actionDemote_Variant"/>
-    <addaction name="actionDelete_Variant"/>
+    <addaction name="actionNextVariant"/>
+    <addaction name="actionPreviousVariant"/>
+    <addaction name="actionPromoteVariant"/>
+    <addaction name="actionPromoteVariant2Main"/>
+    <addaction name="actionDemoteVariant"/>
+    <addaction name="actionDeleteVariant"/>
    </widget>
    <widget class="QMenu" name="menuGame">
     <property name="title">
      <string>Game</string>
     </property>
-    <widget class="QMenu" name="menuEnd_Game">
+    <widget class="QMenu" name="menuEndGame">
      <property name="title">
       <string>End Game</string>
      </property>
-     <addaction name="actionRunning_Game"/>
-     <addaction name="actionWhite_wins"/>
-     <addaction name="action0_1"/>
-     <addaction name="action1_2_1_2"/>
+     <addaction name="actionRunningGame"/>
+     <addaction name="actionWhiteWins"/>
+     <addaction name="actionBlackWins"/>
+     <addaction name="actionDraw"/>
     </widget>
-    <addaction name="actionNew_Game"/>
-    <addaction name="actionSelect_Header_Elements"/>
-    <addaction name="menuEnd_Game"/>
+    <addaction name="actionNewGame"/>
+    <addaction name="actionSelectHeaderElements"/>
+    <addaction name="menuEndGame"/>
     <addaction name="separator"/>
-    <addaction name="actionFlip_Board"/>
+    <addaction name="actionFlipBoard"/>
     <addaction name="separator"/>
-    <addaction name="actionShow_Options"/>
-    <addaction name="actionWarn_of_Danger"/>
+    <addaction name="actionShowOptions"/>
+    <addaction name="actionWarnOfDanger"/>
    </widget>
    <widget class="QMenu" name="menuEngine">
     <property name="title">
      <string>Engine</string>
     </property>
-    <widget class="QMenu" name="menuSelect_Engine">
+    <widget class="QMenu" name="menuSelectEngine">
      <property name="title">
       <string>Select Engine</string>
      </property>
      <addaction name="separator"/>
     </widget>
-    <widget class="QMenu" name="menuSearch_Depth">
+    <widget class="QMenu" name="menuSearchDepth">
      <property name="title">
       <string>Search Depth</string>
      </property>
-     <addaction name="action5_Moves"/>
-     <addaction name="action10_Moves"/>
-     <addaction name="action15_Moves"/>
-     <addaction name="action20_Moves"/>
-     <addaction name="action25_Moves"/>
+     <addaction name="action5Moves"/>
+     <addaction name="action10Moves"/>
+     <addaction name="action15Moves"/>
+     <addaction name="action20Moves"/>
+     <addaction name="action25Moves"/>
     </widget>
-    <widget class="QMenu" name="menuBlunder_Limit">
+    <widget class="QMenu" name="menuBlunderLimit">
      <property name="title">
       <string>Blunder Limit</string>
      </property>
      <addaction name="actionBlNone"/>
      <addaction name="separator"/>
-     <addaction name="action0_5_pawns"/>
-     <addaction name="action1_pawn"/>
-     <addaction name="action1_5_pawns"/>
-     <addaction name="action2_0_pawns"/>
-     <addaction name="action2_5_pawns"/>
-     <addaction name="action3_0_pawns"/>
+     <addaction name="action05Pawns"/>
+     <addaction name="action10Pawn"/>
+     <addaction name="action15Pawns"/>
+     <addaction name="action20Pawns"/>
+     <addaction name="action25Pawns"/>
+     <addaction name="action30Pawns"/>
     </widget>
-    <widget class="QMenu" name="menuAnnotate_Variants">
+    <widget class="QMenu" name="menuAnnotateVariants">
      <property name="title">
       <string>Annotate Variants</string>
      </property>
      <addaction name="actionAvNone"/>
      <addaction name="actionAll"/>
      <addaction name="separator"/>
-     <addaction name="action2_Halfmoves"/>
-     <addaction name="action4_Halfmoves"/>
-     <addaction name="action6_Halfmoves"/>
+     <addaction name="action2Halfmoves"/>
+     <addaction name="action4Halfmoves"/>
+     <addaction name="action6Halfmoves"/>
     </widget>
-    <widget class="QMenu" name="menuNumber_of_Annotations">
+    <widget class="QMenu" name="menuNumberOfAnnotations">
      <property name="title">
       <string># Annotations</string>
      </property>
@@ -338,17 +337,17 @@
      <addaction name="action2"/>
      <addaction name="action3"/>
     </widget>
-    <addaction name="menuSelect_Engine"/>
-    <addaction name="menuSearch_Depth"/>
+    <addaction name="menuSelectEngine"/>
+    <addaction name="menuSearchDepth"/>
     <addaction name="separator"/>
-    <addaction name="actionAnnotate_Last_Move"/>
-    <addaction name="actionAnnotate_All"/>
-    <addaction name="menuNumber_of_Annotations"/>
-    <addaction name="menuBlunder_Limit"/>
-    <addaction name="menuAnnotate_Variants"/>
+    <addaction name="actionAnnotateLastMove"/>
+    <addaction name="actionAnnotateAll"/>
+    <addaction name="menuNumberOfAnnotations"/>
+    <addaction name="menuBlunderLimit"/>
+    <addaction name="menuAnnotateVariants"/>
     <addaction name="separator"/>
-    <addaction name="actionShow_Scores"/>
-    <addaction name="actionShow_Hints"/>
+    <addaction name="actionShowScores"/>
+    <addaction name="actionShowHints"/>
     <addaction name="separator"/>
     <addaction name="actionConfigureEngine"/>
     <addaction name="actionDebugEngine"/>
@@ -357,11 +356,11 @@
     <property name="title">
      <string>Database</string>
     </property>
-    <addaction name="actionNew_PGN"/>
-    <addaction name="actionClose_PGN"/>
+    <addaction name="actionNewDB"/>
+    <addaction name="actionCloseDB"/>
     <addaction name="separator"/>
-    <addaction name="actionAdd_Game"/>
-    <addaction name="actionRemove_Games"/>
+    <addaction name="actionAddGame"/>
+    <addaction name="actionRemoveGames"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -378,7 +377,7 @@
    <addaction name="menuEngine"/>
    <addaction name="menuHelp"/>
   </widget>
-  <action name="actionCopy_FEN">
+  <action name="actionCopyFEN">
    <property name="text">
     <string>Copy FEN</string>
    </property>
@@ -386,7 +385,7 @@
     <string>Ctrl+Shift+C</string>
    </property>
   </action>
-  <action name="actionPaste_FEN">
+  <action name="actionPasteFEN">
    <property name="text">
     <string>Paste FEN</string>
    </property>
@@ -394,43 +393,43 @@
     <string>Ctrl+Shift+V</string>
    </property>
   </action>
-  <action name="actionCopy_PGN">
+  <action name="actionCopyGame">
    <property name="text">
-    <string>Copy PGN</string>
+    <string>Copy Game</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="actionPaste_PGN">
+  <action name="actionPasteGame">
    <property name="text">
-    <string>Paste PGN</string>
+    <string>Paste Game</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
    </property>
   </action>
-  <action name="actionNew_Game">
+  <action name="actionNewGame">
    <property name="text">
     <string>New</string>
    </property>
   </action>
-  <action name="actionWhite_wins">
+  <action name="actionWhiteWins">
    <property name="text">
     <string>1-0</string>
    </property>
   </action>
-  <action name="action0_1">
+  <action name="actionBlackWins">
    <property name="text">
     <string>0-1</string>
    </property>
   </action>
-  <action name="action1_2_1_2">
+  <action name="actionDraw">
    <property name="text">
     <string>1/2-1/2</string>
    </property>
   </action>
-  <action name="actionShow_Options">
+  <action name="actionShowOptions">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -438,7 +437,7 @@
     <string>Show Move Options</string>
    </property>
   </action>
-  <action name="action5_Moves">
+  <action name="action5Moves">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -446,7 +445,7 @@
     <string>5 Moves</string>
    </property>
   </action>
-  <action name="action10_Moves">
+  <action name="action10Moves">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -454,7 +453,7 @@
     <string>10 Moves</string>
    </property>
   </action>
-  <action name="action15_Moves">
+  <action name="action15Moves">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -465,7 +464,7 @@
     <string>15 Moves</string>
    </property>
   </action>
-  <action name="action20_Moves">
+  <action name="action20Moves">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -473,7 +472,7 @@
     <string>20 Moves</string>
    </property>
   </action>
-  <action name="action25_Moves">
+  <action name="action25Moves">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -481,7 +480,7 @@
     <string>25 Moves</string>
    </property>
   </action>
-  <action name="actionShow_Hints">
+  <action name="actionShowHints">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -489,34 +488,28 @@
     <string>Show Hints</string>
    </property>
   </action>
-  <action name="actionNext_Move">
+  <action name="actionNextMove">
    <property name="text">
     <string>Next Move</string>
    </property>
    <property name="shortcut">
     <string>Down</string>
    </property>
-   <property name="shortcutContext">
-    <enum>Qt::WindowShortcut</enum>
-   </property>
   </action>
-  <action name="actionPrevious_Move">
+  <action name="actionPreviousMove">
    <property name="text">
     <string>Previous Move</string>
    </property>
    <property name="shortcut">
     <string>Up</string>
    </property>
-   <property name="shortcutContext">
-    <enum>Qt::WindowShortcut</enum>
-   </property>
   </action>
-  <action name="actionOpen_PGN">
+  <action name="actionOpenDB">
    <property name="text">
     <string>Open DB ...</string>
    </property>
   </action>
-  <action name="actionSave_PGN">
+  <action name="actionSaveDB">
    <property name="text">
     <string>Save DB ...</string>
    </property>
@@ -526,50 +519,40 @@
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionbla">
-   <property name="text">
-    <string>bla</string>
-   </property>
-  </action>
-  <action name="actionAdd_To_DB">
-   <property name="text">
-    <string>Add to DB</string>
-   </property>
-  </action>
-  <action name="actionAppend_to_DB">
+  <action name="actionAppend2DB">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Append to DB</string>
+    <string>Append active DB to DB</string>
    </property>
   </action>
-  <action name="actionSave_Game">
+  <action name="actionSaveGame">
    <property name="text">
     <string>Save Game ...</string>
    </property>
   </action>
-  <action name="actionClose_PGN">
+  <action name="actionCloseDB">
    <property name="text">
     <string>Close</string>
    </property>
   </action>
-  <action name="actionAdd_Game">
+  <action name="actionAddGame">
    <property name="text">
     <string>Add Game</string>
    </property>
   </action>
-  <action name="actionRemove_Games">
+  <action name="actionRemoveGames">
    <property name="text">
     <string>Remove Games</string>
    </property>
   </action>
-  <action name="actionNew_PGN">
+  <action name="actionNewDB">
    <property name="text">
     <string>New</string>
    </property>
   </action>
-  <action name="actionFlip_Board">
+  <action name="actionFlipBoard">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -580,7 +563,7 @@
     <string>Ctrl+F</string>
    </property>
   </action>
-  <action name="actionNext_Variant">
+  <action name="actionNextVariant">
    <property name="text">
     <string>Next Variant</string>
    </property>
@@ -588,7 +571,7 @@
     <string>Right</string>
    </property>
   </action>
-  <action name="actionPrevious_Variant">
+  <action name="actionPreviousVariant">
    <property name="text">
     <string>Previous Variant</string>
    </property>
@@ -596,7 +579,7 @@
     <string>Left</string>
    </property>
   </action>
-  <action name="actionShow_Scores">
+  <action name="actionShowScores">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -604,7 +587,7 @@
     <string>Show Scores</string>
    </property>
   </action>
-  <action name="actionWarn_of_Danger">
+  <action name="actionWarnOfDanger">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -615,7 +598,7 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="actionUndo_Last_Move">
+  <action name="actionUndoLastMove">
    <property name="text">
     <string>Undo Last Move</string>
    </property>
@@ -623,7 +606,7 @@
     <string>Ctrl+Z</string>
    </property>
   </action>
-  <action name="actionAnnotate_Last_Move">
+  <action name="actionAnnotateLastMove">
    <property name="text">
     <string>Annotate Last Move</string>
    </property>
@@ -639,7 +622,7 @@
     <string>None</string>
    </property>
   </action>
-  <action name="action0_5_pawns">
+  <action name="action05Pawns">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -647,7 +630,7 @@
     <string>0.5 pawns</string>
    </property>
   </action>
-  <action name="action1_pawn">
+  <action name="action10Pawn">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -655,7 +638,7 @@
     <string>1 pawn</string>
    </property>
   </action>
-  <action name="action1_5_pawns">
+  <action name="action15Pawns">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -663,7 +646,7 @@
     <string>1.5 pawns</string>
    </property>
   </action>
-  <action name="action2_0_pawns">
+  <action name="action20Pawns">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -671,7 +654,7 @@
     <string>2 pawns</string>
    </property>
   </action>
-  <action name="action2_5_pawns">
+  <action name="action25Pawns">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -679,7 +662,7 @@
     <string>2.5 pawns</string>
    </property>
   </action>
-  <action name="action3_0_pawns">
+  <action name="action30Pawns">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -698,7 +681,7 @@
     <string>None</string>
    </property>
   </action>
-  <action name="action2_Halfmoves">
+  <action name="action2Halfmoves">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -706,7 +689,7 @@
     <string>2 Halfmoves</string>
    </property>
   </action>
-  <action name="action4_Halfmoves">
+  <action name="action4Halfmoves">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -714,7 +697,7 @@
     <string>4 Halfmoves</string>
    </property>
   </action>
-  <action name="action6_Halfmoves">
+  <action name="action6Halfmoves">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -748,7 +731,7 @@
     <string>About ...</string>
    </property>
   </action>
-  <action name="actionPromote_Variant">
+  <action name="actionPromoteVariant">
    <property name="text">
     <string>Promote Variant</string>
    </property>
@@ -756,7 +739,7 @@
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionDelete_Variant">
+  <action name="actionDeleteVariant">
    <property name="text">
     <string>Delete Variant</string>
    </property>
@@ -764,7 +747,7 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actionAnnotate_All">
+  <action name="actionAnnotateAll">
    <property name="text">
     <string>Annotate All</string>
    </property>
@@ -793,12 +776,7 @@
     <string>3 variants</string>
    </property>
   </action>
-  <action name="actionAll_2">
-   <property name="text">
-    <string>All</string>
-   </property>
-  </action>
-  <action name="actionUTF_8">
+  <action name="actionUTF8">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -809,7 +787,7 @@
     <string>UTF-8</string>
    </property>
   </action>
-  <action name="actionISO_8859_1">
+  <action name="actionISO88591">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -830,7 +808,7 @@
     <string>Help ...</string>
    </property>
   </action>
-  <action name="actionDemote_Variant">
+  <action name="actionDemoteVariant">
    <property name="text">
     <string>Demote Variant</string>
    </property>
@@ -838,7 +816,7 @@
     <string>Ctrl+D</string>
    </property>
   </action>
-  <action name="actionPromote_Variant_to_Main">
+  <action name="actionPromoteVariant2Main">
    <property name="text">
     <string>Promote Variant to Main</string>
    </property>
@@ -846,17 +824,17 @@
     <string>Ctrl+M</string>
    </property>
   </action>
-  <action name="actionSelect_Header_Elements">
+  <action name="actionSelectHeaderElements">
    <property name="text">
     <string>Select Header Elements ...</string>
    </property>
   </action>
-  <action name="actionRunning_Game">
+  <action name="actionRunningGame">
    <property name="text">
     <string>*</string>
    </property>
   </action>
-  <action name="actionFEN_Builder">
+  <action name="actionFENBuilder">
    <property name="text">
     <string>FEN Builder ...</string>
    </property>

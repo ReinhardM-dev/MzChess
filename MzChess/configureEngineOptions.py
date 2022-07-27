@@ -1,18 +1,18 @@
-from typing import Dict, Optional, Any
+from typing import Dict, Any
 import os,  os.path
 
-from PyQt5 import QtWidgets, QtCore
-from PyQt5 import uic
+from PyQt6 import QtWidgets, QtCore
+from PyQt6 import uic
 
 class ConfigureEngineOptions(QtWidgets.QDialog):
- fileDialogOptions = QtWidgets.QFileDialog.Options() | QtWidgets.QFileDialog.DontUseNativeDialog
- fileDialogFilters = QtCore.QDir.AllDirs \
-                      | QtCore.QDir.Files \
-                      | QtCore.QDir.NoDotAndDotDot \
-                      | QtCore.QDir.Hidden
+ fileDialogOptions = QtWidgets.QFileDialog.Option.DontUseNativeDialog
+ fileDialogFilters = QtCore.QDir.Filter.AllDirs \
+                      | QtCore.QDir.Filter.Files \
+                      | QtCore.QDir.Filter.NoDotAndDotDot \
+                      | QtCore.QDir.Filter.Hidden
  readOnlyOptions = ['UCI_Chess960', 'UCI_AnalyseMode', 'MultiPV']
- checkState = {'false' : QtCore.Qt.Unchecked, '0' : QtCore.Qt.Unchecked, 
-                      'true' :  QtCore.Qt.Checked,  '1' : QtCore.Qt.Unchecked}
+ checkState = {'false' : QtCore.Qt.CheckState.Unchecked, '0' : QtCore.Qt.CheckState.Unchecked, 
+                      'true' :  QtCore.Qt.CheckState.Checked,  '1' : QtCore.Qt.CheckState.Unchecked}
 
  def __init__(self, parent = None):
   super(ConfigureEngineOptions, self).__init__(parent)
@@ -22,7 +22,7 @@ class ConfigureEngineOptions(QtWidgets.QDialog):
   self.tableWidget.setColumnCount(3)  
   self.tableWidget.setHorizontalHeaderLabels(['','Option', 'Value'])
   self.tableWidget.horizontalHeader().setStretchLastSection(True)
-  self.tableWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+  self.tableWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
   self.buttonBox.accepted.connect(self.accept)
   self.buttonBox.rejected.connect(self.reject)
  
@@ -44,7 +44,7 @@ class ConfigureEngineOptions(QtWidgets.QDialog):
   self.btnList = list()
   for row, key2Opts in enumerate(engineOptionsDict.items()):
    key, optDict = key2Opts
-   maxWidth = max(maxWidth, test.fontMetrics().size(QtCore.Qt.TextSingleLine, key).width())
+   maxWidth = max(maxWidth, test.fontMetrics().size(QtCore.Qt.TextFlag.TextSingleLine, key).width())
    nameLabel = QtWidgets.QLabel(str(key))
    self.btnList.append(None)
    type = optDict['type']
@@ -75,7 +75,7 @@ class ConfigureEngineOptions(QtWidgets.QDialog):
    elif type == 'string':
     if 'file' in key.lower() or 'path' in key.lower():
      browsePushButton = QtWidgets.QPushButton(self)
-     browsePushButton.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DialogSaveButton))
+     browsePushButton.setIcon(self.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_DialogSaveButton))
      self.tableWidget.setCellWidget(row, 0, browsePushButton)
      browsePushButton.clicked.connect(self.on_browsePushButton_clicked)
     self.btnList[-1] = browsePushButton
@@ -110,7 +110,7 @@ class ConfigureEngineOptions(QtWidgets.QDialog):
   item = self.sender()  
   row = self.itemList.index(item)
   key = self.tableWidget.cellWidget(row, 1).text()
-  if state == QtCore.Qt.Checked:
+  if state == QtCore.Qt.CheckState.Checked:
    value = 'true'
   else:
    value = 'false'
@@ -150,14 +150,14 @@ class ConfigureEngineOptions(QtWidgets.QDialog):
   fDialog.setOptions(self.fileDialogOptions)
   fDialog.setFilter(self.fileDialogFilters)
   if 'file' in key.lower(): 
-   fDialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
+   fDialog.setFileMode(QtWidgets.QFileDialog.FileMode.ExistingFile)
    fDialog.setWindowTitle("Set File ...")
    if len(value) > 0:
     head, tail = os.path.split(value)
     fDialog.setDirectory(head)
     fDialog.selectFile(tail)
   else:
-   fDialog.setFileMode(QtWidgets.QFileDialog.Directory)
+   fDialog.setFileMode(QtWidgets.QFileDialog.FileMode.Directory)
    fDialog.setWindowTitle("Set Directory ...")
    if len(value) > 0:
     head, tail = os.path.split(value)

@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 
 class GameListTableModel(QtCore.QAbstractTableModel):
  gameHeaderKeys = ["Date", "White", "Black", "Result"]
@@ -13,21 +13,21 @@ class GameListTableModel(QtCore.QAbstractTableModel):
  def columnCount(self, parent = None):
   return 4
 
- def data(self, index, role = QtCore.Qt.DisplayRole):
+ def data(self, index, role = QtCore.Qt.ItemDataRole.DisplayRole):
   if index.isValid():
-   if role == QtCore.Qt.DisplayRole:
+   if role == QtCore.Qt.ItemDataRole.DisplayRole:
     actGameHeaders = self.gameList[index.row()].headers
     columnKey = self.gameHeaderKeys[index.column()]
     return actGameHeaders[columnKey]
-   if role == QtCore.Qt.TextAlignmentRole:
-    return QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter
+   if role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
+    return QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.AlignmentFlag.AlignVCenter
   return None
 
- def headerData(self, col, orientation, role = QtCore.Qt.DisplayRole):
-  if role == QtCore.Qt.DisplayRole:
-   if orientation == QtCore.Qt.Horizontal:
+ def headerData(self, col, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
+  if role == QtCore.Qt.ItemDataRole.DisplayRole:
+   if orientation == QtCore.Qt.Orientation.Horizontal:
     return self.gameHeaderKeys[col]
-   if orientation == QtCore.Qt.Vertical:
+   if orientation == QtCore.Qt.Orientation.Vertical:
     return '#{0:}'.format(col)
   return None
 
@@ -46,12 +46,12 @@ class GameListTableView(QtWidgets.QTableView):
   self.sizeHints = 4*[0]
   totSize = 0
   for column, key in enumerate(model.gameHeaderKeys):
-   self.sizeHints[column] = self.fontMetrics().size(QtCore.Qt.TextSingleLine, key).width()
+   self.sizeHints[column] = self.fontMetrics().size(QtCore.Qt.TextFlag.TextSingleLine, key).width()
    totSize += self.columnWidth(column)
    for n, game in enumerate(gameList):
     if key not in game.headers:
      raise ValueError('GameListTableModel: key {} not in game #{}'.format(key,n))
-    actSize = self.fontMetrics().size(QtCore.Qt.TextSingleLine, game.headers[key]).width()
+    actSize = self.fontMetrics().size(QtCore.Qt.TextFlag.TextSingleLine, game.headers[key]).width()
     self.sizeHints[column] = max(self.sizeHints[column], actSize)
   self.setColumnWidths()
   

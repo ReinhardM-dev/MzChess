@@ -43,7 +43,7 @@ It seem that ``b8-d8`` is the best move, but it is dubious ...
 from typing import Optional
 import os
 
-from PyQt5 import QtSvg, QtWidgets, QtGui, QtCore
+from PyQt6 import QtSvgWidgets, QtWidgets, QtGui, QtCore
 
 import chess, chess.pgn
 import chessengine
@@ -68,7 +68,7 @@ class QBoardViewClass(QtWidgets.QGraphicsView):
 
  def __init__(self, parent = None) -> None:
   super(QBoardViewClass, self).__init__(parent)
-  self.setFocusPolicy(QtCore.Qt.StrongFocus)
+  self.setFocusPolicy(QtCore.Qt.FocusPolicy.StrongFocus)
   self.border = 0
   self.game = Game()
   self.setMouseTracking(True)
@@ -157,7 +157,7 @@ class QBoardViewClass(QtWidgets.QGraphicsView):
   return self.game.previousMove()
 
  def _configureScene(self):
-  self.fitInView(QtCore.QRectF(0, 0, 8 * Game.pieceSize, 8 * Game.pieceSize), mode = QtCore.Qt.KeepAspectRatio)
+  self.fitInView(QtCore.QRectF(0, 0, 8 * Game.pieceSize, 8 * Game.pieceSize), mode = QtCore.Qt.AspectRatioMode.KeepAspectRatio)
   # self.setScene(self.game)
   
  def resizeEvent(self, ev) -> None:
@@ -169,14 +169,14 @@ class QBoardViewClass(QtWidgets.QGraphicsView):
    
  @QtCore.pyqtSlot(QtGui.QKeyEvent)
  def keyPressEvent(self, ev):
-  if ev.key() == QtCore.Qt.Key_Up:
+  if ev.key() == QtCore.Qt.Key.Key_Up:
    newGameNode = self.game.gameNode.parent
   else:
    newGameNode = self.game.gameNode.next()
   if newGameNode is not None:
    self.notifyGameNodeSelectedSignal.emit(newGameNode)
 
-class Piece(QtSvg.QGraphicsSvgItem):
+class Piece(QtSvgWidgets.QGraphicsSvgItem):
  '''Internal class
  '''
  piecesDirectory = os.path.join(os.path.dirname(os.path.abspath(__file__)), ':/pieces/')
@@ -197,21 +197,21 @@ class Piece(QtSvg.QGraphicsSvgItem):
   svgPath = os.path.join(fileDirectory , 'pieces', 
     '{}-{}.svg'.format(self.colorChars[self.llPiece.color], chess.piece_name(self.llPiece.piece_type)))
   super(Piece, self).__init__(svgPath, parent)
-  self.setFlags(QtWidgets.QGraphicsItem.ItemIsMovable | QtWidgets.QGraphicsItem.ItemIsSelectable)
+  self.setFlags(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsMovable | QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
   bwidth = self.boundingRect().width()
   self.setScale(size/bwidth)
   # self.setAcceptHoverEvents(True)
-  self.setCacheMode(QtWidgets.QGraphicsItem.NoCache)
+  self.setCacheMode(QtWidgets.QGraphicsItem.CacheMode.NoCache)
   self.setZValue(1)
 
 class Game(QtWidgets.QGraphicsScene):
  '''Internal class
  '''
- whiteSquareBrush = QtGui.QBrush( QtCore.Qt.white, QtCore.Qt.SolidPattern)
- blackSquareBrush = QtGui.QBrush( QtCore.Qt.gray, QtCore.Qt.SolidPattern)
- goodSquareBrush = QtGui.QBrush( QtCore.Qt.green, QtCore.Qt.SolidPattern)
- intermediateSquareBrush = QtGui.QBrush( QtCore.Qt.yellow, QtCore.Qt.SolidPattern)
- badSquareBrush = QtGui.QBrush( QtCore.Qt.red, QtCore.Qt.SolidPattern)
+ whiteSquareBrush = QtGui.QBrush( QtCore.Qt.GlobalColor.white, QtCore.Qt.BrushStyle.SolidPattern)
+ blackSquareBrush = QtGui.QBrush( QtCore.Qt.GlobalColor.gray, QtCore.Qt.BrushStyle.SolidPattern)
+ goodSquareBrush = QtGui.QBrush( QtCore.Qt.GlobalColor.green, QtCore.Qt.BrushStyle.SolidPattern)
+ intermediateSquareBrush = QtGui.QBrush( QtCore.Qt.GlobalColor.yellow, QtCore.Qt.BrushStyle.SolidPattern)
+ badSquareBrush = QtGui.QBrush( QtCore.Qt.GlobalColor.red, QtCore.Qt.BrushStyle.SolidPattern)
  requestHint = QtCore.pyqtSignal(str)
  pieceSize = 45
  leipzigEncodeDict = {
@@ -388,7 +388,7 @@ class Game(QtWidgets.QGraphicsScene):
      rect.setBrush( self.whiteSquareBrush )
     else:
      rect.setBrush( self.blackSquareBrush )
-    rect.setCacheMode(QtWidgets.QGraphicsItem.NoCache)
+    rect.setCacheMode(QtWidgets.QGraphicsItem.CacheMode.NoCache)
     rect.setZValue(0)
     self.addItem(rect)
   if flipped is not None:
@@ -422,7 +422,7 @@ class Game(QtWidgets.QGraphicsScene):
   for n, chessSquare in enumerate(self.legal_targets):
    self.drawOptionsGroup[n] = QtWidgets.QGraphicsRectItem(
               QtCore.QRectF(self.getScenePos(chessSquare), elementSize))
-   self.drawOptionsGroup[n].setCacheMode(QtWidgets.QGraphicsItem.NoCache)
+   self.drawOptionsGroup[n].setCacheMode(QtWidgets.QGraphicsItem.CacheMode.NoCache)
    if board.is_attacked_by(not board.turn, chessSquare):
     self.drawOptionsGroup[n].setBrush(self.badSquareBrush)
    else:
@@ -452,7 +452,7 @@ class Game(QtWidgets.QGraphicsScene):
    score = square2ScoreDict[chessSquare]
    self.warnOfDangerGroup[n] = QtWidgets.QGraphicsRectItem(
               QtCore.QRectF(self.getScenePos(chessSquare), elementSize))
-   self.warnOfDangerGroup[n].setCacheMode(QtWidgets.QGraphicsItem.NoCache)
+   self.warnOfDangerGroup[n].setCacheMode(QtWidgets.QGraphicsItem.CacheMode.NoCache)
    if score > 0:
     self.warnOfDangerGroup[n].setBrush(self.badSquareBrush)
    elif score == 0:

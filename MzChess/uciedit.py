@@ -1,6 +1,6 @@
 import re
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt6 import QtWidgets, QtGui
 
 
 class UCIHighlighter(QtGui.QSyntaxHighlighter):
@@ -28,7 +28,7 @@ class UCIHighlighter(QtGui.QSyntaxHighlighter):
   _color.setNamedColor(color)
   charFormat.setForeground(_color)
   if isBold:
-   charFormat.setFontWeight(QtGui.QFont.Bold)
+   charFormat.setFontWeight(QtGui.QFont.Weight.Bold)
   if isItalic:
    charFormat.setFontItalic(True)
   return charFormat

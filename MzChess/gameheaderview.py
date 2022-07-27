@@ -28,7 +28,7 @@ import copy
 import datetime
 from enum import IntEnum, unique
 
-from PyQt5 import QtWidgets,  QtCore
+from PyQt6 import QtWidgets,  QtCore
 
 import chess, chess.pgn
 
@@ -126,9 +126,9 @@ class GameHeaderView(QtWidgets.QTableWidget):
 
  def _createCompleteEdit(self, selList : List[str], value : Any) -> QtWidgets.QLineEdit:
   completer = QtWidgets.QCompleter(selList)
-  completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-  completer.setFilterMode(QtCore.Qt.MatchContains)
-  completer.setCompletionMode(QtWidgets.QCompleter.InlineCompletion)
+  completer.setCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
+  completer.setFilterMode(QtCore.Qt.MatchFlag.MatchContains)
+  completer.setCompletionMode(QtWidgets.QCompleter.CompletionMode.InlineCompletion)
   item = QtWidgets.QLineEdit(str(value))
   item.setCompleter(completer)
   item.editingFinished.connect(self.on_editingFinished)
@@ -144,7 +144,7 @@ class GameHeaderView(QtWidgets.QTableWidget):
    item = QtWidgets.QLabel(str(key))
    self.setCellWidget(row, 0, item)
   test = QtWidgets.QLabel()
-  zeroWidth = test.fontMetrics().size(QtCore.Qt.TextSingleLine, '0').width()
+  zeroWidth = test.fontMetrics().size(QtCore.Qt.TextFlag.TextSingleLine, '0').width()
   self.setColumnWidth(0, 20*zeroWidth)
   
   self.itemList = list()

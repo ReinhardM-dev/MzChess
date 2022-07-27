@@ -18,12 +18,13 @@ The tree widget has 4 colums:
  
 By clicking the annotation (*Ann*) and position assessment (*Pos*) fields, a popup dialog
 opens which allows to change the contents   
+
 .. |GameEditor| image:: gameEditor.png
   :width: 800
   :alt: Game Editor
 '''
 from typing import Optional, Set
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt6 import QtWidgets, QtGui, QtCore
 
 import chess, chess.pgn
 from chessengine import PGNEval_REGEX
@@ -32,7 +33,7 @@ from specialDialogs import ButtonLine, TextEdit, treeWidgetItemPos
 class GameTreeView(QtWidgets.QTreeWidget):
  '''Game Editor object
  '''
- itemFlags = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+ itemFlags = QtCore.Qt.ItemFlag.ItemIsEnabled | QtCore.Qt.ItemFlag.ItemIsSelectable
  inactiveBrush = QtGui.QBrush(QtGui.QColor('lightgray'))
  colorChars = ('black', 'white')
  endGameSymbols = ['1-0', '0-1', '1/2-1/2', '*']
@@ -79,8 +80,8 @@ class GameTreeView(QtWidgets.QTreeWidget):
 
  def __init__(self, parent = None) -> None:
   super(GameTreeView, self).__init__(parent)
-  self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-  self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+  self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
+  self.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
   self.notifyGameNodeSelectedSignal = None
   self.notifyGameChangedSignal = None
   self._clear()
@@ -102,7 +103,7 @@ class GameTreeView(QtWidgets.QTreeWidget):
   
  def _resetColumnWidth(self) -> None:
   test = QtWidgets.QLabel()
-  self.zeroWidth = test.fontMetrics().size(QtCore.Qt.TextSingleLine, '0').width()
+  self.zeroWidth = test.fontMetrics().size(QtCore.Qt.TextFlag.TextSingleLine, '0').width()
   # self.setColumnWidth(1, 20*zeroWidth)
   self.depth = 0
   self.setColumnWidth(0, 15*self.zeroWidth)
@@ -292,7 +293,7 @@ class GameTreeView(QtWidgets.QTreeWidget):
    selIndex = self.gameNodeList.index(gameNode)
   if selIndex > 0:
    self.expandItem(self.gameItemList[selIndex])
-  self.setCurrentItem(self.gameItemList[selIndex], 0, QtCore.QItemSelectionModel.SelectCurrent)
+  self.setCurrentItem(self.gameItemList[selIndex], 0, QtCore.QItemSelectionModel.SelectionFlag.SelectCurrent)
 
  def selectSubnodeItem(self, gameNode : chess.pgn.GameNode, next : bool = True):
   '''Selects the next or previous variant
@@ -536,16 +537,16 @@ if __name__ == "__main__":
 
  tree = GameTreeView()
  
- msgSc = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+U'), tree)
+ msgSc = QtGui.QShortcut(QtGui.QKeySequence('Ctrl+U'), tree)
  msgSc.activated.connect(tree.promoteVariant)
 
- msgSc = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+D'), tree)
+ msgSc = QtGui.QShortcut(QtGui.QKeySequence('Ctrl+D'), tree)
  msgSc.activated.connect(tree.demoteVariant)
 
- msgSc = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+X'), tree)
+ msgSc = QtGui.QShortcut(QtGui.QKeySequence('Ctrl+X'), tree)
  msgSc.activated.connect(tree.removeVariant)
 
- msgSc = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+M'), tree)
+ msgSc = QtGui.QShortcut(QtGui.QKeySequence('Ctrl+M'), tree)
  msgSc.activated.connect(tree.promoteVariant2Main)
 
  tree.setGame(game)

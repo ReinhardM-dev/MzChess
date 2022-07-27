@@ -192,7 +192,7 @@ tracking line number, gameID, position (in game)
   pass
   
  def t_NAG(self, t):
-  r'(\$[1-9][0-9]{0,2}(?![0-9])|(--\+|\+--|-/\+|\+/-|-\+|-\+|\+-|-\+|\+=|=\+)(?![=+\-])|(\?[?!]|![?!])(?![?!])|[?!=~DN](?![?!=~DN]))'
+  r'(\$[1-9][0-9]{0,2}(?![0-9])|(--\+|\+--|-/\+|\+/-|-\+|\+-|-\+|\+=|=\+)(?![=+\-])|(\?[?!]|![?!])(?![?!])|[?!=~DN](?![?!=~DN]))'
   if t.value[0] != '$':
    if t.value not in self.nagDict:
     self._raise_error("Illegal NAG symbol", t, warn = True)

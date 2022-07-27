@@ -1,6 +1,6 @@
 __description__ = \
 """
-A PyQt5 based chess GUI
+A PyQt6 based chess GUI
 
 Versions:
  1.0.0      first version
@@ -14,10 +14,11 @@ Versions:
  1.2.2      bug fixes
  1.2.3      bug fixes
  1.3.0      migrated to uic.loadUI
+ 1.4.0      migrated to PyQt6, Lad/Save issues removed
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2022-07-20"
-__version__ = "1.3.0"
+__date__ = "2022-07-26"
+__version__ = "1.4.0"
 
 __all__ = [
  'AboutDialog', 

@@ -2,8 +2,8 @@ from typing import Optional,  Callable,  List
 import os
 import sys
 
-from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5 import uic
+from PyQt6 import QtWidgets, QtGui, QtCore
+from PyQt6 import uic
 
 import chess, chess.pgn
 import MzChess
@@ -32,15 +32,15 @@ class BuildFenClass(QtWidgets.QMainWindow):
   self.board = chess.Board()
 
   self.msgBox = QtWidgets.QMessageBox()
-  self.msgBox.setIcon(QtWidgets.QMessageBox.Critical)
+  self.msgBox.setIcon(QtWidgets.QMessageBox.Icon.Critical)
   self.msgBox.setWindowTitle("Error ...")
 
   self.infoLabel = QtWidgets.QLabel()
-  self.infoLabel.setAlignment(QtCore.Qt.AlignLeft)
+  self.infoLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
   self.infoLabel.setFont(sbText)
   self.statusBar().addPermanentWidget(self.infoLabel, 150)
  
-  sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
+  sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
   sizePolicy.setHorizontalStretch(0)
   sizePolicy.setVerticalStretch(0)
   sizePolicy.setHeightForWidth(self.castlingGroupBox.sizePolicy().hasHeightForWidth())
@@ -275,7 +275,7 @@ class SelectionBox(ChessGroupBox):
    pushButton.setShortcut('x')   
    pushButton.setToolTip('remove piece')
    self.selectedButton = pushButton
-   self.gridLayout.addWidget(pushButton, nPieces // 2, nPieces % 2, 1, -1, QtCore.Qt.AlignCenter)
+   self.gridLayout.addWidget(pushButton, nPieces // 2, nPieces % 2, 1, -1, QtCore.Qt.AlignmentFlag.AlignCenter)
   else:
    pushButton.setChecked(False)
    pushButton.setText(self.leipzigEncodeDict[piece.symbol()])

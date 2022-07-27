@@ -1,4 +1,4 @@
-MzChess: a chess GUI using PyQt5 and `chess`_ modules
+MzChess: a chess GUI using PyQt6 and `chess`_ modules
 ==========================================================
 
 The chess GUI allows for:
@@ -23,7 +23,7 @@ Installing
 --------------
 
 If you’re on Linux, you should install
-the binary packages *PyQt5*, *PyQt5.QtChart*, and - if available - *PyQt5.QtSvg* using
+the binary packages *PyQt6*, *PyQt6.QtCharts*, and - if available - *PyQt6.QtSvg* using
 the `Linux Package Manager`_ to avoid a compilation of the huge sources. 
 Then, download and install the latest release:
 

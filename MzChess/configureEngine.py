@@ -31,8 +31,8 @@ import copy
 import configparser
 import re
 
-from PyQt5 import QtWidgets, QtCore
-from PyQt5 import uic
+from PyQt6 import QtWidgets, QtCore
+from PyQt6 import uic
 
 from chessengine import ChessEngine
 from configureEngineOptions import ConfigureEngineOptions 
@@ -78,12 +78,11 @@ def saveEngineSettings(settings : configparser.ConfigParser, engineDict : Dict[s
   settings[key]['executable'] = executable
 
 class ConfigureEngine(QtWidgets.QDialog):
- fileDialogOptions = QtWidgets.QFileDialog.Options() \
-                        | QtWidgets.QFileDialog.DontUseNativeDialog
- fileDialogFilters = QtCore.QDir.AllDirs \
-                      | QtCore.QDir.Files \
-                      | QtCore.QDir.NoDotAndDotDot \
-                      | QtCore.QDir.Hidden
+ fileDialogOptions = QtWidgets.QFileDialog.Option.DontUseNativeDialog
+ fileDialogFilters = QtCore.QDir.Filter.AllDirs \
+                      | QtCore.QDir.Filter.Files \
+                      | QtCore.QDir.Filter.NoDotAndDotDot \
+                      | QtCore.QDir.Filter.Hidden
 
  def __init__(self, parent : Optional[QtCore.QObject] = None):
   super(ConfigureEngine, self).__init__(parent)
@@ -94,14 +93,14 @@ class ConfigureEngine(QtWidgets.QDialog):
   self.log = False
   self.directories = list()
   self.engineTableWidget.horizontalHeader().setStretchLastSection(True)
-  self.engineTableWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-  self.browsePushButton.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DialogSaveButton))
+  self.engineTableWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
+  self.browsePushButton.setIcon(self.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_DialogSaveButton))
   self.engineDetails = dict()
 
  @QtCore.pyqtSlot(str)
  def notifyError(self, msg):
   msgBox = QtWidgets.QMessageBox()
-  msgBox.setIcon(QtWidgets.QMessageBox.Critical)
+  msgBox.setIcon(QtWidgets.QMessageBox.Icon.Critical)
   msgBox.setText(msg)
   msgBox.setWindowTitle("Error")
   msgBox.exec()
@@ -110,7 +109,7 @@ class ConfigureEngine(QtWidgets.QDialog):
   self.engineTableWidget.setRowCount(len(self.engineDict))
   for row, n2ec in enumerate(self.engineDict.items()):
    name, ec = n2ec
-   executable, options = ec[0]
+   executable = ec[0]
    if not (os.path.isfile(executable) and os.access(executable, os.X_OK )):
     executable = 'not found'
    else:
@@ -134,9 +133,9 @@ class ConfigureEngine(QtWidgets.QDialog):
  def ignoreIsChanged(self) -> None:
   if self.isChanged:
    msgBox = QtWidgets.QMessageBox()
-   msgBox.setIcon(QtWidgets.QMessageBox.Critical)
-   msgBox.addButton(QtWidgets.QMessageBox.No)
-   msgBox.addButton(QtWidgets.QMessageBox.Yes)
+   msgBox.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+   msgBox.addButton(QtWidgets.QMessageBox.StandardButton.No)
+   msgBox.addButton(QtWidgets.QMessageBox.StandardButton.Yes)
    msgBox.setText('Ignore ?')
    msgBox.setWindowTitle("Unsaved content detected")
    rc = msgBox.exec()
@@ -152,8 +151,8 @@ class ConfigureEngine(QtWidgets.QDialog):
    isOK = False
   if not isOK:
    msgBox = QtWidgets.QMessageBox()
-   msgBox.setIcon(QtWidgets.QMessageBox.Critical)
-   msgBox.addButton(QtWidgets.QMessageBox.Ok)
+   msgBox.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+   msgBox.addButton(QtWidgets.QMessageBox.StandardButton.Ok)
    msgBox.setText('{} is not an UCI engine'.format(executable))
    msgBox.setWindowTitle("Error")
    msgBox.exec()
@@ -178,7 +177,7 @@ class ConfigureEngine(QtWidgets.QDialog):
  @QtCore.pyqtSlot()
  def on_browsePushButton_clicked(self):
   fDialog = QtWidgets.QFileDialog()
-  fDialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
+  fDialog.setFileMode(QtWidgets.QFileDialog.FileMode.ExistingFile)
   fDialog.setOptions(self.fileDialogOptions)
   fDialog.setFilter(self.fileDialogFilters)
   fDialog.setWindowTitle("Load Engine Executable ...")
@@ -205,7 +204,7 @@ class ConfigureEngine(QtWidgets.QDialog):
    return  
   name = self.engineTableWidget.cellWidget(row, 0).text()
   self.nameLineEdit.setText(name)
-  self.executableLineEdit.setText(self.engineDict[name][0][0])
+  self.executableLineEdit.setText(self.engineDict[name][0])
   self.engineDetails = self.engineDict[name][1]
   self.selectedRow = row
 

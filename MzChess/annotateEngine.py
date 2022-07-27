@@ -4,7 +4,7 @@
 '''
 
 from typing import Callable, List, Union, Optional, Tuple
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 
 import chess, chess.pgn
 from chessengine import ChessEngine, PGNEval_REGEX
@@ -292,7 +292,7 @@ class AnnotateEngine(QtCore.QObject):
   return True
 
 if __name__ == "__main__":
- import io, os, sys
+ import os, sys
  import pickle
  import argparse
  import configparser

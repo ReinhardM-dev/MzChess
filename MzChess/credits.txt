@@ -1,5 +1,5 @@
 python, see https://www.python.org/
-PyQt5, see https://www.riverbankcomputing.com/software/pyqt/
+PyQt6, see https://www.riverbankcomputing.com/software/pyqt/
 python-chess by Niklas Fiekas, see https://github.com/niklasf/python-chess
 eco files by Niklas Fiekas, see https://github.com/niklasf/eco
 content of training/matein from ScidVsPC, see http://scidvspc.sourceforge.net

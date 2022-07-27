@@ -8,7 +8,7 @@ import time
 import re
 from typing import Any, Dict, Callable, Iterable, List, Optional, Tuple, Type, Union
 
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 
 import chess
 import chess.engine
@@ -49,7 +49,7 @@ class ChessEngine(QtCore.QObject):
   self.p.readyReadStandardError.connect(self._fromStdout)
   self.stdout = ''
   self.stdoutLines = list()
-  self.p.start(executable, QtCore.QIODevice.ReadWrite | QtCore.QIODevice.Text)
+  self.p.start(executable, [], QtCore.QIODevice.OpenModeFlag.ReadWrite | QtCore.QIODevice.OpenModeFlag.Text)
   while not self.p.waitForStarted(msecs = self.timeout_msec):
    self._log('ChessEngine: slow write, {} msec elapsed'.format(self.timeout_msec))
   self.readyok = True
@@ -169,7 +169,7 @@ class ChessEngine(QtCore.QObject):
 
 :returns: boolean indicating the response
   '''
-  return self.p.state() == QtCore.QProcess.Running and self.readyok
+  return self.p.state() == QtCore.QProcess.ProcessState.Running and self.readyok
   
  #  Parser --------------------------------------------------------------------------------------
 

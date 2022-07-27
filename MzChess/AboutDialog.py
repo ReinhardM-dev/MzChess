@@ -1,7 +1,7 @@
 from sys import version_info
 import os.path
-from PyQt5 import QtWidgets,  QtCore
-from PyQt5 import uic
+from PyQt6 import QtWidgets,  QtCore
+from PyQt6 import uic
 
 import chess
 import ply
@@ -30,7 +30,7 @@ class AboutDialog(QtWidgets.QDialog):
   self.shoeboxDateLabel.setText(dateString)
   self.pythonVersionLabel.setText('V' + str(version_info[0]) + '.' + str(version_info[1]) + '.' + str(version_info[2]) ) 
   self.qtVersionLabel.setText('V' + QtCore.QT_VERSION_STR ) 
-  self.pyqt5VersionLabel.setText('V' + QtCore.PYQT_VERSION_STR )
+  self.pyqt6VersionLabel.setText('V' + QtCore.PYQT_VERSION_STR )
   self.chessVersionLabel.setText('V' + chess.__version__)
   self.plyVersionLabel.setText('V' + ply.__version__)
 

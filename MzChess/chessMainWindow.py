@@ -116,12 +116,12 @@ import os, os.path
 import pickle
 import io
 import re
-import sys, subprocess
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5 import uic
+from PyQt6 import QtWidgets, QtGui, QtCore
+from PyQt6 import uic
 
 import chess, chess.pgn
 import MzChess
@@ -138,7 +138,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  notifyGameNodeSelectedSignal = QtCore.pyqtSignal(chess.pgn.GameNode)
  notifyGameChangedSignal = QtCore.pyqtSignal(chess.pgn.Game)
  notifyNewGameNodeSignal = QtCore.pyqtSignal(chess.pgn.GameNode)
- fileDialogOptions = QtWidgets.QFileDialog.Options() | QtWidgets.QFileDialog.DontUseNativeDialog
+ fileDialogOptions = QtWidgets.QFileDialog.Option.DontUseNativeDialog
  fileDirectory = os.path.dirname(os.path.abspath(__file__))
  intRe = re.compile(r"^[+-]?[1-9][0-9]*$")
  boolRe = re.compile(r"^(True|False)$")
@@ -150,7 +150,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   # self.setupUi(self)
 
   icon = QtGui.QIcon()
-  icon.addPixmap(QtGui.QPixmap(os.path.join(self.fileDirectory,'schach.png')), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+  icon.addPixmap(QtGui.QPixmap(os.path.join(self.fileDirectory,'schach.png')), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
   self.setWindowIcon(icon)
   
   self.pgm = MzChess.__name__
@@ -163,40 +163,40 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.ecoDB = MzChess.ECODatabase()
   self.ecoFen2IdDict = self.ecoDB.fen2Id()
   self.toolBar = QtWidgets.QToolBar()
-  self._setIcon(self.actionNew_PGN, QtWidgets.QStyle.SP_FileDialogNewFolder)
-  self._setIcon(self.actionOpen_PGN, QtWidgets.QStyle.SP_DirOpenIcon)
-  self._setIcon(self.actionSave_PGN, QtWidgets.QStyle.SP_DirHomeIcon)
-  self._setIcon(self.actionSave_Game, QtWidgets.QStyle.SP_DialogSaveButton)
+  self._setIcon(self.actionNewDB, QtWidgets.QStyle.StandardPixmap.SP_FileDialogNewFolder)
+  self._setIcon(self.actionOpenDB, QtWidgets.QStyle.StandardPixmap.SP_DirOpenIcon)
+  self._setIcon(self.actionSaveDB, QtWidgets.QStyle.StandardPixmap.SP_DirHomeIcon)
+  self._setIcon(self.actionSaveGame, QtWidgets.QStyle.StandardPixmap.SP_DialogSaveButton)
   self.toolBar.addSeparator()
-  self._setIcon(self.actionNew_Game, QtWidgets.QStyle.SP_FileIcon)
-  self._setIcon(self.actionFlip_Board, QtWidgets.QStyle.SP_BrowserReload)
+  self._setIcon(self.actionNewGame, QtWidgets.QStyle.StandardPixmap.SP_FileIcon)
+  self._setIcon(self.actionFlipBoard, QtWidgets.QStyle.StandardPixmap.SP_BrowserReload)
   self.toolBar.addSeparator()
-  self._setIcon(self.actionNext_Move, QtWidgets.QStyle.SP_ArrowDown)
-  self._setIcon(self.actionPrevious_Move, QtWidgets.QStyle.SP_ArrowUp)
-  self._setIcon(self.actionUndo_Last_Move, QtWidgets.QStyle.SP_BrowserStop)
-  self._setIcon(self.actionNext_Variant, QtWidgets.QStyle.SP_ArrowForward)
-  self._setIcon(self.actionPrevious_Variant, QtWidgets.QStyle.SP_ArrowBack)
-  self._setIcon(self.actionPromote_Variant, QtWidgets.QStyle.SP_MediaSeekBackward)
-  self._setIcon(self.actionDemote_Variant, QtWidgets.QStyle.SP_MediaSeekForward)
-  self._setIcon(self.actionPromote_Variant_to_Main, QtWidgets.QStyle.SP_MediaSkipBackward)
-  self._setIcon(self.actionDelete_Variant, QtWidgets.QStyle.SP_DialogCloseButton)
+  self._setIcon(self.actionNextMove, QtWidgets.QStyle.StandardPixmap.SP_ArrowDown)
+  self._setIcon(self.actionPreviousMove, QtWidgets.QStyle.StandardPixmap.SP_ArrowUp)
+  self._setIcon(self.actionUndoLastMove, QtWidgets.QStyle.StandardPixmap.SP_BrowserStop)
+  self._setIcon(self.actionNextVariant, QtWidgets.QStyle.StandardPixmap.SP_ArrowForward)
+  self._setIcon(self.actionPreviousVariant, QtWidgets.QStyle.StandardPixmap.SP_ArrowBack)
+  self._setIcon(self.actionPromoteVariant, QtWidgets.QStyle.StandardPixmap.SP_MediaSeekBackward)
+  self._setIcon(self.actionDemoteVariant, QtWidgets.QStyle.StandardPixmap.SP_MediaSeekForward)
+  self._setIcon(self.actionPromoteVariant2Main, QtWidgets.QStyle.StandardPixmap.SP_MediaSkipBackward)
+  self._setIcon(self.actionDeleteVariant, QtWidgets.QStyle.StandardPixmap.SP_DialogCloseButton)
   self.addToolBar(self.toolBar)
   
   self.gameOptions = { 
-   'showOptions' : (self.actionShow_Options, False), 
-   'warnOfDanger' : (self.actionWarn_of_Danger, False), 
+   'showOptions' : (self.actionShowOptions, False), 
+   'warnOfDanger' : (self.actionWarnOfDanger, False), 
    'encoding' : (self.menuEncoding, 'UTF-8')
   }
   self.encodingDict = { 'UTF-8' : 'utf-8-sig', 'ISO 8859/1' : 'iso-8859-1',  'ASCII' : 'ascii'}
   
   self.engineOptions = {
-   'selectedEngine' : (self.menuSelect_Engine, None), 
-   'searchDepth' : (self.menuSearch_Depth, 15), 
-   'blunderLimit' : (self.menuBlunder_Limit, None), 
-   'numberOfAnnotations' : (self.menuNumber_of_Annotations, 1), 
-   'annotateVariants' : (self.menuAnnotate_Variants, None), 
-   'showScores' : (self.actionShow_Scores, False), 
-   'showHints' :( self.actionShow_Hints, False) 
+   'selectedEngine' : (self.menuSelectEngine, None), 
+   'searchDepth' : (self.menuSearchDepth, 15), 
+   'blunderLimit' : (self.menuBlunderLimit, None), 
+   'numberOfAnnotations' : (self.menuNumberOfAnnotations, 1), 
+   'annotateVariants' : (self.menuAnnotateVariants, None), 
+   'showScores' : (self.actionShowScores, False), 
+   'showHints' :( self.actionShowHints, False) 
    }
   
   self.engineDict = dict()
@@ -234,7 +234,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
     self.settings['Menu/Engine']['showHints'] = False
     self.settings['Menu/Engine']['showScores'] = False
 
-  self.menuRecent_PGN.clear()
+  self.menuRecentDB.clear()
   if self.recentPGN is None:
    self.recentPGN = dict()
   else:
@@ -243,7 +243,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
     if rItem is not None and os.path.isfile(rItem):
      if actDir == os.path.expanduser('~'):
       actDir = os.path.dirname(rItem)
-     self.menuRecent_PGN.addAction(rItem)
+     self.menuRecentDB.addAction(rItem)
   
   os.chdir(actDir)
   
@@ -257,26 +257,26 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   sbText.setPointSize(12)
   
   self.infoLabel = QtWidgets.QLabel()
-  self.infoLabel.setAlignment(QtCore.Qt.AlignLeft)
+  self.infoLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
   self.infoLabel.setFont(sbText)
   self.statusBar().addPermanentWidget(self.infoLabel, 150)
   self.engineLabel = QtWidgets.QLabel()
   self.engineLabel.setFont(sbText)
-  self.engineLabel.setAlignment(QtCore.Qt.AlignCenter)
+  self.engineLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
   self.engineLabel.setToolTip("Engine in use")
   self.statusBar().addPermanentWidget(self.engineLabel, 50)
   self.hintLabel = QtWidgets.QLabel()
   self.hintLabel.setFont(sbText)
-  self.hintLabel.setAlignment(QtCore.Qt.AlignCenter)
+  self.hintLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
   self.hintLabel.setToolTip("Best move/Score[Pawns]")
   self.statusBar().addPermanentWidget(self.hintLabel, 30)
   self.ecoLabel = QtWidgets.QLabel()
   self.ecoLabel.setFont(sbText)
-  self.ecoLabel.setAlignment(QtCore.Qt.AlignCenter)
+  self.ecoLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
   self.statusBar().addPermanentWidget(self.ecoLabel, 10)
   self.squareLabel = QtWidgets.QLabel()
   self.squareLabel.setFont(sbText)
-  self.squareLabel.setAlignment(QtCore.Qt.AlignCenter)
+  self.squareLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
   self.squareLabel.setToolTip("Position")
   self.statusBar().addPermanentWidget(self.squareLabel, 10)
 
@@ -317,13 +317,13 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  def setup(self) -> None:
   sizes = self.splitter.sizes()
   self.splitter.setSizes([self.boardGraphicsView.height(), sizes[0] + sizes[1] - self.boardGraphicsView.height()])
-  self.boardGraphicsView.setDrawOptions(self.actionShow_Options.isChecked())
+  self.boardGraphicsView.setDrawOptions(self.actionShowOptions.isChecked())
   self.boardGraphicsView.setGameNode(self.game)
   self.gameTreeViewWidget.setGame(self.game)
   self.gameListTableView.resetDB()
   self.gameHeaderTableView.resetGame()
 
- def loadOptionDict(self, name : str, n2oDict : Dict[str, Union[QtWidgets.QAction, Tuple[QtWidgets.QMenu, Any]]]) -> Dict[str, Union[int, float]]:
+ def loadOptionDict(self, name : str, n2oDict : Dict[str, Union[QtGui.QAction, Tuple[QtWidgets.QMenu, Any]]]) -> Dict[str, Union[int, float]]:
   if name not in self.settings:
    self.settings[name] = dict()
   optionsDict = dict()
@@ -334,7 +334,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
     optValue = str(self.settings[name][opt])
    else:
     optValue = str(defValue)
-   if isinstance(obj, QtWidgets.QAction):
+   if isinstance(obj, QtGui.QAction):
     optionsDict[opt] = (optValue == 'True')
     obj.setChecked(optionsDict[opt])
    elif isinstance(obj, QtWidgets.QMenu):
@@ -362,15 +362,15 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.settings[name] = optionsDict
 
  def resetSelectEngine(self) -> None:
-  self.menuSelect_Engine.clear()
-  action = self.menuSelect_Engine.addAction('None')
+  self.menuSelectEngine.clear()
+  action = self.menuSelectEngine.addAction('None')
   action.setCheckable(True)
   if 'Menu/Engine' in self.settings.sections():
    if self.settings['Menu/Engine']['selectedEngine'] is None or self.settings['Menu/Engine']['selectedEngine'] not in self.engineDict:
     action.setChecked(True)
-   self.menuSelect_Engine.addSeparator()
+   self.menuSelectEngine.addSeparator()
    for eItem in self.engineDict:
-    action = self.menuSelect_Engine.addAction(eItem)
+    action = self.menuSelectEngine.addAction(eItem)
     action.setCheckable(True)
     if self.settings['Menu/Engine']['selectedEngine'] == eItem:
      action.setChecked(True)
@@ -415,7 +415,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  @QtCore.pyqtSlot(str)
  def notifyError(self, str : str) -> None:
   msgBox = QtWidgets.QMessageBox()
-  msgBox.setIcon(QtWidgets.QMessageBox.Critical)
+  msgBox.setIcon(QtWidgets.QMessageBox.Icon.Critical)
   msgBox.setText(str)
   msgBox.setWindowTitle("Error ...")
   msgBox.exec()
@@ -427,9 +427,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
 
  @QtCore.pyqtSlot(str)
  def toLog(self, msg):
-  self.uciTextEdit.moveCursor (QtGui.QTextCursor.End)
+  self.uciTextEdit.moveCursor (QtGui.QTextCursor.MoveOperation.End)
   self.uciTextEdit.insertPlainText (msg)
-  self.uciTextEdit.moveCursor(QtGui.QTextCursor.End)
+  self.uciTextEdit.moveCursor(QtGui.QTextCursor.MoveOperation.End)
 
  def _setIcon(self, action, stdIcon, toToolbar = True):
   action.setIcon(self.style().standardIcon(stdIcon))
@@ -462,9 +462,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   if self.gameListChanged:
    rc = QtWidgets.QMessageBox.warning(self, 
     'Game database not saved ...', 'Do you like to close anyway ?', 
-     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, 
-     QtWidgets.QMessageBox.No)
-   if rc == QtWidgets.QMessageBox.No:
+     QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No, 
+     QtWidgets.QMessageBox.StandardButton.No)
+   if rc == QtWidgets.QMessageBox.StandardButton.No:
     return False
   self.gameListTableView.resetDB()
   self.gameHeaderTableView.resetGame()
@@ -478,9 +478,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   if self._gameChanged:
    rc = QtWidgets.QMessageBox.warning(self, 
     'Game not saved ...', 'Do you like to close anyway ?', 
-     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, 
-     QtWidgets.QMessageBox.No)
-   if rc == QtWidgets.QMessageBox.No:
+     QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No, 
+     QtWidgets.QMessageBox.StandardButton.No)
+   if rc == QtWidgets.QMessageBox.StandardButton.No:
     return False
   self.game = chess.pgn.Game()
   self.game.headers = self._setGameHeader(self.optionalHeaderItems)
@@ -527,6 +527,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
     self.notifyError('Cannot open PGN file {}'.format(pgnFile))
     return
    n = 1
+   self.gameList = list()
    while True:
     actGame = read_game(pgn)
     if actGame is None:
@@ -546,14 +547,14 @@ class ChessMainWindow(QtWidgets.QMainWindow):
     self.settings['Recent'][file] = enc
   self.recentPGN = newRecentPGN
   self.saveSettings()
-  self.menuRecent_PGN.clear()
+  self.menuRecentDB.clear()
   for rItem in self.recentPGN:
    if rItem is not None and os.path.isfile(rItem):
-    self.menuRecent_PGN.addAction(rItem)
+    self.menuRecentDB.addAction(rItem)
   os.chdir(os.path.dirname(pgnFile))
   self.notify('')
  
- @QtCore.pyqtSlot(QtWidgets.QAction)
+ @QtCore.pyqtSlot(QtGui.QAction)
  def on_menuEncoding_triggered(self, action):
   self.notify('')
   for actAction in self.menuEncoding.actions():
@@ -563,26 +564,26 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.saveSettings()
 
  @QtCore.pyqtSlot()
- def on_actionNew_PGN_triggered(self):
+ def on_actionNewDB_triggered(self):
   self.notify('')
-  self.on_actionClose_PGN_triggered()
+  self.on_actionCloseDB_triggered()
 
  @QtCore.pyqtSlot()
- def on_actionOpen_PGN_triggered(self):
+ def on_actionOpenDB_triggered(self):
   self.notify('')
   pgnFile, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Load Game Database ...", "",
         "Pickle Portable Game Notation Files (*.ppgn);;Portable Game Notation Files (*.pgn);;All Files (*)", options = self.fileDialogOptions)
   if pgnFile is not None and len(pgnFile) > 0:
    self.openPGN(pgnFile, self.encodingDict[self.settings['Menu/Game']['encoding']])
    
- @QtCore.pyqtSlot(QtWidgets.QAction)
- def on_menuRecent_PGN_triggered(self, action):
+ @QtCore.pyqtSlot(QtGui.QAction)
+ def on_menuRecentDB_triggered(self, action):
   self.notify('')
   fileName = action.text()
   self.openPGN(fileName, self.recentPGN[fileName])
  
  @QtCore.pyqtSlot()
- def on_actionClose_PGN_triggered(self):
+ def on_actionCloseDB_triggered(self):
   self.notify('')
   if not self._allowNewGameList() or not self._allowNewGame():
    return
@@ -606,9 +607,12 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.notify('')
   if self._allowNewGameList() and self._allowNewGame():
    self.close()
-   
- @QtCore.pyqtSlot()
- def on_actionSave_PGN_triggered(self):
+
+ def saveDB(self, forceAppend):
+  if forceAppend:
+   mode = 'a'
+  else:
+   mode = 'w'
   self.notify('')
   if len(self.gameList) == 0:
     self.notifyError('No Game Database available')
@@ -621,7 +625,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   _,  ext = os.path.splitext(pgnFile)
   if ext == '.ppgn':
    try:
-    with open(pgnFile, mode = 'wb') as f:
+    with open(pgnFile, mode = '{}b'.format(mode)) as f:
      pickle.dump(self.gameList, f)
    except:
     self.notifyError('Cannot open PPGN file {}'.format(pgnFile))
@@ -629,11 +633,11 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    encoding = None
   elif ext == '.pgn':
    try:
-    exporter = chess.pgn.StringExporter(headers=True, variations=True, comments=True)
-    pgnString = str()
     encoding = self.settings['Menu/Game']['encoding']
-    with open(pgnFile, mode = 'w',  encoding = self.encodingDict[encoding]) as f:
+    with open(pgnFile, mode = mode,  encoding = self.encodingDict[encoding]) as f:
+     pgnString = str()
      for game in self.gameList:
+      exporter = chess.pgn.StringExporter(headers=True, variations=True, comments=True)
       pgnString += game.accept(exporter)
       if game != self.gameList[-1]:
        pgnString += '\n\n'
@@ -648,9 +652,17 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameListChanged = False
   self.gameListFile = os.path.split(pgnFile)[1]
   os.chdir(os.path.dirname(pgnFile))
+
+ @QtCore.pyqtSlot()
+ def on_actionAppend2DB_triggered(self):
+  self.saveDB(True)
+  
+ @QtCore.pyqtSlot()
+ def on_actionSaveDB_triggered(self):
+  self.saveDB(False)
    
  @QtCore.pyqtSlot()
- def on_actionAdd_Game_triggered(self):
+ def on_actionAddGame_triggered(self):
   self.notify('')
   if self.gameID is None:
    self.gameID = len(self.gameList)
@@ -661,7 +673,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameListChanged = True
    
  @QtCore.pyqtSlot()
- def on_actionRemove_Games_triggered(self):
+ def on_actionRemoveGames_triggered(self):
   self.notify('')
   selectedIndices = self.gameListTableView.selectedIndexes()
   if len(selectedIndices) != 0:
@@ -680,11 +692,11 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.gameListTableView.setGameList(self.gameList)
   
  @QtCore.pyqtSlot(bool)
- def on_actionNew_Game_triggered(self):
+ def on_actionNewGame_triggered(self):
   self._allowNewGame()
   
- @QtCore.pyqtSlot(QtWidgets.QAction)
- def on_menuEnd_Game_triggered(self, action):
+ @QtCore.pyqtSlot(QtGui.QAction)
+ def on_menuEndGame_triggered(self, action):
   self.notify('')
   endGame = self.game.end()
   if endGame.board().is_game_over():
@@ -695,7 +707,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameChanged(self.game)
   
  @QtCore.pyqtSlot()
- def on_actionSave_Game_triggered(self):
+ def on_actionSaveGame_triggered(self):
   self.notify('')
   pgnFile, _ = QtWidgets.QFileDialog.getSaveFileName(self,
      "Save Game ...", self.gameFile,"Portable Game Notation Files (*.pgn);;All Files (*)", options = self.fileDialogOptions)
@@ -729,31 +741,31 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   ev.accept()
 
  @QtCore.pyqtSlot()
- def on_actionNext_Move_triggered(self):
+ def on_actionNextMove_triggered(self):
   self.notify('')
   self.gameNode = self.boardGraphicsView.nextMove()
   self.gameTreeViewWidget.selectNodeItem(self.gameNode)
   self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
 
  @QtCore.pyqtSlot()
- def on_actionPrevious_Move_triggered(self):
+ def on_actionPreviousMove_triggered(self):
   self.notify('')
   self.gameNode = self.boardGraphicsView.previousMove()
   self.gameTreeViewWidget.selectNodeItem(self.gameNode)
   self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
 
  @QtCore.pyqtSlot()
- def on_actionNext_Variant_triggered(self):
+ def on_actionNextVariant_triggered(self):
   self.notify('')
   self.gameTreeViewWidget.selectSubnodeItem(self.gameNode, next = True)
 
  @QtCore.pyqtSlot()
- def on_actionPrevious_Variant_triggered(self):
+ def on_actionPreviousVariant_triggered(self):
   self.notify('')
   self.gameTreeViewWidget.selectSubnodeItem(self.gameNode, next = False)
 
  @QtCore.pyqtSlot()
- def on_actionPromote_Variant_triggered(self):
+ def on_actionPromoteVariant_triggered(self):
   self.notify('')
   if self.gameNode.is_main_variation():
    self.notifyError('You cannot promote from main line nodes')
@@ -761,7 +773,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameTreeViewWidget.promoteVariant()
 
  @QtCore.pyqtSlot()
- def on_actionPromote_Variant_to_Main_triggered(self):
+ def on_actionPromoteVariant2Main_triggered(self):
   self.notify('')
   if self.gameNode.is_main_variation():
    self.notifyError('You cannot promote from main line nodes')
@@ -769,7 +781,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameTreeViewWidget.promoteVariant2Main()
 
  @QtCore.pyqtSlot()
- def on_actionDemote_Variant_triggered(self):
+ def on_actionDemoteVariant_triggered(self):
   self.notify('')
   if self.gameNode.is_main_variation():
    self.notifyError('You cannot promote from main line nodes')
@@ -777,7 +789,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameTreeViewWidget.demoteVariant()
 
  @QtCore.pyqtSlot()
- def on_actionDelete_Variant_triggered(self):
+ def on_actionDeleteVariant_triggered(self):
   self.notify('')
   if self.gameNode.parent is None:
    self.notifyError('Use Game/New to remove a complete game')
@@ -787,7 +799,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.boardGraphicsView.setGameNode(self.gameNode)
 
  @QtCore.pyqtSlot()
- def on_actionUndo_Last_Move_triggered(self):
+ def on_actionUndoLastMove_triggered(self):
   self.notify('')
   if self.gameNode is None or self.gameNode.parent is None:
    return
@@ -808,11 +820,11 @@ class ChessMainWindow(QtWidgets.QMainWindow):
 
  # ---------------------------------------------------------------------------
 
- @QtCore.pyqtSlot(QtWidgets.QAction)
- def on_menuSelect_Engine_triggered(self, action):
+ @QtCore.pyqtSlot(QtGui.QAction)
+ def on_menuSelectEngine_triggered(self, action):
   self.notify('')
   oldValue = self.settings['Menu/Engine']['selectedEngine']
-  for actAction in self.menuSelect_Engine.actions():
+  for actAction in self.menuSelectEngine.actions():
    actAction.setChecked(False)
   action.setChecked(True)
   self.settings['Menu/Engine']['selectedEngine'] = action.text()
@@ -820,30 +832,30 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.show_HintsScores()
   self.saveSettings()
   
- @QtCore.pyqtSlot(QtWidgets.QAction)
- def on_menuSearch_Depth_triggered(self, action):
+ @QtCore.pyqtSlot(QtGui.QAction)
+ def on_menuSearchDepth_triggered(self, action):
   self.notify('')
-  for actAction in self.menuSearch_Depth.actions():
+  for actAction in self.menuSearchDepth.actions():
    actAction.setChecked(False)
   action.setChecked(True)
   tList = action.text().split(' ')
   self.settings['Menu/Engine']['searchDepth'] = str(int(tList[0]))
   self.saveSettings()
   
- @QtCore.pyqtSlot(QtWidgets.QAction)
- def on_menuNumber_of_Annotations_triggered(self, action):
+ @QtCore.pyqtSlot(QtGui.QAction)
+ def on_menuNumberOfAnnotations_triggered(self, action):
   self.notify('')
-  for actAction in self.menuBlunder_Limit.actions():
+  for actAction in self.menuBlunderLimit.actions():
    actAction.setChecked(False)
   action.setChecked(True)
   naValue = action.text()
   self.settings['Menu/Engine']['numberOfAnnotations'] = naValue
   self.saveSettings()
 
- @QtCore.pyqtSlot(QtWidgets.QAction)
- def on_menuBlunder_Limit_triggered(self, action):
+ @QtCore.pyqtSlot(QtGui.QAction)
+ def on_menuBlunderLimit_triggered(self, action):
   self.notify('')
-  for actAction in self.menuBlunder_Limit.actions():
+  for actAction in self.menuBlunderLimit.actions():
    actAction.setChecked(False)
   action.setChecked(True)
   blValue = action.text()
@@ -854,10 +866,10 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.settings['Menu/Engine']['blunderLimit'] = str(blunderLimit)
   self.saveSettings()
    
- @QtCore.pyqtSlot(QtWidgets.QAction)
- def on_menuAnnotate_Variants_triggered(self, action):
+ @QtCore.pyqtSlot(QtGui.QAction)
+ def on_menuAnnotateVariants_triggered(self, action):
   self.notify('')
-  for actAction in self.menuAnnotate_Variants.actions():
+  for actAction in self.menuAnnotateVariants.actions():
    actAction.setChecked(False)
   action.setChecked(True)
   avValue = action.text().split(' ')
@@ -870,7 +882,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.saveSettings()
 
  @QtCore.pyqtSlot()
- def on_actionAnnotate_Last_Move_triggered(self):
+ def on_actionAnnotateLastMove_triggered(self):
   if self.settings['Menu/Engine']['selectedEngine'] is None:
    self.notifyError('No engine selected')
    return
@@ -906,7 +918,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.notifyError('Annotation failed')
 
  @QtCore.pyqtSlot()
- def on_actionAnnotate_All_triggered(self):
+ def on_actionAnnotateAll_triggered(self):
   if self.settings['Menu/Engine']['selectedEngine'] is None:
    self.notifyError('No engine selected')
    return
@@ -942,26 +954,26 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.notifyError('Annotation failed')
 
  @QtCore.pyqtSlot(bool)
- def on_actionShow_Options_toggled(self, checked):
+ def on_actionShowOptions_toggled(self, checked):
   self.notify('')
   self.boardGraphicsView.setDrawOptions(checked)
   self.settings['Menu/Game']['showOptions'] = str(checked)
   self.saveSettings()
 
  @QtCore.pyqtSlot(bool)
- def on_actionWarn_of_Danger_toggled(self, checked):
+ def on_actionWarnOfDanger_toggled(self, checked):
   self.notify('')
   self.boardGraphicsView.setWarnOfDanger(checked)
   self.settings['Menu/Game']['warnOfDanger'] = str(checked)
   self.saveSettings()
 
  @QtCore.pyqtSlot(bool)
- def on_actionFlip_Board_toggled(self, checked):
+ def on_actionFlipBoard_toggled(self, checked):
   self.notify('')
   self.boardGraphicsView.setFlipped(checked)
   
  @QtCore.pyqtSlot()
- def on_actionSelect_Header_Elements_triggered(self):
+ def on_actionSelectHeaderElements_triggered(self):
   self.notify('')
   headerElements = self.gameHeaderTableView.headerElements(withoutSevenTagRoster = True)
   self.itemSelector.setContent(headerElements, self.optionalHeaderItems)
@@ -977,8 +989,8 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.notifyError('No engine selected')
    return
   self.notify('')
-  hintsChecked = self.actionShow_Hints.isChecked()
-  scoresChecked = self.actionShow_Scores.isChecked()
+  hintsChecked = self.actionShowHints.isChecked()
+  scoresChecked = self.actionShowScores.isChecked()
   self.settings['Menu/Engine']['showHints'] = str(hintsChecked)
   self.settings['Menu/Engine']['showScores'] = str(scoresChecked)
   self.saveSettings()
@@ -1001,11 +1013,11 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.engineLabel.setText('---')
 
  @QtCore.pyqtSlot(bool)
- def on_actionShow_Hints_toggled(self, checked):
+ def on_actionShowHints_toggled(self, checked):
   self.show_HintsScores()
     
  @QtCore.pyqtSlot(bool)
- def on_actionShow_Scores_toggled(self, checked):
+ def on_actionShowScores_toggled(self, checked):
   self.show_HintsScores()
   
  @QtCore.pyqtSlot()
@@ -1043,13 +1055,13 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  # ---------------------------------------------------------------------------
 
  @QtCore.pyqtSlot() 
- def on_actionCopy_FEN_triggered(self):
+ def on_actionCopyFEN_triggered(self):
   self.notify('')
   fen = self.gameNode.board().fen()
   QtWidgets.QApplication.clipboard().setText(fen)
 
  @QtCore.pyqtSlot() 
- def on_actionPaste_FEN_triggered(self):
+ def on_actionPasteFEN_triggered(self):
   self.notify('')
   if not self._allowNewGame():
    return
@@ -1069,19 +1081,19 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameHeaderTableView.setGame(self.game)
 
  @QtCore.pyqtSlot() 
- def on_actionFEN_Builder_triggered(self):
+ def on_actionFENBuilder_triggered(self):
   self.fenBuilder = QtCore.QProcess()
   self.fenBuilder.start(sys.executable, [os.path.join(self.fileDirectory,'qbuildfen.py')], QtCore.QIODevice.NotOpen)
   
  @QtCore.pyqtSlot() 
- def on_actionCopy_PGN_triggered(self):
+ def on_actionCopyGame_triggered(self):
   self.notify('')
   exporter = chess.pgn.StringExporter(headers=True, variations=True, comments=True)
   pgnString = self.game.accept(exporter)
   QtWidgets.QApplication.clipboard().setText(pgnString)
 
  @QtCore.pyqtSlot() 
- def on_actionPaste_PGN_triggered(self):
+ def on_actionPasteGame_triggered(self):
   self.notify('')
   if not self._allowNewGame():
    return

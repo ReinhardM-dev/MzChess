@@ -1,5 +1,5 @@
 import os.path
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
 
 class HelpBrowser(QtWidgets.QWidget):
  indexFile = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'doc_build', 'html', 'index.html')
@@ -27,7 +27,7 @@ class HelpBrowser(QtWidgets.QWidget):
 
 if __name__ == '__main__':
  import sys
- from PyQt5 import QtGui, QtCore
+ from PyQt6 import QtGui, QtCore
 
  app = QtWidgets.QApplication(sys.argv)
  # ex = HelpBrowser()

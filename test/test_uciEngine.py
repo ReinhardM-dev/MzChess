@@ -3,7 +3,7 @@ from typing import Callable, TextIO, List
 import pytest
 
 import os, os.path
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 
 import MzChess
 import chess

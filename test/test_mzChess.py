@@ -3,7 +3,7 @@ import pytest
 
 inverseLeipzigEncodeDict = dict()
 
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 
 import chess, chess.pgn
 import MzChess
@@ -54,7 +54,7 @@ def makeMove(app, qtbot,
  else:
   delta = QtCore.QPoint()
  fromPoint = gameScene.getScenePos(move.from_square).toPoint() + delta
- qtbot.mousePress(gv, QtCore.Qt.LeftButton, pos = app.boardGraphicsView.mapFromScene(fromPoint))
+ qtbot.mousePress(gv, QtCore.Qt.MouseButton.LeftButton, pos = app.boardGraphicsView.mapFromScene(fromPoint))
  if breakAfterPress:
   breakpoint()
  if relDeltaPercent[0]:
@@ -62,7 +62,7 @@ def makeMove(app, qtbot,
  else:
   delta = (0.01 * gameScene.pieceSize) * relDeltaPercent[1]
  toPoint = gameScene.getScenePos(move.to_square).toPoint() + delta
- qtbot.mouseRelease(gv, QtCore.Qt.LeftButton, pos = app.boardGraphicsView.mapFromScene(toPoint))
+ qtbot.mouseRelease(gv, QtCore.Qt.MouseButton.LeftButton, pos = app.boardGraphicsView.mapFromScene(toPoint))
  QtCore.QCoreApplication.processEvents()
  if breakAfterRelease:
   breakpoint()

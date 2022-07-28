@@ -119,12 +119,18 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
 
-from PyQt6 import QtWidgets, QtGui, QtCore
-from PyQt6 import uic
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets, QtGui, QtCore
+ from PyQt5.QtWidgets import QAction
+ from PyQt5 import uic
+else:
+ from PyQt6 import QtWidgets, QtGui, QtCore
+ from PyQt6.QtGui import QAction
+ from PyQt6 import uic
 
 import chess, chess.pgn
-import MzChess
 from MzChess import read_game
 
 import AboutDialog
@@ -323,7 +329,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameListTableView.resetDB()
   self.gameHeaderTableView.resetGame()
 
- def loadOptionDict(self, name : str, n2oDict : Dict[str, Union[QtGui.QAction, Tuple[QtWidgets.QMenu, Any]]]) -> Dict[str, Union[int, float]]:
+ def loadOptionDict(self, name : str, n2oDict : Dict[str, Union[QAction, Tuple[QtWidgets.QMenu, Any]]]) -> Dict[str, Union[int, float]]:
   if name not in self.settings:
    self.settings[name] = dict()
   optionsDict = dict()
@@ -334,7 +340,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
     optValue = str(self.settings[name][opt])
    else:
     optValue = str(defValue)
-   if isinstance(obj, QtGui.QAction):
+   if isinstance(obj, QAction):
     optionsDict[opt] = (optValue == 'True')
     obj.setChecked(optionsDict[opt])
    elif isinstance(obj, QtWidgets.QMenu):
@@ -554,7 +560,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   os.chdir(os.path.dirname(pgnFile))
   self.notify('')
  
- @QtCore.pyqtSlot(QtGui.QAction)
+ @QtCore.pyqtSlot(QAction)
  def on_menuEncoding_triggered(self, action):
   self.notify('')
   for actAction in self.menuEncoding.actions():
@@ -576,7 +582,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   if pgnFile is not None and len(pgnFile) > 0:
    self.openPGN(pgnFile, self.encodingDict[self.settings['Menu/Game']['encoding']])
    
- @QtCore.pyqtSlot(QtGui.QAction)
+ @QtCore.pyqtSlot(QAction)
  def on_menuRecentDB_triggered(self, action):
   self.notify('')
   fileName = action.text()
@@ -695,7 +701,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  def on_actionNewGame_triggered(self):
   self._allowNewGame()
   
- @QtCore.pyqtSlot(QtGui.QAction)
+ @QtCore.pyqtSlot(QAction)
  def on_menuEndGame_triggered(self, action):
   self.notify('')
   endGame = self.game.end()
@@ -820,7 +826,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
 
  # ---------------------------------------------------------------------------
 
- @QtCore.pyqtSlot(QtGui.QAction)
+ @QtCore.pyqtSlot(QAction)
  def on_menuSelectEngine_triggered(self, action):
   self.notify('')
   oldValue = self.settings['Menu/Engine']['selectedEngine']
@@ -832,7 +838,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.show_HintsScores()
   self.saveSettings()
   
- @QtCore.pyqtSlot(QtGui.QAction)
+ @QtCore.pyqtSlot(QAction)
  def on_menuSearchDepth_triggered(self, action):
   self.notify('')
   for actAction in self.menuSearchDepth.actions():
@@ -842,7 +848,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.settings['Menu/Engine']['searchDepth'] = str(int(tList[0]))
   self.saveSettings()
   
- @QtCore.pyqtSlot(QtGui.QAction)
+ @QtCore.pyqtSlot(QAction)
  def on_menuNumberOfAnnotations_triggered(self, action):
   self.notify('')
   for actAction in self.menuBlunderLimit.actions():
@@ -852,7 +858,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.settings['Menu/Engine']['numberOfAnnotations'] = naValue
   self.saveSettings()
 
- @QtCore.pyqtSlot(QtGui.QAction)
+ @QtCore.pyqtSlot(QAction)
  def on_menuBlunderLimit_triggered(self, action):
   self.notify('')
   for actAction in self.menuBlunderLimit.actions():
@@ -866,7 +872,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.settings['Menu/Engine']['blunderLimit'] = str(blunderLimit)
   self.saveSettings()
    
- @QtCore.pyqtSlot(QtGui.QAction)
+ @QtCore.pyqtSlot(QAction)
  def on_menuAnnotateVariants_triggered(self, action):
   self.notify('')
   for actAction in self.menuAnnotateVariants.actions():

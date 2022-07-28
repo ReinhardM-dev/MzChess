@@ -1,7 +1,15 @@
-from sys import version_info
+from sys import version_info, path
 import os.path
-from PyQt6 import QtWidgets,  QtCore
-from PyQt6 import uic
+
+path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets, QtCore
+ from PyQt5 import uic
+else:
+ from PyQt6 import QtWidgets, QtCore
+ from PyQt6 import uic
 
 import chess
 import ply

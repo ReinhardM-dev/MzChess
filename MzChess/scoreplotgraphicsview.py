@@ -47,7 +47,18 @@ It is possible to control the zoom of the *Score* axis. The GUI with an ongoing 
 from typing import Optional
 
 import math
-from PyQt6 import QtCharts, QtWidgets, QtGui, QtCore
+import sys, os, os.path
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets, QtGui, QtCore
+ from PyQt5 import QtChart as QtCharts
+ from PyQt5.QtWidgets import QShortcut
+else:
+ from PyQt6 import QtCharts, QtWidgets, QtGui, QtCore
+ from PyQt6.QtGui import QShortcut
 
 import chess, chess.pgn
 from chessengine import PGNEval_REGEX
@@ -87,10 +98,10 @@ class ScorePlot(QtCharts.QChartView):
    return
   self.notifyGameNodeSelectedSignal = notifyGameNodeSelectedSignal 
   if self.notifyGameNodeSelectedSignal is not None:
-   scUp = QtGui.QShortcut(self)
+   scUp = QShortcut(self)
    scUp.setKey(QtCore.Qt.Key.Key_Up)
    scUp.activated.connect(self.on_sc_activated)
-   scDown = QtGui.QShortcut(self)
+   scDown = QShortcut(self)
    scDown.setKey(QtCore.Qt.Key.Key_Down)
    scDown.activated.connect(self.on_sc_activated)
  

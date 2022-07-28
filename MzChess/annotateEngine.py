@@ -4,7 +4,16 @@
 '''
 
 from typing import Callable, List, Union, Optional, Tuple
-from PyQt6 import QtCore
+import sys
+import os.path
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtCore
+else:
+ from PyQt6 import QtCore
 
 import chess, chess.pgn
 from chessengine import ChessEngine, PGNEval_REGEX

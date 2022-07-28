@@ -1,5 +1,12 @@
-import os.path
-from PyQt6 import QtWidgets
+import sys,  os.path
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets
+else:
+ from PyQt6 import QtWidgets
 
 class HelpBrowser(QtWidgets.QWidget):
  indexFile = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'doc_build', 'html', 'index.html')
@@ -26,8 +33,10 @@ class HelpBrowser(QtWidgets.QWidget):
 
 
 if __name__ == '__main__':
- import sys
- from PyQt6 import QtGui, QtCore
+ if MzChess.useQt5:
+  from PyQt5 import QtGui, QtCore
+ else:
+  from PyQt6 import QtGui, QtCore
 
  app = QtWidgets.QApplication(sys.argv)
  # ex = HelpBrowser()

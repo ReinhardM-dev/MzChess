@@ -7,8 +7,15 @@ import os,  os.path
 import time
 import re
 from typing import Any, Dict, Callable, Iterable, List, Optional, Tuple, Type, Union
+import sys
 
-from PyQt6 import QtCore
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtCore
+else:
+ from PyQt6 import QtCore
 
 import chess
 import chess.engine

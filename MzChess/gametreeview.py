@@ -24,7 +24,15 @@ opens which allows to change the contents
   :alt: Game Editor
 '''
 from typing import Optional, Set
-from PyQt6 import QtWidgets, QtGui, QtCore
+
+import sys,  os.path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets, QtGui, QtCore
+else:
+ from PyQt6 import QtWidgets, QtGui,  QtCore
 
 import chess, chess.pgn
 from chessengine import PGNEval_REGEX

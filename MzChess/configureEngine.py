@@ -24,15 +24,22 @@ Please consult the engine's documentation (e.g. `stockfish`_ or `here`_) before 
 .. _here: https://www.chessprogramming.org/Engines
 '''
 from typing import List, Dict, Callable, Union, Optional, Any
-import os, os.path
+import sys, os, os.path
 import platform
 import copy
 
 import configparser
 import re
 
-from PyQt6 import QtWidgets, QtCore
-from PyQt6 import uic
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets, QtCore
+ from PyQt5 import uic
+else:
+ from PyQt6 import QtWidgets, QtCore
+ from PyQt6 import uic
 
 from chessengine import ChessEngine
 from configureEngineOptions import ConfigureEngineOptions 

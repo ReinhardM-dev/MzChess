@@ -1,8 +1,15 @@
 from typing import Dict, Any
-import os,  os.path
+import sys,  os,  os.path
 
-from PyQt6 import QtWidgets, QtCore
-from PyQt6 import uic
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets, QtCore
+ from PyQt5 import uic
+else:
+ from PyQt6 import QtWidgets, QtCore
+ from PyQt6 import uic
 
 class ConfigureEngineOptions(QtWidgets.QDialog):
  fileDialogOptions = QtWidgets.QFileDialog.Option.DontUseNativeDialog

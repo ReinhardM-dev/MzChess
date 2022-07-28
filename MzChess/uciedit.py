@@ -1,7 +1,13 @@
 import re
+import sys, os.path
 
-from PyQt6 import QtWidgets, QtGui
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
 
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets, QtGui
+else:
+ from PyQt6 import QtWidgets, QtGui
 
 class UCIHighlighter(QtGui.QSyntaxHighlighter):
  sendKeywords = ['uci', 'debug', 'isready', 'register', 'ucinewgame', 'position', 'go', 'ponderhit', 'quit']

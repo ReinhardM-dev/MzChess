@@ -1,9 +1,15 @@
 from typing import Optional,  Callable,  List
-import os
-import sys
+import sys, os, os.path
 
-from PyQt6 import QtWidgets, QtGui, QtCore
-from PyQt6 import uic
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets, QtGui, QtCore
+ from PyQt5 import uic
+else:
+ from PyQt6 import QtWidgets, QtGui, QtCore
+ from PyQt6 import uic
 
 import chess, chess.pgn
 import MzChess

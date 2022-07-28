@@ -14,11 +14,12 @@ Versions:
  1.2.2      bug fixes
  1.2.3      bug fixes
  1.3.0      migrated to uic.loadUI
- 1.4.0      migrated to PyQt6, Lad/Save issues removed
+ 1.4.0      migrated to PyQt6, Open/Save issues removed
+ 1.5.0      migrated to combined PyQt6/PyQt5 operation
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2022-07-26"
-__version__ = "1.4.0"
+__date__ = "2022-07-28"
+__version__ = "1.5.0"
 
 __all__ = [
  'AboutDialog', 
@@ -41,7 +42,15 @@ __all__ = [
  'warnOfDanger'
 ]
 
+
 import os.path, sys
+try:
+ import PyQt6
+ useQt5 = False
+except:
+ import PyQt5
+ useQt5 = True
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from .AboutDialog import AboutDialog

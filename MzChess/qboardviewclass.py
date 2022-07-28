@@ -41,9 +41,17 @@ It seem that ``b8-d8`` is the best move, but it is dubious ...
   :alt: Move Options
 '''
 from typing import Optional
-import os
+import sys, os, os.path
 
-from PyQt6 import QtSvgWidgets, QtWidgets, QtGui, QtCore
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets, QtGui, QtCore
+ from PyQt5.QtSvg import QGraphicsSvgItem 
+else:
+ from PyQt6 import QtWidgets, QtGui, QtCore
+ from PyQt6.QtSvgWidgets import QGraphicsSvgItem
 
 import chess, chess.pgn
 import chessengine
@@ -176,7 +184,7 @@ class QBoardViewClass(QtWidgets.QGraphicsView):
   if newGameNode is not None:
    self.notifyGameNodeSelectedSignal.emit(newGameNode)
 
-class Piece(QtSvgWidgets.QGraphicsSvgItem):
+class Piece(QGraphicsSvgItem):
  '''Internal class
  '''
  piecesDirectory = os.path.join(os.path.dirname(os.path.abspath(__file__)), ':/pieces/')

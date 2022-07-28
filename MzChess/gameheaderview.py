@@ -27,8 +27,15 @@ from typing import Optional, List, Tuple, Any
 import copy
 import datetime
 from enum import IntEnum, unique
+import sys,  os.path
 
-from PyQt6 import QtWidgets,  QtCore
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets, QtCore
+else:
+ from PyQt6 import QtWidgets, QtCore
 
 import chess, chess.pgn
 

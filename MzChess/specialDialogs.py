@@ -1,5 +1,13 @@
 from typing import Union, List, Dict
-from PyQt6 import QtCore, QtGui, QtWidgets
+import sys, os.path
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import MzChess
+
+if MzChess.useQt5:
+ from PyQt5 import QtWidgets, QtGui, QtCore
+else:
+ from PyQt6 import QtWidgets, QtGui, QtCore
 
 def treeWidgetItemPos(item : QtWidgets.QTreeWidgetItem) -> QtCore.QPoint:
   pos = item.treeWidget().visualItemRect(item).bottomLeft()

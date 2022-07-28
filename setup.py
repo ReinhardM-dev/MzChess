@@ -20,30 +20,43 @@ pkgVersion = MzChess.__version__
 
 leipfontFile = os.path.join(packageDirectory, 'pieces', 'LEIPFONT.ttf')
 
-pyQt6Version = '6.2.0'
 if platform.system() == 'Linux':
- # this code helps, if the package manager does not create egg files (e.g. debianos.rename('a.txt', 'b.kml') 10)
+ # On Linux systems PyQt must be installed using a package manager
  install_requires = list()
  try:
   import PyQt6.QtCore
-  foundPyQt6Version = PyQt6.QtCore.PYQT_VERSION_STR
+  foundPyQtVersion = PyQt6.QtCore.PYQT_VERSION_STR
+  if version.parse(foundPyQtVersion) < version.parse('6.2'): 
+   print('Upgrade to PyQt6>=6.2 using your Linux Package Manager')
+  try:
+   import PyQt6.QtSvgWidgets
+  except:
+   print('Install PyQt6.QtSvgWidgets using your Linux Package Manager')
+   quit()
+  try:
+   import PyQt6.QtCharts
+  except:
+   print('Install PyQt6.QtCharts using your Linux Package Manager')
+   quit()
+# check PyQt5
  except:
-  print('Install PyQt6 using your Linux Package Manager')
-  quit()
- if version.parse(pyQt6Version) > version.parse(foundPyQt6Version):
-  install_requires = ['PyQt6>={}'.format(pyQt6Version)]
- try:
-  import PyQt6.QtSvg
- except:
-  print('Install PyQt6.QtSvg using your Linux Package Manager')
-  quit()
- try:
-  import PyQt6.QtCharts
- except:
-  print('Install PyQt6.QtCharts using your Linux Package Manager')
-  quit()
+  import PyQt5.QtCore
+  foundPyQtVersion = PyQt5.QtCore.PYQT_VERSION_STR
+  if version.parse(foundPyQtVersion) < version.parse('5.11'): 
+   print('Upgrade to PyQt6>=6.2 or PyQt5>=5.11 using your Linux Package Manager')
+  try:
+   import PyQt5.QtSvg
+  except:
+   print('Install PyQt5.QtSvg using your Linux Package Manager')
+   quit()
+  try:
+   import PyQt5.QtCharts
+  except:
+   print('Install PyQt5.QtCharts using your Linux Package Manager')
+   quit()
 else:
- install_requires = ['PyQt6>={}'.format(pyQt6Version), 'PyQt6-PyQtCharts>={}'.format(pyQt6Version)]
+ pyQt6Version = '6.2.0'
+ install_requires = ['PyQt6>={}'.format(pyQt6Version), 'PyQt6-Charts>={}'.format(pyQt6Version)]
 
 install_requires += ['chess>=1.4', 'ply>=3.11']
 

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Exec={scriptPath}
+TryExec={scriptPath}
+Icon=schach
+Terminal=false
+Name=buildFen
+Comment=Chess FEN builder GUI
+GenericName=PyQt GUI
+Categories=BoardGame;Qt
+StartupNotify=true

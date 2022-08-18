@@ -46,7 +46,7 @@ import sys, os, os.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import MzChess
 
-if MzChess.useQt5:
+if MzChess.useQt5():
  from PyQt5 import QtWidgets, QtGui, QtCore
  from PyQt5.QtSvg import QGraphicsSvgItem 
 else:
@@ -105,7 +105,7 @@ class QBoardViewClass(QtWidgets.QGraphicsView):
   self._configureScene()
   self.game.draw_board()
 
- def setHint(self, enableHint : bool = False, enableScore : bool = False, 
+ def setHint(self, enableHint : int = 0, enableScore : bool = False, 
                          engine : Optional[chessengine.ChessEngine] = None) -> None:
   '''Controls the usage of the hint label
 
@@ -246,13 +246,17 @@ class Game(QtWidgets.QGraphicsScene):
   self.boardPieces = list()
   self.flipped = False
   self.engine = None
-  self.hint = None
+  self.hint = 0
   self.drawOptions = False
   self.warnOfDanger = False
   self.materialLabel = None
   self.squareLabel = None
   self.turnFrame = None
   self.hintLabel = None
+  
+ def needHint(self):
+  board = self.gameNode.board()
+  return self.hint & (int(not board.turn) + 1) > 0
   
  def setup(self, notifyNewGameNodeSignal : Optional[QtCore.pyqtSignal] = None, 
                       materialLabel : Optional[QtWidgets.QLabel] = None, 
@@ -302,7 +306,7 @@ class Game(QtWidgets.QGraphicsScene):
   self.showMaterial(board)
   self.isGameOver = False
   self.showTurn(board)
-  if self.hint:
+  if self.needHint() or self.score:
    self.requestHint.emit(self.fen())
   self.draw_warnOfDanger()
 
@@ -316,7 +320,7 @@ class Game(QtWidgets.QGraphicsScene):
   self.draw_board()
   board = self.gameNode.board()
   self.showTurn(board)
-  if self.hint:
+  if self.needHint() or self.score:
     self.requestHint.emit(self.fen())
   self.showMaterial(board)
   self.showTurn(board)
@@ -331,7 +335,7 @@ class Game(QtWidgets.QGraphicsScene):
   self.draw_board()
   board = self.gameNode.board()
   self.showTurn(board)
-  if self.hint:
+  if self.needHint() or self.score:
    self.requestHint.emit(self.fen())
   self.showMaterial(board)
   self.showTurn(board)
@@ -508,12 +512,15 @@ class Game(QtWidgets.QGraphicsScene):
 
  # -------------------------------------------------------
  
- def setHint(self, enableHint : bool = False, enableScore : bool = False, 
+ def setHint(self, enableHint : int = 0, enableScore : bool = False, 
                          engine : Optional[chessengine.ChessEngine] = None) -> None:
   self.engine = engine
-  self.hint = (self.engine is not None and enableHint)
+  if self.engine is not None:
+   self.hint = enableHint
+  else:
+   self.hint = 0
   self.score = (self.engine is not None and enableScore)
-  if self.hint or self.score:
+  if self.needHint() or self.score:
    self.hintFen = None
    self.engine.bestMoveScoreSignal.connect(self.bestMoveScoreAvailable)
    self.requestHint.emit(self.fen())
@@ -525,7 +532,7 @@ class Game(QtWidgets.QGraphicsScene):
   self.setGameNode(self.gameNode)
   
  def hintRequested(self, fen : str) -> None:
-  if not (self.hint or self.score):
+  if not (self.needHint() or self.score):
    return
   self.timer.stop()
   self.timer.start(self.hintDelay+1)
@@ -540,7 +547,7 @@ class Game(QtWidgets.QGraphicsScene):
  def bestMoveScoreAvailable(self, move, score):
   if self.hintLabel is not None:
    board = self.gameNode.board()
-   if self.hint:
+   if self.hint & (int(not board.turn) + 1) > 0:
     try:
      moveString = board.lan(move)
     except:
@@ -658,7 +665,7 @@ class Game(QtWidgets.QGraphicsScene):
    self.showTurn(board)
    if self.notifyNewGameNodeSignal is not None:
     self.notifyNewGameNodeSignal.emit(self.gameNode)
-   if self.hint:
+   if self.needHint() or self.score:
     self.requestHint.emit(self.fen())
   else:
    self.pressedPiece.setPos(self.getScenePos(releasedSquareId))

@@ -113,24 +113,32 @@ In addition, several *standard* key strokes are supported:
 from typing import Optional, Callable, Dict, List, Tuple, Union, Any
 import configparser
 import os, os.path
+import platform
 import pickle
 import io
 import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import MzChess
 
-if MzChess.useQt5:
- from PyQt5 import QtWidgets, QtGui, QtCore
- from PyQt5.QtWidgets import QAction
- from PyQt5 import uic
-else:
+try:
  from PyQt6 import QtWidgets, QtGui, QtCore
  from PyQt6.QtGui import QAction
  from PyQt6 import uic
+ import PyQt6.QtSvgWidgets
+ import PyQt6.QtCharts
+except:
+ try:
+  from PyQt5 import QtWidgets, QtGui, QtCore
+  from PyQt5.QtWidgets import QAction
+  from PyQt5 import uic
+  import PyQt5.QtSvg
+  import PyQt5.QtChart
+ except:
+  raise ModuleNotFoundError('Neither the required PyQt6 nor PyQt5 modules installed')
 
 import chess, chess.pgn
+import MzChess
 from MzChess import read_game
 
 import AboutDialog
@@ -139,11 +147,14 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  logSignal = QtCore.pyqtSignal(str)
  notifySignal = QtCore.pyqtSignal(str)
  notifyGameSelectedSignal = QtCore.pyqtSignal(int)
+ notifyGameListHeaderChangedSignal = QtCore.pyqtSignal(list)
  notifyGameHeadersChangedSignal = QtCore.pyqtSignal(chess.pgn.Headers)
 
  notifyGameNodeSelectedSignal = QtCore.pyqtSignal(chess.pgn.GameNode)
  notifyGameChangedSignal = QtCore.pyqtSignal(chess.pgn.Game)
  notifyNewGameNodeSignal = QtCore.pyqtSignal(chess.pgn.GameNode)
+ hintDict = { 'None' :  '0',  'White' : '1',  'Black' : '2',  'All' : '3' }
+ hintList = [ 'None', 'White',  'Black',  'All' ]
  fileDialogOptions = QtWidgets.QFileDialog.Option.DontUseNativeDialog
  fileDirectory = os.path.dirname(os.path.abspath(__file__))
  intRe = re.compile(r"^[+-]?[1-9][0-9]*$")
@@ -202,8 +213,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    'numberOfAnnotations' : (self.menuNumberOfAnnotations, 1), 
    'annotateVariants' : (self.menuAnnotateVariants, None), 
    'showScores' : (self.actionShowScores, False), 
-   'showHints' :( self.actionShowHints, False) 
    }
+  
+  gameListHeaders = ['Date',  'White',  'Black',  'Result']
   
   self.engineDict = dict()
   self.recentPGN = dict()
@@ -216,17 +228,29 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.mateScore = 100
   self.debugEngine = False
   
-  self.settingsFile = os.path.join(self.fileDirectory, 'settings.ini')
+  if platform.system() == 'Windows':
+   self.settingsFile = os.path.join(os.path.expanduser('~'), 'AppData', 'Roaming', 'MzChess', 'settings.ini')
+  else:
+   self.settingsFile = os.path.join(os.path.expanduser('~'), '.config', 'MzChess', 'settings.ini')
+  if not os.path.isdir(os.path.dirname(self.settingsFile)):
+   os.mkdir(os.path.dirname(self.settingsFile), 0o755)
   self.settings = configparser.ConfigParser(delimiters=['='], allow_no_value=True)
   self.settings.optionxform = str
+  self.recentPGN = dict()
+  self.engineDict = dict()
+  self.eventList = list()
+  self.siteList = list()
+  self.playerList = list()
+  self.optionalHeaderItems = list()
   if os.path.isfile(self.settingsFile):
    self.settings.read(self.settingsFile, encoding = 'utf-8')
    self.engineDict = MzChess.loadEngineSettings(self.settings)
    if 'Recent' in self.settings.sections():
-    self.recentPGN = dict()
     for recentDB, enc in dict(self.settings['Recent']).items():
      if os.path.exists(recentDB):
       self.recentPGN[recentDB] = enc
+   if 'GameListHeaders' in self.settings.sections():
+    gameListHeaders = self.settings.options('GameListHeaders')
    if 'Events' in self.settings.sections():
     self.eventList = self.settings.options('Events')
    if 'Sites' in self.settings.sections():
@@ -237,9 +261,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
     self.optionalHeaderItems = list(self.settings['OptionalHeaderItems'])
    if self.settings['Menu/Engine']['selectedEngine'] not in self.engineDict:
     self.settings['Menu/Engine']['selectedEngine'] = None
-    self.settings['Menu/Engine']['showHints'] = False
+    self.settings['Menu/Engine']['showHints'] = '0'
     self.settings['Menu/Engine']['showScores'] = False
-
+   
   self.menuRecentDB.clear()
   if self.recentPGN is None:
    self.recentPGN = dict()
@@ -291,8 +315,15 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.loadOptionDict('Menu/Game', self.gameOptions)
   self.resetSelectEngine()
   self.loadOptionDict('Menu/Engine', self.engineOptions)
-  self.gameListTableView.setup(self.notifyGameSelectedSignal)
+  hintValue = int(self.settings['Menu/Engine'].get('showHints', 0))
+  for actAction in self.menuShowHints.actions():
+   if actAction.text() == self.hintList[hintValue]:
+    actAction.setChecked(True)
+  self.gameListTableView.setup(notifyDoubleClickSignal = self.notifyGameSelectedSignal, 
+                                          notifyHeaderChangedSignal = self.notifyGameListHeaderChangedSignal)
+  self.gameListTableView.gameHeaderKeys = gameListHeaders
   self.notifyGameSelectedSignal.connect(self.gameSelected)
+  self.notifyGameListHeaderChangedSignal.connect(self.gameListHeaderChanged)
   self.gameListFile = ''
   self.gameList = list()
   self.gameListChanged = False
@@ -320,6 +351,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.notifySignal.connect(self.notify)
   self.logSignal.connect(self.toLog)
 
+  self.show_HintsScores()
+
+
  def setup(self) -> None:
   sizes = self.splitter.sizes()
   self.splitter.setSizes([self.boardGraphicsView.height(), sizes[0] + sizes[1] - self.boardGraphicsView.height()])
@@ -336,10 +370,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   for opt, o2v in n2oDict.items():
    obj, defValue = o2v
    optionsDict[opt] = defValue
-   if opt in self.settings[name]:
-    optValue = str(self.settings[name][opt])
-   else:
-    optValue = str(defValue)
+   optValue = self.settings[name].get(opt, defValue)
    if isinstance(obj, QAction):
     optionsDict[opt] = (optValue == 'True')
     obj.setChecked(optionsDict[opt])
@@ -365,8 +396,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
       optionsDict[opt] = actionValue
      else:
       action.setChecked(False)
-  self.settings[name] = optionsDict
-
+  for tag, value in optionsDict.items():
+   self.settings[name][tag] = str(value)
+   
  def resetSelectEngine(self) -> None:
   self.menuSelectEngine.clear()
   action = self.menuSelectEngine.addAction('None')
@@ -741,9 +773,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.notify('')
   numDegrees = ev.angleDelta()
   if numDegrees.y() < 0:
-   self.on_actionNext_Move_triggered()
+   self.on_actionNextMove_triggered()
   elif numDegrees.y() > 0:
-   self.on_actionPrevious_Move_triggered()
+   self.on_actionPreviousMove_triggered()
   ev.accept()
 
  @QtCore.pyqtSlot()
@@ -995,12 +1027,11 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.notifyError('No engine selected')
    return
   self.notify('')
-  hintsChecked = self.actionShowHints.isChecked()
   scoresChecked = self.actionShowScores.isChecked()
-  self.settings['Menu/Engine']['showHints'] = str(hintsChecked)
+  hintsChecked = int(self.settings['Menu/Engine'].get('showHints', 0))
   self.settings['Menu/Engine']['showScores'] = str(scoresChecked)
   self.saveSettings()
-  if hintsChecked or scoresChecked:
+  if hintsChecked > 0 or scoresChecked:
    if self.settings['Menu/Engine']['searchDepth'] is None:
     self.notifyError('"Engine/Search Depth" undefined.')
    if self.debugEngine:
@@ -1015,11 +1046,17 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.engineLabel.setText(self.settings['Menu/Engine']['selectedEngine'])
   else:
    self.hintEngine = None
-   self.boardGraphicsView.setHint(enableHint = False, enableScore = False, engine = None)
+   self.boardGraphicsView.setHint(enableHint = 0, enableScore = False, engine = None)
    self.engineLabel.setText('---')
 
- @QtCore.pyqtSlot(bool)
- def on_actionShowHints_toggled(self, checked):
+ @QtCore.pyqtSlot(QAction)
+ def on_menuShowHints_triggered(self, action):
+  self.notify('')
+  for actAction in self.menuShowHints.actions():
+   actAction.setChecked(False)
+  action.setChecked(True)
+  naValue = self.hintDict[action.text()]
+  self.settings['Menu/Engine']['showHints'] = naValue
   self.show_HintsScores()
     
  @QtCore.pyqtSlot(bool)
@@ -1140,6 +1177,11 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    err = True
   if err:
    self.notifyError('UIE: Improper game ="{}"'.format(self.game))
+
+ @QtCore.pyqtSlot(list)
+ def gameListHeaderChanged(self, gameListHeader):
+  self.updateSettingsList('GameListHeaders', gameListHeader)
+  self.saveSettings()
 
  @QtCore.pyqtSlot(chess.pgn.Headers)
  def gameHeadersChanged(self,  headers):

@@ -16,10 +16,14 @@ Versions:
  1.3.0      migrated to uic.loadUI
  1.4.0      migrated to PyQt6, Open/Save issues removed
  1.5.0      migrated to combined PyQt6/PyQt5 operation
+ 2.0.0      migrated to setup.cfg 
+              postInstall.py added
+              flexible gamelisttableview implemented
+              detailed hint mechanism added
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2022-07-28"
-__version__ = "1.5.0"
+__date__ = "2022-08-18"
+__version__ = "2.0.0"
 
 __all__ = [
  'AboutDialog', 
@@ -44,15 +48,19 @@ __all__ = [
 
 
 import os.path, sys
-try:
- import PyQt6
- useQt5 = False
-except:
- import PyQt5
- useQt5 = True
+def useQt5():
+ try:
+  import PyQt6.QtSvgWidgets
+  import PyQt6.QtCharts
+  return False
+ except:
+  import PyQt5.QtSvg
+  import PyQt5.QtChart
+  return True
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+from postInstall import postInstall
 from .AboutDialog import AboutDialog
 from .annotateEngine import AnnotateEngine,  Annotator
 from .installLeipFont import installLeipFont

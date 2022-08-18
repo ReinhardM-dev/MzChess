@@ -2,14 +2,20 @@ from typing import Optional,  Callable,  List
 import sys, os, os.path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import MzChess
 
-if MzChess.useQt5:
- from PyQt5 import QtWidgets, QtGui, QtCore
- from PyQt5 import uic
-else:
+try:
  from PyQt6 import QtWidgets, QtGui, QtCore
  from PyQt6 import uic
+ import PyQt6.QtSvgWidgets
+ import PyQt6.QtCharts
+except:
+ try:
+  from PyQt5 import QtWidgets, QtGui, QtCore
+  from PyQt5 import uic
+  import PyQt5.QtSvg
+  import PyQt5.QtChart
+ except:
+  raise ModuleNotFoundError('Neither the required PyQt6 nor PyQt5 modules installed')
 
 import chess, chess.pgn
 import MzChess
@@ -161,12 +167,12 @@ class BuildFenClass(QtWidgets.QMainWindow):
   self.notify(self.board.fen())
    
  @QtCore.pyqtSlot()
- def on_actionReset_Board_triggered(self):
+ def on_actionResetBoard_triggered(self):
   self.board.reset()
   self._resetFen()
   
  @QtCore.pyqtSlot()
- def on_actionClear_Board_triggered(self):
+ def on_actionClearBoard_triggered(self):
   self.board.clear()
   self._resetFen()
   

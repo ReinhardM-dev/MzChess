@@ -52,7 +52,7 @@ import sys, os, os.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import MzChess
 
-if MzChess.useQt5:
+if MzChess.useQt5():
  from PyQt5 import QtWidgets, QtGui, QtCore
  from PyQt5 import QtChart as QtCharts
  from PyQt5.QtWidgets import QShortcut

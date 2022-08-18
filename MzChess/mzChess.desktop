@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Exec={scriptPath}
+TryExec={scriptPath}
+Icon=schach
+Terminal=false
+Name=mzChess
+Comment=Chess GUI
+GenericName=PyQt GUI
+Categories=BoardGame;Qt
+StartupNotify=true
+X-Desktop-File-Install-Version=0.26

@@ -20,10 +20,14 @@ Versions:
               postInstall.py added
               flexible gamelisttableview implemented
               detailed hint mechanism added
+ 2.0.1      long_description_content_type migrated to text/markdown
+ 2.1.0      GUI streamlined
+              recover database added
+              numerous bug fixes
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2022-08-18"
-__version__ = "2.0.0"
+__date__ = "2022-08-31"
+__version__ = "2.1.0"
 
 __all__ = [
  'AboutDialog', 

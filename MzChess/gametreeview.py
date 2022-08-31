@@ -367,12 +367,7 @@ class GameTreeView(QtWidgets.QTreeWidget):
  def on_clicked(self, index):
   item = self.itemFromIndex(index)
   column = index.column()
-  isVariant = False
-  parent = index
-  while parent.isValid():
-   isVariant = not isVariant
-   parent = parent.parent()
-  if isVariant:
+  if self._isVariant(item):
    if column == 4:
     if item in self.gameVariantItemList:
      selIndex = self.gameVariantItemList.index(item)
@@ -383,7 +378,13 @@ class GameTreeView(QtWidgets.QTreeWidget):
      gameNode = self.game
    else:
     if column == 0 and self.notifyGameNodeSelectedSignal is not None:
-     self.notifyGameNodeSelectedSignal.emit(self.game)
+     if item in self.gameVariantItemList:
+      selIndex = self.gameVariantItemList.index(item)
+      gameNode = self.gameVariantNodeList[selIndex]
+     else:
+      selIndex = self.gameItemList.index(item)
+      gameNode = self.gameNodeList[selIndex]
+     self.notifyGameNodeSelectedSignal.emit(gameNode)
     return
   else:
    if item in self.gameItemList:
@@ -419,97 +420,76 @@ class GameTreeView(QtWidgets.QTreeWidget):
   self._emitGameChanged()
   
  def _isVariant(self, item : QtWidgets.QTreeWidgetItem) -> bool:
-  isTrue = False
-  parent = item
-  while parent is not None:
-   isTrue = not isTrue
-   parent = parent.parent()
-  return isTrue
+  return item is not None and ((item in self.gameVariantItemList) or (item.parent() in self.gameVariantItemList))
 
- def removeVariant(self) -> None:
+ def removeVariant(self) -> bool:
   '''Remove variant, if currently selected item is a variant
   '''
   item = self.currentItem()
-  if item is not None and self._isVariant(item):
-   parent = item.parent()
-   if parent is None:
-    return
-   index = parent.indexOfChild(item)
-   parent.removeChild(item)
-   self.setCurrentItem(parent.child(index))
-   selIndex = self.gameVariantItemList.index(item)
-   itemNode = self.gameVariantNodeList[selIndex]
-   itemNode.parent.remove_variation(itemNode)
-   self._emitGameChanged()
+  if not self._isVariant(item):
+   return False
+  if item in self.gameItemList:
+   item =item.parent()
+  parent = item.parent()
+  self.setCurrentItem(parent)
+  selIndex = self.gameVariantItemList.index(item)
+  itemNode = self.gameVariantNodeList[selIndex]
+  newItemNode = itemNode.parent
+  newItemNode.remove_variation(itemNode)
+  parent.removeChild(item)
+  self.selectNodeItem(newItemNode)
+  return True
 
- def promoteVariant(self) -> None:
+ def promoteVariant(self) -> bool:
   '''Promote variant, if currently selected item is a variant
   '''
   item = self.currentItem()
-  if item is not None and self._isVariant(item):
-   parent = item.parent()
-   if parent is None:
-    return
-   index = parent.indexOfChild(item)
-   if index > 0:
-    parent.takeChild(index)
-    parent.insertChild(index - 1, item)
-    self.setCurrentItem(item)
-    parent.setExpanded(True)
-    item.setExpanded(False)
-    selIndex = self.gameVariantItemList.index(item)
-    itemNode = self.gameVariantNodeList[selIndex]
-    itemNode.parent.promote(itemNode)
-    self._emitGameChanged()
+  if not self._isVariant(item):
+   return False
+  if item in self.gameVariantItemList:
+   n = self.gameVariantItemList.index(item)
+   itemNode = self.gameVariantNodeList[n]
+  else:
+   n = self.gameItemList.index(item)
+   itemNode = self.gameNodeList[n]
+  itemNode.parent.promote(itemNode)
+  self.setGame(self.game)
+  self.selectNodeItem(itemNode)
+  return True
 
- def demoteVariant(self) -> None:
+ def demoteVariant(self) -> bool:
   '''Demote variant, if currently selected item is a variant
   '''
   item = self.currentItem()
-  if item is not None and self._isVariant(item):
-   parent = item.parent()
-   if parent is None:
-    return
-   index = parent.indexOfChild(item)
-   if index < parent.childCount():
-    parent.takeChild(index)
-    parent.insertChild(index + 1, item)
-    self.setCurrentItem(item)
-    parent.setExpanded(True)
-    item.setExpanded(False)
-    selIndex = self.gameVariantItemList.index(item)
-    itemNode = self.gameVariantNodeList[selIndex]
-    itemNode.parent.demote(itemNode)
-    self._emitGameChanged()
+  if item in self.gameVariantItemList:
+   n = self.gameVariantItemList.index(item)
+   itemNode = self.gameVariantNodeList[n]
+  else:
+   n = self.gameItemList.index(item)
+   itemNode = self.gameNodeList[n]
+  if itemNode.parent.variations[-1] == itemNode:
+   return False
+  itemNode.parent.demote(itemNode)
+  self.setGame(self.game)
+  self.selectNodeItem(itemNode)
+  return True
 
- def promoteVariant2Main(self) -> None:
+ def promoteVariant2Main(self) -> bool:
   '''Promote variant to main line, if currently selected item is a variant
   '''
   item = self.currentItem()
-  if item is not None:
-   parent = item.parent()
-   if self._isVariant(item):
-    index = parent.indexOfChild(item)
-    if index > 0:
-     child = parent.takeChild(index)
-     parent.insertChild(0, child)
-    vChildren = item.takeChildren()
-    gParent = parent.parent()
-    fIndex = gParent.indexOfChild(parent)
-    pChildren = parent.takeChildren()
-    mChildren = list()
-    for idx in reversed(range(fIndex, gParent.childCount())):
-     mChildren.insert(0, gParent.takeChild(idx))
-    gParent.addChildren(vChildren)
-    vChildren[0].addChildren(pChildren)
-    item.addChildren(mChildren)
-    self.setCurrentItem(vChildren[0])
-    parent.setExpanded(True)
-    item.setExpanded(False)
-    selIndex = self.gameVariantItemList.index(item)
-    itemNode = self.gameVariantNodeList[selIndex]
-    itemNode.parent.promote_to_main(itemNode)
-    self._emitGameChanged()
+  if not self._isVariant(item):
+   return False
+  if item in self.gameVariantItemList:
+   n = self.gameVariantItemList.index(item)
+   itemNode = self.gameVariantNodeList[n]
+  else:
+   n = self.gameItemList.index(item)
+   itemNode = self.gameNodeList[n]
+  itemNode.parent.promote_to_main(itemNode)
+  self.setGame(self.game)
+  self.selectNodeItem(itemNode)
+  return True
   
  def _emitGameChanged(self) -> None:
   if self.notifyGameChangedSignal is not None:

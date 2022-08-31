@@ -188,7 +188,7 @@ tracking line number, gameID, position (in game)
   t.lexer.begin('INITIAL')
 
  def  t_MOVENUMBER(self, t):
-  r'([1-9][0-9]*\.*|\.+)(?!-)'
+  r'([1-9][0-9]*\.*|\.+)(?!-)(?!/)'
   pass
   
  def t_NAG(self, t):

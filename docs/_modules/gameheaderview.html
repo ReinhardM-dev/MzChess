@@ -1,72 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>gameheaderview &mdash; MzChess V1.0.5 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>gameheaderview &mdash; MzChess V2.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> MzChess
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                V1.0
+                V2.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -74,86 +37,36 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">MzChess</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="index.html">Module code</a> &raquo;</li>
-        
       <li>gameheaderview</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for gameheaderview</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Game Header Editor</span>
@@ -184,10 +97,15 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">unique</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span>  <span class="nn">os.path</span>
 
-<span class="kn">import</span> <span class="nn">PyQt5.QtCore</span>
-<span class="kn">import</span> <span class="nn">PyQt5.QtGui</span>
-<span class="kn">import</span> <span class="nn">PyQt5.QtWidgets</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))))</span>
+<span class="kn">import</span> <span class="nn">MzChess</span>
+
+<span class="k">if</span> <span class="n">MzChess</span><span class="o">.</span><span class="n">useQt5</span><span class="p">():</span>
+ <span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
+<span class="k">else</span><span class="p">:</span>
+ <span class="kn">from</span> <span class="nn">PyQt6</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
 
 <span class="kn">import</span> <span class="nn">chess</span><span class="o">,</span> <span class="nn">chess.pgn</span>
 
@@ -203,7 +121,7 @@
  <span class="n">PLAYER</span> <span class="o">=</span> <span class="mi">7</span>
  <span class="n">TITLE</span> <span class="o">=</span> <span class="mi">8</span></div>
 
-<div class="viewcode-block" id="GameHeaderView"><a class="viewcode-back" href="../gameHeaderView.html#gameheaderview.GameHeaderView">[docs]</a><span class="k">class</span> <span class="nc">GameHeaderView</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTableWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="GameHeaderView"><a class="viewcode-back" href="../gameHeaderView.html#gameheaderview.GameHeaderView">[docs]</a><span class="k">class</span> <span class="nc">GameHeaderView</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTableWidget</span><span class="p">):</span>
  <span class="sd">&#39;&#39;&#39;Game Header Editor object</span>
 <span class="sd"> &#39;&#39;&#39;</span>
  <span class="n">stdKey2ValueTypeDict</span> <span class="o">=</span> <span class="p">{</span>
@@ -259,7 +177,7 @@
   <span class="bp">self</span><span class="o">.</span><span class="n">siteList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;?&#39;</span><span class="p">]</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">playerList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;?&#39;</span><span class="p">]</span>
   
- <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notifyGameHeadersChangedSignal</span>  <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+ <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notifyGameHeadersChangedSignal</span>  <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
                  <span class="n">eventList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(),</span> <span class="n">siteList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(),</span> <span class="n">playerList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">eventList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;?&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">eventList</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">siteList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;?&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">siteList</span>
@@ -283,12 +201,12 @@
      <span class="n">hElements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">hElements</span></div>
 
- <span class="k">def</span> <span class="nf">_createCompleteEdit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span> <span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">:</span>
-  <span class="n">completer</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCompleter</span><span class="p">(</span><span class="n">selList</span><span class="p">)</span>
-  <span class="n">completer</span><span class="o">.</span><span class="n">setCaseSensitivity</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CaseInsensitive</span><span class="p">)</span>
-  <span class="n">completer</span><span class="o">.</span><span class="n">setFilterMode</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">MatchContains</span><span class="p">)</span>
-  <span class="n">completer</span><span class="o">.</span><span class="n">setCompletionMode</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCompleter</span><span class="o">.</span><span class="n">InlineCompletion</span><span class="p">)</span>
-  <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+ <span class="k">def</span> <span class="nf">_createCompleteEdit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selList</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span> <span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">:</span>
+  <span class="n">completer</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCompleter</span><span class="p">(</span><span class="n">selList</span><span class="p">)</span>
+  <span class="n">completer</span><span class="o">.</span><span class="n">setCaseSensitivity</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CaseSensitivity</span><span class="o">.</span><span class="n">CaseInsensitive</span><span class="p">)</span>
+  <span class="n">completer</span><span class="o">.</span><span class="n">setFilterMode</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">MatchFlag</span><span class="o">.</span><span class="n">MatchContains</span><span class="p">)</span>
+  <span class="n">completer</span><span class="o">.</span><span class="n">setCompletionMode</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCompleter</span><span class="o">.</span><span class="n">CompletionMode</span><span class="o">.</span><span class="n">InlineCompletion</span><span class="p">)</span>
+  <span class="n">item</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
   <span class="n">item</span><span class="o">.</span><span class="n">setCompleter</span><span class="p">(</span><span class="n">completer</span><span class="p">)</span>
   <span class="n">item</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_editingFinished</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">item</span>
@@ -300,20 +218,20 @@
   <span class="bp">self</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
   <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultKeyValueType</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keyValueTypeList</span><span class="p">):</span>
    <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultKeyValueType</span>
-   <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+   <span class="n">item</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">setCellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
-  <span class="n">test</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">()</span>
-  <span class="n">zeroWidth</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">fontMetrics</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">TextSingleLine</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+  <span class="n">test</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">()</span>
+  <span class="n">zeroWidth</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">fontMetrics</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">TextFlag</span><span class="o">.</span><span class="n">TextSingleLine</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="o">*</span><span class="n">zeroWidth</span><span class="p">)</span>
   
   <span class="bp">self</span><span class="o">.</span><span class="n">itemList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
   <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultKeyValueType</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keyValueTypeList</span><span class="p">):</span>
    <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultKeyValueType</span>
    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">STR</span><span class="p">:</span>
-    <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
     <span class="n">item</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_editingFinished</span><span class="p">)</span>
    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">LABEL</span><span class="p">:</span>
-    <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
     <span class="n">item</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;background-color : white; color : gray;&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;PlyCount&#39;</span><span class="p">:</span>
      <span class="bp">self</span><span class="o">.</span><span class="n">plyCountLabel</span> <span class="o">=</span> <span class="n">item</span>
@@ -322,21 +240,21 @@
    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">DATE</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
      <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="s1">&#39;-&#39;</span><span class="p">))</span>
-     <span class="n">date</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;yyyy.MM.dd&quot;</span><span class="p">)</span>
+     <span class="n">date</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;yyyy.MM.dd&quot;</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
-     <span class="n">date</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="o">.</span><span class="n">currentDate</span><span class="p">()</span>
+     <span class="n">date</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="o">.</span><span class="n">currentDate</span><span class="p">()</span>
      <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="s1">&#39;yyyy.MM.dd&#39;</span><span class="p">)</span>
-    <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDateEdit</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDateEdit</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
     <span class="n">item</span><span class="o">.</span><span class="n">dateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_dateChanged</span><span class="p">)</span>
    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">TIME</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
-     <span class="n">_time</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QTime</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;hh:mm:ss&quot;</span><span class="p">)</span>
+     <span class="n">_time</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QTime</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;hh:mm:ss&quot;</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
-     <span class="n">_time</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QTime</span><span class="o">.</span><span class="n">currentTime</span><span class="p">()</span>
-    <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTimeEdit</span><span class="p">(</span><span class="n">_time</span><span class="p">)</span>
+     <span class="n">_time</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QTime</span><span class="o">.</span><span class="n">currentTime</span><span class="p">()</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTimeEdit</span><span class="p">(</span><span class="n">_time</span><span class="p">)</span>
     <span class="n">item</span><span class="o">.</span><span class="n">timeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_timeChanged</span><span class="p">)</span>
    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">INT</span><span class="p">:</span>
-    <span class="n">item</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">()</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">()</span>
     <span class="n">item</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span>
     <span class="n">item</span><span class="o">.</span><span class="n">setSpecialValueText</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
     <span class="n">item</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_spinBox_changed</span><span class="p">)</span>
@@ -415,32 +333,32 @@
    <span class="n">keyValueTypeList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">))</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">_showTable</span><span class="p">(</span><span class="n">keyValueTypeList</span><span class="p">)</span></div>
  
- <span class="k">def</span> <span class="nf">_getKV</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">]:</span>
+ <span class="k">def</span> <span class="nf">_getKV</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">]:</span>
   <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">()</span>
   <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
   <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
   <span class="k">return</span> <span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cellWidget</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
   
- <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">()</span>
+ <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">()</span>
  <span class="k">def</span> <span class="nf">on_editingFinished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
   <span class="n">key</span><span class="p">,</span> <span class="n">valueItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getKV</span><span class="p">()</span>
   <span class="n">text</span> <span class="o">=</span> <span class="n">valueItem</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\t\n</span><span class="s1">&#39;</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">text</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">_emitHeader</span><span class="p">()</span>
   
- <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="p">)</span>
+ <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="p">)</span>
  <span class="k">def</span> <span class="nf">on_dateChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
   <span class="n">key</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getKV</span><span class="p">()</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="s1">&#39;yyyy.MM.dd&#39;</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">_emitHeader</span><span class="p">()</span>
 
- <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QTime</span><span class="p">)</span>
+ <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QTime</span><span class="p">)</span>
  <span class="k">def</span> <span class="nf">on_timeChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_time</span><span class="p">):</span>
   <span class="n">key</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getKV</span><span class="p">()</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_time</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="s1">&#39;hh:mm:ss&#39;</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">_emitHeader</span><span class="p">()</span>
 
- <span class="nd">@PyQt5</span><span class="o">.</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+ <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
  <span class="k">def</span> <span class="nf">on_spinBox_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
   <span class="n">key</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getKV</span><span class="p">()</span>
   <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
@@ -479,7 +397,7 @@
  
  <span class="n">pgn</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">newData</span><span class="p">)</span>
  <span class="n">game</span> <span class="o">=</span> <span class="n">read_game</span><span class="p">(</span><span class="n">pgn</span><span class="p">)</span>
- <span class="n">app</span> <span class="o">=</span> <span class="n">PyQt5</span><span class="o">.</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+ <span class="n">app</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
  <span class="n">tbl</span> <span class="o">=</span> <span class="n">GameHeaderView</span><span class="p">()</span>
  <span class="n">tbl</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span>
    <span class="n">eventList</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Wöchentliche Schachmeisterschaften&quot;</span><span class="p">],</span> 
@@ -492,46 +410,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Reinhard März.
-
-    </p>
+    <p>&#169; Copyright 2021, Reinhard März.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

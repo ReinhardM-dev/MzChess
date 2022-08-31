@@ -1,74 +1,38 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Chess Board &mdash; MzChess V1.0.5 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Chess Board &mdash; MzChess V2.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Game Editor" href="gameTreeView.html" />
     <link rel="prev" title="Main Window" href="chessMainWindow.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> MzChess
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                V1.0
+                V2.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,18 +40,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="gui.html">GUI</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="chessMainWindow.html">Main Window</a></li>
@@ -105,75 +58,33 @@
 <li class="toctree-l1"><a class="reference internal" href="utilities.html">Utilities</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">MzChess</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="gui.html">GUI</a> &raquo;</li>
-        
       <li>Chess Board</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/qboardview.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-qboardviewclass">
-<span id="chess-board"></span><h1>Chess Board<a class="headerlink" href="#module-qboardviewclass" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="module-qboardviewclass">
+<span id="chess-board"></span><h1>Chess Board<a class="headerlink" href="#module-qboardviewclass" title="Permalink to this heading"></a></h1>
 <p>The use of the chessboard requires a mouse or a mousepad. A piece is moved like that:</p>
 <blockquote>
 <div><ul class="simple">
@@ -182,8 +93,8 @@
 </ul>
 </div></blockquote>
 <p>For training purposes, several helpers are available.</p>
-<div class="section" id="warn-of-danger">
-<h2>Warn of Danger<a class="headerlink" href="#warn-of-danger" title="Permalink to this headline">¶</a></h2>
+<section id="warn-of-danger">
+<h2>Warn of Danger<a class="headerlink" href="#warn-of-danger" title="Permalink to this heading"></a></h2>
 <p>The <em>Warn of Danger</em> is enabled by the <code class="docutils literal notranslate"><span class="pre">Game/Warn</span> <span class="pre">of</span> <span class="pre">Danger</span></code> action.
 It runs as follows:</p>
 <blockquote>
@@ -196,9 +107,9 @@ It runs as follows:</p>
 <p>Effect on other pieces like discovered check are not considered. An example:</p>
 <p><a class="reference internal" href="_images/warnOfDanger.png"><img alt="Warn of Danger" src="_images/warnOfDanger.png" style="width: 600px;" /></a></p>
 <p>Obviously, the rook at <code class="docutils literal notranslate"><span class="pre">b8</span></code> is danger.</p>
-</div>
-<div class="section" id="move-options">
-<h2>Move Options<a class="headerlink" href="#move-options" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="move-options">
+<h2>Move Options<a class="headerlink" href="#move-options" title="Permalink to this heading"></a></h2>
 <p>The <em>Move Options</em> are enabled by the <code class="docutils literal notranslate"><span class="pre">Game/Show</span> <span class="pre">Move</span> <span class="pre">Options</span></code> action.
 By pressing the left mouse button at <code class="docutils literal notranslate"><span class="pre">b8</span></code>, we see:</p>
 <p><a class="reference internal" href="_images/moveOptions.png"><img alt="Move Options" src="_images/moveOptions.png" style="width: 600px;" /></a></p>
@@ -206,61 +117,66 @@ By pressing the left mouse button at <code class="docutils literal notranslate">
 <blockquote>
 <div></div></blockquote>
 <dl class="py class">
-<dt id="qboardviewclass.Game">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">qboardviewclass.</span></code><code class="sig-name descname"><span class="pre">Game</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#Game"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.Game" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.Game">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qboardviewclass.</span></span><span class="sig-name descname"><span class="pre">Game</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#Game"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.Game" title="Permalink to this definition"></a></dt>
 <dd><p>Internal class</p>
 <dl class="py method">
-<dt id="qboardviewclass.Game.mouseMoveEvent">
-<code class="sig-name descname"><span class="pre">mouseMoveEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QGraphicsSceneMouseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#Game.mouseMoveEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.Game.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.Game.mouseDoubleClickEvent">
+<span class="sig-name descname"><span class="pre">mouseDoubleClickEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QGraphicsSceneMouseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#Game.mouseDoubleClickEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.Game.mouseDoubleClickEvent" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.Game.mousePressEvent">
-<code class="sig-name descname"><span class="pre">mousePressEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QGraphicsSceneMouseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#Game.mousePressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.Game.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.Game.mouseMoveEvent">
+<span class="sig-name descname"><span class="pre">mouseMoveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QGraphicsSceneMouseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#Game.mouseMoveEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.Game.mouseMoveEvent" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.Game.mouseReleaseEvent">
-<code class="sig-name descname"><span class="pre">mouseReleaseEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QGraphicsSceneMouseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#Game.mouseReleaseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.Game.mouseReleaseEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.Game.mousePressEvent">
+<span class="sig-name descname"><span class="pre">mousePressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QGraphicsSceneMouseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#Game.mousePressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.Game.mousePressEvent" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qboardviewclass.Game.mouseReleaseEvent">
+<span class="sig-name descname"><span class="pre">mouseReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QGraphicsSceneMouseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#Game.mouseReleaseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.Game.mouseReleaseEvent" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="qboardviewclass.Piece">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">qboardviewclass.</span></code><code class="sig-name descname"><span class="pre">Piece</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbolName</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#Piece"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.Piece" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.Piece">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qboardviewclass.</span></span><span class="sig-name descname"><span class="pre">Piece</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbolName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#Piece"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.Piece" title="Permalink to this definition"></a></dt>
 <dd><p>Internal class</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="qboardviewclass.QBoardViewClass">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">qboardviewclass.</span></code><code class="sig-name descname"><span class="pre">QBoardViewClass</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qboardviewclass.</span></span><span class="sig-name descname"><span class="pre">QBoardViewClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass" title="Permalink to this definition"></a></dt>
 <dd><p>The <em>chessboard</em> is based on Qt’s QGraphicsView.</p>
 <dl class="py method">
-<dt id="qboardviewclass.QBoardViewClass.keyPressEvent">
-<code class="sig-name descname"><span class="pre">keyPressEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QKeyEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.keyPressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.keyPressEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QKeyEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.keyPressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.keyPressEvent" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.QBoardViewClass.nextMove">
-<code class="sig-name descname"><span class="pre">nextMove</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.nextMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.nextMove" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass.nextMove">
+<span class="sig-name descname"><span class="pre">nextMove</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.nextMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.nextMove" title="Permalink to this definition"></a></dt>
 <dd><p>Go 1 move forward, if possible</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.QBoardViewClass.previousMove">
-<code class="sig-name descname"><span class="pre">previousMove</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.previousMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.previousMove" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass.previousMove">
+<span class="sig-name descname"><span class="pre">previousMove</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.previousMove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.previousMove" title="Permalink to this definition"></a></dt>
 <dd><p>Go 1 move backward, if possible</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.QBoardViewClass.resizeEvent">
-<code class="sig-name descname"><span class="pre">resizeEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QResizeEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.resizeEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass.resizeEvent">
+<span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QResizeEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.resizeEvent" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.QBoardViewClass.setDrawOptions">
-<code class="sig-name descname"><span class="pre">setDrawOptions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setDrawOptions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setDrawOptions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass.setDrawOptions">
+<span class="sig-name descname"><span class="pre">setDrawOptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setDrawOptions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setDrawOptions" title="Permalink to this definition"></a></dt>
 <dd><p>Controls the draw options. Draw options are shown when <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">mouse</kbd>-<kbd class="kbd docutils literal notranslate">left</kbd>-<kbd class="kbd docutils literal notranslate">press</kbd></kbd> on a piece</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -270,8 +186,8 @@ By pressing the left mouse button at <code class="docutils literal notranslate">
 </dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.QBoardViewClass.setFlipped">
-<code class="sig-name descname"><span class="pre">setFlipped</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setFlipped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setFlipped" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass.setFlipped">
+<span class="sig-name descname"><span class="pre">setFlipped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setFlipped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setFlipped" title="Permalink to this definition"></a></dt>
 <dd><p>Controls the board orientation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -281,15 +197,15 @@ By pressing the left mouse button at <code class="docutils literal notranslate">
 </dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.QBoardViewClass.setGameNode">
-<code class="sig-name descname"><span class="pre">setGameNode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gameNode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">chess.pgn.GameNode</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setGameNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setGameNode" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass.setGameNode">
+<span class="sig-name descname"><span class="pre">setGameNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gameNode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GameNode</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setGameNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setGameNode" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the game node displayed by the <em>chessBoard</em></p>
 <p>:param gameNode : game node to be displayed</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.QBoardViewClass.setHint">
-<code class="sig-name descname"><span class="pre">setHint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enableHint</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enableScore</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="chessengine.html#chessengine.ChessEngine" title="chessengine.ChessEngine"><span class="pre">chessengine.ChessEngine</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setHint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setHint" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass.setHint">
+<span class="sig-name descname"><span class="pre">setHint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enableHint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enableScore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="chessengine.html#chessengine.ChessEngine" title="chessengine.ChessEngine"><span class="pre">ChessEngine</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setHint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setHint" title="Permalink to this definition"></a></dt>
 <dd><p>Controls the usage of the hint label</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -303,8 +219,8 @@ By pressing the left mouse button at <code class="docutils literal notranslate">
 </dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.QBoardViewClass.setWarnOfDanger">
-<code class="sig-name descname"><span class="pre">setWarnOfDanger</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setWarnOfDanger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setWarnOfDanger" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass.setWarnOfDanger">
+<span class="sig-name descname"><span class="pre">setWarnOfDanger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setWarnOfDanger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setWarnOfDanger" title="Permalink to this definition"></a></dt>
 <dd><p>Controls the warn of danger, i.e. shows attacked pieces</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -314,8 +230,8 @@ By pressing the left mouse button at <code class="docutils literal notranslate">
 </dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.QBoardViewClass.set_fen">
-<code class="sig-name descname"><span class="pre">set_fen</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fen</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.set_fen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.set_fen" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass.set_fen">
+<span class="sig-name descname"><span class="pre">set_fen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.set_fen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.set_fen" title="Permalink to this definition"></a></dt>
 <dd><p>Configures the <em>chessboard</em></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -326,8 +242,8 @@ By pressing the left mouse button at <code class="docutils literal notranslate">
 </dd></dl>
 
 <dl class="py method">
-<dt id="qboardviewclass.QBoardViewClass.setup">
-<code class="sig-name descname"><span class="pre">setup</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">notifyNewGameNodeSignal</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">PyQt5.QtCore.pyqtSignal</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notifyGameNodeSelectedSignal</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">PyQt5.QtCore.pyqtSignal</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">materialLabel</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">PyQt5.QtWidgets.QLabel</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squareLabel</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">PyQt5.QtWidgets.QLabel</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turnFrame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">PyQt5.QtWidgets.QFrame</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hintLabel</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">PyQt5.QtWidgets.QLabel</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flipped</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setup" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qboardviewclass.QBoardViewClass.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">notifyNewGameNodeSignal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyqtSignal</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notifyGameNodeSelectedSignal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyqtSignal</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">materialLabel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">QLabel</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squareLabel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">QLabel</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turnFrame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">QFrame</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hintLabel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">QLabel</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flipped</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/qboardviewclass.html#QBoardViewClass.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qboardviewclass.QBoardViewClass.setup" title="Permalink to this definition"></a></dt>
 <dd><p>Set up of the game editor</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -346,55 +262,38 @@ By pressing the left mouse button at <code class="docutils literal notranslate">
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="gameTreeView.html" class="btn btn-neutral float-right" title="Game Editor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="chessMainWindow.html" class="btn btn-neutral float-left" title="Main Window" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gameTreeView.html" class="btn btn-neutral float-right" title="Game Editor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Reinhard März.
-
-    </p>
+    <p>&#169; Copyright 2021, Reinhard März.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

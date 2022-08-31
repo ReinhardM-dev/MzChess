@@ -579,7 +579,7 @@
   </action>
   <action name="actionUndoMove">
    <property name="text">
-    <string>Undo Last Move</string>
+    <string>Undo Move</string>
    </property>
    <property name="toolTip">
     <string>Undo the last move of the current sequence</string>

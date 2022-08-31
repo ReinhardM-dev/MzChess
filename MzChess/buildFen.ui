@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>562</width>
+    <width>569</width>
     <height>414</height>
    </rect>
   </property>
@@ -348,7 +348,7 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>562</width>
+     <width>569</width>
      <height>21</height>
     </rect>
    </property>
@@ -371,10 +371,10 @@ color: rgb(255, 255, 255);</string>
     <property name="title">
      <string>Board</string>
     </property>
-    <addaction name="actionReset_Board"/>
-    <addaction name="actionClear_Board"/>
+    <addaction name="actionResetBoard"/>
+    <addaction name="actionClearBoard"/>
     <addaction name="separator"/>
-    <addaction name="actionFlip_Board"/>
+    <addaction name="actionFlipBoard"/>
    </widget>
    <addaction name="menuEdit"/>
    <addaction name="menuFEN"/>
@@ -396,7 +396,7 @@ color: rgb(255, 255, 255);</string>
     <string>Ctrl+V</string>
    </property>
   </action>
-  <action name="actionReset_Board">
+  <action name="actionResetBoard">
    <property name="text">
     <string>Reset</string>
    </property>
@@ -520,7 +520,7 @@ color: rgb(255, 255, 255);</string>
     <string>P</string>
    </property>
   </action>
-  <action name="actionClear_Board">
+  <action name="actionClearBoard">
    <property name="text">
     <string>Clear</string>
    </property>
@@ -535,7 +535,7 @@ color: rgb(255, 255, 255);</string>
     <string>About ...</string>
    </property>
   </action>
-  <action name="actionFlip_Board">
+  <action name="actionFlipBoard">
    <property name="checkable">
     <bool>true</bool>
    </property>

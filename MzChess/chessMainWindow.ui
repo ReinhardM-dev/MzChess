@@ -236,8 +236,10 @@
     <addaction name="menuRecentDB"/>
     <addaction name="separator"/>
     <addaction name="actionSaveDB"/>
-    <addaction name="actionSaveGame"/>
+    <addaction name="actionSaveDBAs"/>
     <addaction name="actionAppend2DB"/>
+    <addaction name="separator"/>
+    <addaction name="actionSaveGame"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -246,15 +248,13 @@
      <string>Edit</string>
     </property>
     <addaction name="actionFENBuilder"/>
-    <addaction name="actionCopyFEN"/>
-    <addaction name="actionPasteFEN"/>
     <addaction name="separator"/>
+    <addaction name="actionCopyFEN"/>
     <addaction name="actionCopyGame"/>
-    <addaction name="actionPasteGame"/>
     <addaction name="separator"/>
     <addaction name="actionNextMove"/>
     <addaction name="actionPreviousMove"/>
-    <addaction name="actionUndoLastMove"/>
+    <addaction name="actionUndoMove"/>
     <addaction name="separator"/>
     <addaction name="actionNextVariant"/>
     <addaction name="actionPreviousVariant"/>
@@ -276,7 +276,6 @@
      <addaction name="actionEGBlackWins"/>
      <addaction name="actionEGDraw"/>
     </widget>
-    <addaction name="actionNewGame"/>
     <addaction name="actionSelectHeaderElements"/>
     <addaction name="menuEndGame"/>
     <addaction name="separator"/>
@@ -366,11 +365,15 @@
     <property name="title">
      <string>Database</string>
     </property>
-    <addaction name="actionNewDB"/>
     <addaction name="actionCloseDB"/>
     <addaction name="separator"/>
     <addaction name="actionAddGame"/>
     <addaction name="actionRemoveGames"/>
+    <addaction name="separator"/>
+    <addaction name="actionPasteFEN"/>
+    <addaction name="actionPasteGame"/>
+    <addaction name="separator"/>
+    <addaction name="actionRecoverDB"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -395,33 +398,12 @@
     <string>Ctrl+Shift+C</string>
    </property>
   </action>
-  <action name="actionPasteFEN">
-   <property name="text">
-    <string>Paste FEN</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+V</string>
-   </property>
-  </action>
   <action name="actionCopyGame">
    <property name="text">
     <string>Copy Game</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+C</string>
-   </property>
-  </action>
-  <action name="actionPasteGame">
-   <property name="text">
-    <string>Paste Game</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
-   </property>
-  </action>
-  <action name="actionNewGame">
-   <property name="text">
-    <string>New</string>
    </property>
   </action>
   <action name="actionEGWhiteWins">
@@ -511,9 +493,9 @@
     <string>Open DB ...</string>
    </property>
   </action>
-  <action name="actionSaveDB">
+  <action name="actionSaveDBAs">
    <property name="text">
-    <string>Save DB ...</string>
+    <string>Save DB As ...</string>
    </property>
   </action>
   <action name="actionExit">
@@ -547,11 +529,6 @@
   <action name="actionRemoveGames">
    <property name="text">
     <string>Remove Games</string>
-   </property>
-  </action>
-  <action name="actionNewDB">
-   <property name="text">
-    <string>New</string>
    </property>
   </action>
   <action name="actionFlipBoard">
@@ -600,9 +577,12 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="actionUndoLastMove">
+  <action name="actionUndoMove">
    <property name="text">
     <string>Undo Last Move</string>
+   </property>
+   <property name="toolTip">
+    <string>Undo the last move of the current sequence</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
@@ -871,6 +851,32 @@
    </property>
    <property name="text">
     <string>All</string>
+   </property>
+  </action>
+  <action name="actionPasteFEN">
+   <property name="text">
+    <string>Paste FEN</string>
+   </property>
+  </action>
+  <action name="actionPasteGame">
+   <property name="text">
+    <string>Paste Game</string>
+   </property>
+  </action>
+  <action name="actionRecoverDB">
+   <property name="text">
+    <string>Recover </string>
+   </property>
+   <property name="toolTip">
+    <string>Recover last database</string>
+   </property>
+  </action>
+  <action name="actionSaveDB">
+   <property name="text">
+    <string>Save DB</string>
+   </property>
+   <property name="toolTip">
+    <string>Save active DB</string>
    </property>
   </action>
  </widget>

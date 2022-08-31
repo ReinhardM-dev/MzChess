@@ -43,6 +43,7 @@ On the top, the menu with
     * *Promote/Demote Variant* promote/demote the variant selected in the Game TAB
     * *Promote Variant to Main* promote the variant selected in the Game TAB to mainline
     * *Delete Variant* delete the variant selected in the Game TAB
+    * *Undo Move* deletes the end move of a sequence (main line or variant)
 
  * *Database* menu with obvious functionality with the exception of
  

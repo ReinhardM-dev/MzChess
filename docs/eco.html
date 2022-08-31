@@ -1,74 +1,38 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>ECO Utilities &mdash; MzChess V1.2.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>ECO Utilities &mdash; MzChess V2.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Warn of Danger" href="warnOfDanger.html" />
     <link rel="prev" title="Annotation Tools" href="annotator.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> MzChess
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                V1.2
+                V2.1
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,18 +40,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="gui.html">GUI</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="utilities.html">Utilities</a><ul class="current">
@@ -100,80 +53,38 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">MzChess</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="utilities.html">Utilities</a> &raquo;</li>
-        
       <li>ECO Utilities</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/eco.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-eco">
-<span id="eco-utilities"></span><h1>ECO Utilities<a class="headerlink" href="#module-eco" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="module-eco">
+<span id="eco-utilities"></span><h1>ECO Utilities<a class="headerlink" href="#module-eco" title="Permalink to this heading"></a></h1>
 <p>A Wrapper for Encyclopaedia of Chess Openings (ECO) (see <a class="reference external" href="https://github.com/niklasf/eco">fiekas.eco</a>)
 It makes use of <a class="reference external" href="https://sourceforge.net/projects/codekiddy-chess/files/Books/Polyglot%20books/">polyglot</a> books to arrange the games.</p>
 <dl class="py class">
-<dt id="eco.ECODatabase">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">eco.</span></code><code class="sig-name descname"><span class="pre">ECODatabase</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ecoDirectory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">os.PathLike</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\eco'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tsvPattern</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'*.tsv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eco.html#ECODatabase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#eco.ECODatabase" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="eco.ECODatabase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eco.</span></span><span class="sig-name descname"><span class="pre">ECODatabase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ecoDirectory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PathLike</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'C:\\Users\\Reinh\\OneDrive\\Dokumente\\python\\MzChess\\MzChess\\eco'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tsvPattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'*.tsv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eco.html#ECODatabase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#eco.ECODatabase" title="Permalink to this definition"></a></dt>
 <dd><p>A Wrapper class for Encyclopaedia of Chess Openings (ECO)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -184,8 +95,8 @@ It makes use of <a class="reference external" href="https://sourceforge.net/proj
 </dd>
 </dl>
 <dl class="py method">
-<dt id="eco.ECODatabase.createGame">
-<code class="sig-name descname"><span class="pre">createGame</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listOfFirstMoves</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">chess.Move</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polyglotBook</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">chess.polyglot.MemoryMappedReader</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">chess.pgn.Game</span><a class="reference internal" href="_modules/eco.html#ECODatabase.createGame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#eco.ECODatabase.createGame" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="eco.ECODatabase.createGame">
+<span class="sig-name descname"><span class="pre">createGame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listOfFirstMoves</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Move</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polyglotBook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">MemoryMappedReader</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Game</span></span></span><a class="reference internal" href="_modules/eco.html#ECODatabase.createGame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#eco.ECODatabase.createGame" title="Permalink to this definition"></a></dt>
 <dd><p>Creates a opening game starting with <code class="docutils literal notranslate"><span class="pre">listOfFirstMoves</span></code>. The opening variants are implemented as variants</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -201,8 +112,8 @@ It makes use of <a class="reference external" href="https://sourceforge.net/proj
 </dd></dl>
 
 <dl class="py method">
-<dt id="eco.ECODatabase.loadTSVFile">
-<code class="sig-name descname"><span class="pre">loadTSVFile</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tsvFile</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">os.PathLike</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/eco.html#ECODatabase.loadTSVFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#eco.ECODatabase.loadTSVFile" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="eco.ECODatabase.loadTSVFile">
+<span class="sig-name descname"><span class="pre">loadTSVFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tsvFile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PathLike</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/eco.html#ECODatabase.loadTSVFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#eco.ECODatabase.loadTSVFile" title="Permalink to this definition"></a></dt>
 <dd><p>Adds a <em>tsvFile</em> to the database</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -212,8 +123,8 @@ It makes use of <a class="reference external" href="https://sourceforge.net/proj
 </dd></dl>
 
 <dl class="py method">
-<dt id="eco.ECODatabase.statistics">
-<code class="sig-name descname"><span class="pre">statistics</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">key:</span> <span class="pre">eco.TSVType</span> <span class="pre">=</span> <span class="pre">&lt;TSVType.ECO:</span> <span class="pre">0&gt;</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/eco.html#ECODatabase.statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#eco.ECODatabase.statistics" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="eco.ECODatabase.statistics">
+<span class="sig-name descname"><span class="pre">statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#eco.TSVType" title="eco.TSVType"><span class="pre">TSVType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TSVType.ECO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/eco.html#ECODatabase.statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#eco.ECODatabase.statistics" title="Permalink to this definition"></a></dt>
 <dd><p>Delivers statistical data. <code class="docutils literal notranslate"><span class="pre">key</span></code> one of the 4 columns of a TSV-file, i.e.</p>
 <blockquote>
 <div><blockquote>
@@ -246,59 +157,42 @@ It makes use of <a class="reference external" href="https://sourceforge.net/proj
 </dd></dl>
 
 <dl class="py class">
-<dt id="eco.TSVType">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">eco.</span></code><code class="sig-name descname"><span class="pre">TSVType</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eco.html#TSVType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#eco.TSVType" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="eco.TSVType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eco.</span></span><span class="sig-name descname"><span class="pre">TSVType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/eco.html#TSVType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#eco.TSVType" title="Permalink to this definition"></a></dt>
 <dd><p>Columns of TSV-files</p>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="warnOfDanger.html" class="btn btn-neutral float-right" title="Warn of Danger" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="annotator.html" class="btn btn-neutral float-left" title="Annotation Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="warnOfDanger.html" class="btn btn-neutral float-right" title="Warn of Danger" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Reinhard März.
-
-    </p>
+    <p>&#169; Copyright 2021, Reinhard März.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

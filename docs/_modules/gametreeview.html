@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gametreeview &mdash; MzChess V2.0.0 documentation</title>
+  <title>gametreeview &mdash; MzChess V2.1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../index.html" class="icon icon-home"> MzChess
           </a>
               <div class="version">
-                V2.0
+                V2.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -437,12 +437,7 @@
  <span class="k">def</span> <span class="nf">on_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
   <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemFromIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
   <span class="n">column</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">column</span><span class="p">()</span>
-  <span class="n">isVariant</span> <span class="o">=</span> <span class="kc">False</span>
-  <span class="n">parent</span> <span class="o">=</span> <span class="n">index</span>
-  <span class="k">while</span> <span class="n">parent</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
-   <span class="n">isVariant</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">isVariant</span>
-   <span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
-  <span class="k">if</span> <span class="n">isVariant</span><span class="p">:</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
    <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="p">:</span>
      <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
@@ -453,7 +448,13 @@
      <span class="n">gameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game</span>
    <span class="k">else</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span>
+     <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="p">:</span>
+      <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+      <span class="n">gameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
+     <span class="k">else</span><span class="p">:</span>
+      <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+      <span class="n">gameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameNodeSelectedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">gameNode</span><span class="p">)</span>
     <span class="k">return</span>
   <span class="k">else</span><span class="p">:</span>
    <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">:</span>
@@ -489,97 +490,76 @@
   <span class="bp">self</span><span class="o">.</span><span class="n">_emitGameChanged</span><span class="p">()</span>
   
  <span class="k">def</span> <span class="nf">_isVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span> <span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-  <span class="n">isTrue</span> <span class="o">=</span> <span class="kc">False</span>
-  <span class="n">parent</span> <span class="o">=</span> <span class="n">item</span>
-  <span class="k">while</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-   <span class="n">isTrue</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">isTrue</span>
-   <span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
-  <span class="k">return</span> <span class="n">isTrue</span>
+  <span class="k">return</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">((</span><span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="p">))</span>
 
-<div class="viewcode-block" id="GameTreeView.removeVariant"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.removeVariant">[docs]</a> <span class="k">def</span> <span class="nf">removeVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="GameTreeView.removeVariant"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.removeVariant">[docs]</a> <span class="k">def</span> <span class="nf">removeVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
   <span class="sd">&#39;&#39;&#39;Remove variant, if currently selected item is a variant</span>
 <span class="sd">  &#39;&#39;&#39;</span>
   <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
-  <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-   <span class="n">parent</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
-   <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">return</span>
-   <span class="n">index</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">indexOfChild</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-   <span class="n">parent</span><span class="o">.</span><span class="n">removeChild</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-   <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
-   <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-   <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
-   <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">remove_variation</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
-   <span class="bp">self</span><span class="o">.</span><span class="n">_emitGameChanged</span><span class="p">()</span></div>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="p">:</span>
+   <span class="n">item</span> <span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+  <span class="n">parent</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+  <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
+  <span class="n">newItemNode</span> <span class="o">=</span> <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span>
+  <span class="n">newItemNode</span><span class="o">.</span><span class="n">remove_variation</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
+  <span class="n">parent</span><span class="o">.</span><span class="n">removeChild</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">selectNodeItem</span><span class="p">(</span><span class="n">newItemNode</span><span class="p">)</span>
+  <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="GameTreeView.promoteVariant"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.promoteVariant">[docs]</a> <span class="k">def</span> <span class="nf">promoteVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="GameTreeView.promoteVariant"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.promoteVariant">[docs]</a> <span class="k">def</span> <span class="nf">promoteVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
   <span class="sd">&#39;&#39;&#39;Promote variant, if currently selected item is a variant</span>
 <span class="sd">  &#39;&#39;&#39;</span>
   <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
-  <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-   <span class="n">parent</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
-   <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">return</span>
-   <span class="n">index</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">indexOfChild</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-   <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="n">parent</span><span class="o">.</span><span class="n">takeChild</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-    <span class="n">parent</span><span class="o">.</span><span class="n">insertChild</span><span class="p">(</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-    <span class="n">parent</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">item</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-    <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
-    <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">promote</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_emitGameChanged</span><span class="p">()</span></div>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="p">:</span>
+   <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+  <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">promote</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setGame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">selectNodeItem</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
+  <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="GameTreeView.demoteVariant"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.demoteVariant">[docs]</a> <span class="k">def</span> <span class="nf">demoteVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="GameTreeView.demoteVariant"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.demoteVariant">[docs]</a> <span class="k">def</span> <span class="nf">demoteVariant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
   <span class="sd">&#39;&#39;&#39;Demote variant, if currently selected item is a variant</span>
 <span class="sd">  &#39;&#39;&#39;</span>
   <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
-  <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-   <span class="n">parent</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
-   <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">return</span>
-   <span class="n">index</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">indexOfChild</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-   <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">parent</span><span class="o">.</span><span class="n">childCount</span><span class="p">():</span>
-    <span class="n">parent</span><span class="o">.</span><span class="n">takeChild</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-    <span class="n">parent</span><span class="o">.</span><span class="n">insertChild</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-    <span class="n">parent</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">item</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-    <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
-    <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">demote</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_emitGameChanged</span><span class="p">()</span></div>
+  <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="p">:</span>
+   <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+  <span class="k">if</span> <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">variations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">itemNode</span><span class="p">:</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">demote</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setGame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">selectNodeItem</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
+  <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="GameTreeView.promoteVariant2Main"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.promoteVariant2Main">[docs]</a> <span class="k">def</span> <span class="nf">promoteVariant2Main</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="GameTreeView.promoteVariant2Main"><a class="viewcode-back" href="../gameTreeView.html#gametreeview.GameTreeView.promoteVariant2Main">[docs]</a> <span class="k">def</span> <span class="nf">promoteVariant2Main</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
   <span class="sd">&#39;&#39;&#39;Promote variant to main line, if currently selected item is a variant</span>
 <span class="sd">  &#39;&#39;&#39;</span>
   <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
-  <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-   <span class="n">parent</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
-   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">indexOfChild</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-     <span class="n">child</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">takeChild</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-     <span class="n">parent</span><span class="o">.</span><span class="n">insertChild</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">child</span><span class="p">)</span>
-    <span class="n">vChildren</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">takeChildren</span><span class="p">()</span>
-    <span class="n">gParent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
-    <span class="n">fIndex</span> <span class="o">=</span> <span class="n">gParent</span><span class="o">.</span><span class="n">indexOfChild</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
-    <span class="n">pChildren</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">takeChildren</span><span class="p">()</span>
-    <span class="n">mChildren</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">fIndex</span><span class="p">,</span> <span class="n">gParent</span><span class="o">.</span><span class="n">childCount</span><span class="p">())):</span>
-     <span class="n">mChildren</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">gParent</span><span class="o">.</span><span class="n">takeChild</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
-    <span class="n">gParent</span><span class="o">.</span><span class="n">addChildren</span><span class="p">(</span><span class="n">vChildren</span><span class="p">)</span>
-    <span class="n">vChildren</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addChildren</span><span class="p">(</span><span class="n">pChildren</span><span class="p">)</span>
-    <span class="n">item</span><span class="o">.</span><span class="n">addChildren</span><span class="p">(</span><span class="n">mChildren</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">vChildren</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">parent</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">item</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">selIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-    <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">selIndex</span><span class="p">]</span>
-    <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">promote_to_main</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_emitGameChanged</span><span class="p">()</span></div>
+  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isVariant</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="p">:</span>
+   <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameVariantNodeList</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameItemList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+   <span class="n">itemNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNodeList</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+  <span class="n">itemNode</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">promote_to_main</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setGame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">selectNodeItem</span><span class="p">(</span><span class="n">itemNode</span><span class="p">)</span>
+  <span class="k">return</span> <span class="kc">True</span></div>
   
  <span class="k">def</span> <span class="nf">_emitGameChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyGameChangedSignal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

@@ -1,75 +1,39 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Score Chart &mdash; MzChess V1.2.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Score Chart &mdash; MzChess V2.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="UCI Configuration" href="configureEngine.html" />
     <link rel="prev" title="Game Header Editor" href="gameHeaderView.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> MzChess
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                V1.2
+                V2.1
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -77,18 +41,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="gui.html">GUI</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="chessMainWindow.html">Main Window</a></li>
@@ -102,75 +55,33 @@
 <li class="toctree-l1"><a class="reference internal" href="utilities.html">Utilities</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">MzChess</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="gui.html">GUI</a> &raquo;</li>
-        
       <li>Score Chart</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/scoreplotgraphicsview.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-scoreplotgraphicsview"></span><div class="section" id="score-chart">
-<h1>Score Chart<a class="headerlink" href="#score-chart" title="Permalink to this headline">¶</a></h1>
+             
+  <span class="target" id="module-scoreplotgraphicsview"></span><section id="score-chart">
+<h1>Score Chart<a class="headerlink" href="#score-chart" title="Permalink to this heading"></a></h1>
 <p><a class="reference internal" href="_images/scoreplotgraphicsview.png"><img alt="Score Chart" src="_images/scoreplotgraphicsview.png" style="width: 800px;" /></a></p>
 <p>The score chart shows the material score (blue) representing material budget where 
 the pieces represent as usual the values</p>
@@ -197,7 +108,7 @@ a mate in <em>n</em> moves a score of</p>
 It is updated when it changes.</p>
 <p>It is possible to control the zoom of the <em>Score</em> axis. The GUI with an ongoing zoom process is shown here.</p>
 <table class="colwidths-given docutils align-default" id="id1">
-<caption><span class="caption-text">Zoom control by mouse</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Zoom control by mouse</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
 <colgroup>
 <col style="width: 38%" />
 <col style="width: 63%" />
@@ -220,12 +131,12 @@ It is updated when it changes.</p>
 </tbody>
 </table>
 <dl class="py class">
-<dt id="scoreplotgraphicsview.ScorePlot">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">scoreplotgraphicsview.</span></code><code class="sig-name descname"><span class="pre">ScorePlot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">PyQt5.QtCore.QObject</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="scoreplotgraphicsview.ScorePlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scoreplotgraphicsview.</span></span><span class="sig-name descname"><span class="pre">ScorePlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">QObject</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot" title="Permalink to this definition"></a></dt>
 <dd><p>Score plot object</p>
 <dl class="py method">
-<dt id="scoreplotgraphicsview.ScorePlot.addGameNodes">
-<code class="sig-name descname"><span class="pre">addGameNodes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gameNode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">chess.pgn.GameNode</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.addGameNodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.addGameNodes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="scoreplotgraphicsview.ScorePlot.addGameNodes">
+<span class="sig-name descname"><span class="pre">addGameNodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gameNode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GameNode</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.addGameNodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.addGameNodes" title="Permalink to this definition"></a></dt>
 <dd><p>Adds 1 or more nodes, parent node of first node must exist in the editor</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -235,8 +146,8 @@ It is updated when it changes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="scoreplotgraphicsview.ScorePlot.copyAsBitmap">
-<code class="sig-name descname"><span class="pre">copyAsBitmap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.copyAsBitmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.copyAsBitmap" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="scoreplotgraphicsview.ScorePlot.copyAsBitmap">
+<span class="sig-name descname"><span class="pre">copyAsBitmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.copyAsBitmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.copyAsBitmap" title="Permalink to this definition"></a></dt>
 <dd><p>Copies the chart as a bitmap to clipboard</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -246,8 +157,8 @@ It is updated when it changes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="scoreplotgraphicsview.ScorePlot.minQtVersion">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">minQtVersion</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">major</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minor</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.minQtVersion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.minQtVersion" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="scoreplotgraphicsview.ScorePlot.minQtVersion">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">minQtVersion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">major</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.minQtVersion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.minQtVersion" title="Permalink to this definition"></a></dt>
 <dd><p>Checks whether the actual Qt-version is smaller or equal than the specified version</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -264,19 +175,19 @@ It is updated when it changes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="scoreplotgraphicsview.ScorePlot.mouseReleaseEvent">
-<code class="sig-name descname"><span class="pre">mouseReleaseEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QMouseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.mouseReleaseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.mouseReleaseEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="scoreplotgraphicsview.ScorePlot.mouseReleaseEvent">
+<span class="sig-name descname"><span class="pre">mouseReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QMouseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.mouseReleaseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.mouseReleaseEvent" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="scoreplotgraphicsview.ScorePlot.resetChart">
-<code class="sig-name descname"><span class="pre">resetChart</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.resetChart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.resetChart" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="scoreplotgraphicsview.ScorePlot.resetChart">
+<span class="sig-name descname"><span class="pre">resetChart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.resetChart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.resetChart" title="Permalink to this definition"></a></dt>
 <dd><p>Clears the chart</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="scoreplotgraphicsview.ScorePlot.selectNodeItem">
-<code class="sig-name descname"><span class="pre">selectNodeItem</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gameNode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">chess.pgn.GameNode</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.selectNodeItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.selectNodeItem" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="scoreplotgraphicsview.ScorePlot.selectNodeItem">
+<span class="sig-name descname"><span class="pre">selectNodeItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gameNode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GameNode</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.selectNodeItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.selectNodeItem" title="Permalink to this definition"></a></dt>
 <dd><p>Selects a game node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -286,8 +197,8 @@ It is updated when it changes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="scoreplotgraphicsview.ScorePlot.setGame">
-<code class="sig-name descname"><span class="pre">setGame</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">chess.pgn.Game</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.setGame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.setGame" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="scoreplotgraphicsview.ScorePlot.setGame">
+<span class="sig-name descname"><span class="pre">setGame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Game</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.setGame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.setGame" title="Permalink to this definition"></a></dt>
 <dd><p>Sets a new game</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -297,8 +208,8 @@ It is updated when it changes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="scoreplotgraphicsview.ScorePlot.setup">
-<code class="sig-name descname"><span class="pre">setup</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">notifyGameNodeSelectedSignal</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">PyQt5.QtCore.pyqtSignal</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.setup" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="scoreplotgraphicsview.ScorePlot.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">notifyGameNodeSelectedSignal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyqtSignal</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot.setup" title="Permalink to this definition"></a></dt>
 <dd><p>Set up of the score</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -309,54 +220,37 @@ It is updated when it changes.</p>
 
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="configureEngine.html" class="btn btn-neutral float-right" title="UCI Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="gameHeaderView.html" class="btn btn-neutral float-left" title="Game Header Editor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configureEngine.html" class="btn btn-neutral float-right" title="UCI Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Reinhard März.
-
-    </p>
+    <p>&#169; Copyright 2021, Reinhard März.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

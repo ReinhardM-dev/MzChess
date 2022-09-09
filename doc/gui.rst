@@ -8,5 +8,6 @@ GUI
    qboardview
    gameTreeView
    gameHeaderView
+   gameListTableView
    scoreplotgraphicsview
    configureEngine

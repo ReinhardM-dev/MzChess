@@ -81,6 +81,7 @@ class QBoardViewClass(QtWidgets.QGraphicsView):
   self.game = Game()
   self.setMouseTracking(True)
   self.setScene(self.game)
+  self.game.installEventFilter(self.game)
   
  def setup(self, notifyNewGameNodeSignal : Optional[QtCore.pyqtSignal] = None, 
                        notifyGameNodeSelectedSignal : Optional[QtCore.pyqtSignal] = None, 
@@ -561,20 +562,21 @@ class Game(QtWidgets.QGraphicsScene):
 
  # -------------------------------------------------------
 
- def mouseMoveEvent(self, qGraphicsSceneMouseEvent : QtWidgets.QGraphicsSceneMouseEvent) -> None:
-  if self.squareLabel is not None:
-   square = self.getChessSquareAt(qGraphicsSceneMouseEvent.scenePos())
-   # print('==> mouseMoveEvent: pos = {} => square = {}'.format(qGraphicsSceneMouseEvent.scenePos(), chess.square_name(square)))
-   if square is not None:
-    self.squareLabel.setText(chess.square_name(square))
-   else:
-    self.squareLabel.setText('--')
-  QtWidgets.QGraphicsScene.mouseMoveEvent(self, qGraphicsSceneMouseEvent)
-
  def mouseDoubleClickEvent(self, mouseEvent):
   self.mousePressed = False
   # print('==> mouseDoubleClickEvent')
-  
+
+ def eventFilter(self, source, event):
+  if event.type() == QtCore.QEvent.Type.GraphicsSceneMouseMove:
+   square = self.getChessSquareAt(event.scenePos())
+   if square is not None:
+    self.squareLabel.setText(chess.square_name(square))
+   else:
+    self.squareLabel.setText('')
+  elif event.type() == QtCore.QEvent.Type.GraphicsSceneLeave:
+   self.squareLabel.setText('')
+  return QtWidgets.QGraphicsScene.eventFilter(self, source, event)
+
  def mousePressEvent(self, qGraphicsSceneMouseEvent : QtWidgets.QGraphicsSceneMouseEvent) -> None:
   self.mousePressed = True
   self.pressedPiece = None

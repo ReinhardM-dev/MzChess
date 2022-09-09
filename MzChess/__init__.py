@@ -24,10 +24,15 @@ Versions:
  2.1.0      GUI streamlined
               recover database added
               numerous bug fixes
+ 2.2.0      ChessMainWindow.saveDB improved
+              Game moving in database implemented
+              fullmove_number, halfmove_clock info in statusbar provided
+              Game info in statusbar improved
+              Square info in statusbar improved
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2022-08-31"
-__version__ = "2.1.0"
+__date__ = "2022-09-08"
+__version__ = "2.2.0"
 
 __all__ = [
  'AboutDialog', 

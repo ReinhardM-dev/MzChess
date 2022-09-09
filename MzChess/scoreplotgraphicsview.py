@@ -262,19 +262,19 @@ class ScorePlot(QtCharts.QChartView):
   '''
   if gameNode is None or gameNode.parent is None or not gameNode.is_mainline():
    return
-  ply = gameNode.ply() - 1
-  assert ply < self.materialSeries.count()
+  relPly = gameNode.ply() - gameNode.game().ply() - 1
+  assert relPly < self.materialSeries.count()
   self.selectedGameNode = gameNode
   self.vLine.clear()
   self.meLabels.clear()
-  xValue = self.materialSeries.at(ply).x()
+  xValue = self.materialSeries.at(relPly).x()
   self.vLine.append(xValue, self.yAxis.min())
   self.vLine.append(xValue, 1000)
   self.vLine.show()
-  self.meLabels.append(self.materialSeries.at(ply))
-  if ply in self.engineDict:
-   ply = self.engineDict[ply]
-   self.meLabels.append(self.engineSeries.at(ply))
+  self.meLabels.append(self.materialSeries.at(relPly))
+  if relPly in self.engineDict:
+   relPly = self.engineDict[relPly]
+   self.meLabels.append(self.engineSeries.at(relPly))
   self.meLabels.show()
 
  def addGameNodes(self, gameNode :  chess.pgn.GameNode) -> None:
@@ -289,6 +289,7 @@ class ScorePlot(QtCharts.QChartView):
    self.resetChart()
   self.chart.show()
   ply = gameNode.ply()
+  xMin = (gameNode.game().ply() + 1) / 2
   engineData = list()
   materialData = list()
   nMaterial = self.materialSeries.count()
@@ -302,7 +303,7 @@ class ScorePlot(QtCharts.QChartView):
       pawnScore += self.piecePawnScoreDict[piece.piece_type]
      else:
       pawnScore -= self.piecePawnScoreDict[piece.piece_type]
-   materialData.append(QtCore.QPointF((ply +1)/2, pawnScore))
+   materialData.append(QtCore.QPointF((ply + 1)/2, pawnScore))
    self.minY = min(self.minY, pawnScore)
    self.maxY = max(self.maxY, pawnScore)
    match = PGNEval_REGEX.search(gameNode.comment)
@@ -314,7 +315,7 @@ class ScorePlot(QtCharts.QChartView):
      except:
       engineScore = float(engineScore[1:])
       engineScore = math.copysign(1,engineScore) * (self.mateScore - abs(engineScore))
-     engineData.append(QtCore.QPointF((ply +1)/2, engineScore))
+     engineData.append(QtCore.QPointF((ply + 1)/2, engineScore))
      self.engineDict[nMaterial] = nEngine
      self.minY = min(self.minY, engineScore)
      self.maxY = max(self.maxY, engineScore)
@@ -331,7 +332,7 @@ class ScorePlot(QtCharts.QChartView):
    if len(engineData) > 0:
     self.engineSeries.append(engineData)
 
-  self._setRange(self.xAxis, 1, max(ply / 2, 2))
+  self._setRange(self.xAxis, xMin, max(ply / 2, 2))
   if self.minY < self.maxY:
    self._setRange(self.yAxis, self.minY, self.maxY)
   else:

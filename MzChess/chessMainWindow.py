@@ -48,6 +48,7 @@ On the top, the menu with
  * *Database* menu with obvious functionality with the exception of
  
     * *Remove Games* removes selected games in the *Database* TAB
+    * *Move Games>Up/Down*  moves a selected game up and down in the *Database*
     * *Paste Game*, i.e. the actual game PGN from the clipboard and added to the *Database*
     * *Paste FEN*, i.e. the actual position is pasted from the clipboard and added to the *Database*
 
@@ -151,6 +152,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  notifySignal = QtCore.pyqtSignal(str)
  notifyGameSelectedSignal = QtCore.pyqtSignal(int)
  notifyGameListHeaderChangedSignal = QtCore.pyqtSignal(list)
+ notifyGameListChangedSignal = QtCore.pyqtSignal()
  notifyGameHeadersChangedSignal = QtCore.pyqtSignal(chess.pgn.Headers)
 
  notifyGameNodeSelectedSignal = QtCore.pyqtSignal(chess.pgn.GameNode)
@@ -215,7 +217,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    'showScores' : (self.actionShowScores, False), 
    }
   
-  gameListHeaders = ['Date',  'White',  'Black',  'Result']
+  self.gameListHeaders = ['Date',  'White',  'Black',  'Result']
   
   self.engineDict = dict()
   self.recentPGN = dict()
@@ -252,7 +254,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
      if os.path.exists(recentDB):
       self.recentPGN[recentDB] = enc
    if 'GameListHeaders' in self.settings.sections():
-    gameListHeaders = self.settings.options('GameListHeaders')
+    self.gameListHeaders = self.settings.options('GameListHeaders')
    if 'Events' in self.settings.sections():
     self.eventList = self.settings.options('Events')
    if 'Sites' in self.settings.sections():
@@ -288,10 +290,15 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   sbText = self.statusBar().font()
   sbText.setPointSize(12)
   
+  self.moveLabel = QtWidgets.QLabel()
+  self.moveLabel.setFont(sbText)
+  self.moveLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+  self.moveLabel.setToolTip("Total Moves/Half-moves since the last capture or pawn move")
+  self.statusBar().addWidget(self.moveLabel, 20)
   self.infoLabel = QtWidgets.QLabel()
   self.infoLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
   self.infoLabel.setFont(sbText)
-  self.statusBar().addWidget(self.infoLabel, 150)
+  self.statusBar().addWidget(self.infoLabel, 130)
   self.engineLabel = QtWidgets.QLabel()
   self.engineLabel.setFont(sbText)
   self.engineLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
@@ -322,10 +329,12 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    if actAction.text() == self.hintList[hintValue]:
     actAction.setChecked(True)
   self.gameListTableView.setup(notifyDoubleClickSignal = self.notifyGameSelectedSignal, 
-                                          notifyHeaderChangedSignal = self.notifyGameListHeaderChangedSignal)
-  self.gameListTableView.gameHeaderKeys = gameListHeaders
+                                          notifyHeaderChangedSignal = self.notifyGameListHeaderChangedSignal, 
+                                          notifyListChangedSignal = self.notifyGameListChangedSignal)
+  self.gameListTableView.gameHeaderKeys = self.gameListHeaders
   self.notifyGameSelectedSignal.connect(self.gameSelected)
   self.notifyGameListHeaderChangedSignal.connect(self.gameListHeaderChanged)
+  self.notifyGameListChangedSignal.connect(self.gameListChanged)
   self.pgnFile = None
   self.gameListFile = ''
   self.gameList = list()
@@ -463,9 +472,22 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   msgBox.setWindowTitle("Error ...")
   msgBox.exec()
 
- def setInfoLabel(self):
-  self.infoLabel.setText('game #{} of {}'.format(self.gameID, len(self.gameList)))
+ def setInfoLabel(self, setupGameID = False):
+  if setupGameID:
+   if self.game in self.gameList:
+    self.gameID = self.gameList.index(self.game)
+   else:
+    if self.gameID > 0:
+     self.gameID = self.gameID - 1
+    self.game = self.gameList[self.game]
+  self.infoLabel.setText('game #{} of {} ({} moves): {} = {}'.format(self.gameID, len(self.gameList), 
+   self.gameList[self.gameID].end().board().fullmove_number, self.gameListHeaders[0], self.game.headers[self.gameListHeaders[0]]))
   self.infoLabel.update()
+  QtWidgets.QApplication.processEvents()
+
+ def setMoveLabel(self, board):
+  self.moveLabel.setText('{}/{}'.format(board.fullmove_number, board.halfmove_clock))
+  self.moveLabel.update()
   QtWidgets.QApplication.processEvents()
 
  def notify(self, str):
@@ -621,11 +643,12 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    return
   self.openPGN(self.recoverFile)
    
- @QtCore.pyqtSlot(QAction)
- def on_menuRecentDB_triggered(self, action):
-  fileName = action.text()
-  self.openPGN(fileName, self.recentPGN[fileName])
- 
+ @QtCore.pyqtSlot()
+ def on_actionGameUp_triggered(self):
+  if self.gameListTableView.on_menuMoveGame_triggered(self.actionGameUp):
+   self.setInfoLabel(True)
+   self.setChessWindowTitle(True)
+
  @QtCore.pyqtSlot()
  def on_actionCloseDB_triggered(self):
   if not self._allowNewGameList():
@@ -681,13 +704,13 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   elif ext == '.pgn':
    try:
     encoding = self.settings['Menu/Game']['encoding']
+    pgnString = str()
+    for game in self.gameList:
+     exporter = chess.pgn.StringExporter(headers=True, variations=True, comments=True)
+     pgnString += game.accept(exporter)
+     if game != self.gameList[-1]:
+      pgnString += '\n\n'
     with open(pgnFile, mode = mode,  encoding = self.encodingDict[encoding]) as f:
-     pgnString = str()
-     for game in self.gameList:
-      exporter = chess.pgn.StringExporter(headers=True, variations=True, comments=True)
-      pgnString += game.accept(exporter)
-      if game != self.gameList[-1]:
-       pgnString += '\n\n'
      f.write(pgnString)
    except:
     self.notifyError('Cannot save PGN file {}'.format(pgnFile))
@@ -726,23 +749,24 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    
  @QtCore.pyqtSlot()
  def on_actionRemoveGames_triggered(self):
-  selectedIndices = self.gameListTableView.selectedIndexes()
-  if len(selectedIndices) != 0:
-   self.notify('Removing games ...')
-   removeList = list()
-   for index in selectedIndices:
-    row = index.row()
-    removeList.append(row)
-    if row == self.gameID:
-     self.gameID = None
-   newGameList = list()
-   for n, game in enumerate(self.gameList):
-    if n not in removeList:
-     newGameList.append(game)
-   self.gameList = newGameList
+  if self.gameListTableView.on_actionRemoveGames_triggered():
+   if self.game in self.gameList:
+    self.setInfoLabel(True)
+   else:
+    self.gameSelected(0)
    self.setChessWindowTitle(True)
-   self.gameListTableView.setGameList(self.gameList)
-  
+
+ @QtCore.pyqtSlot()
+ def on_actionGameDown_triggered(self):
+  if self.gameListTableView.on_menuMoveGame_triggered(self.actionGameDown):
+   self.setInfoLabel(True)
+   self.setChessWindowTitle(True)
+ 
+ @QtCore.pyqtSlot(QAction)
+ def on_menuRecentDB_triggered(self, action):
+  fileName = action.text()
+  self.openPGN(fileName, self.recentPGN[fileName])
+ 
  @QtCore.pyqtSlot(QAction)
  def on_menuEndGame_triggered(self, action):
   endGame = self.game.end()
@@ -790,12 +814,14 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameNode = self.boardGraphicsView.nextMove()
   self.gameTreeViewWidget.selectNodeItem(self.gameNode)
   self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
+  self.setMoveLabel(self.gameNode.board())
 
  @QtCore.pyqtSlot()
  def on_actionPreviousMove_triggered(self):
   self.gameNode = self.boardGraphicsView.previousMove()
   self.gameTreeViewWidget.selectNodeItem(self.gameNode)
   self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
+  self.setMoveLabel(self.gameNode.board())
 
  @QtCore.pyqtSlot()
  def on_actionNextVariant_triggered(self):
@@ -1118,11 +1144,12 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.notifyError('Improper FEN {}:\n{}'.format(fen, str(err)))
    return
   self.notify('Pasting position from clipboard to game #{} ...'.format(len(self.gameList)))
+  board = chess.Board(fen)
   game = chess.pgn.Game()
   game.headers = self.game.headers
-  game.setup(fen)
-  game.headers.pop("SetUp", None) # remove non-standard header element used by chess package
   game.headers["Result"] = "*" 
+  game.setup(board)
+  game.headers.pop("SetUp", None) # remove non-standard header element used by chess package
   self._addGame(game) 
  
  @QtCore.pyqtSlot() 
@@ -1163,16 +1190,19 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.gameHeaderTableView.setGame(self.game)
    self.scorePlotGraphicsView.setGame(self.game)
    self.setInfoLabel()
-   err = False
+   self.setMoveLabel(self.gameNode.board())
   except:
-   err = True
-  if err:
    self.notifyError('UIE: Improper game ="{}"'.format(self.game))
 
  @QtCore.pyqtSlot(list)
  def gameListHeaderChanged(self, gameListHeader):
-  self.updateSettingsList('GameListHeaders', gameListHeader)
+  self.gameListHeader = gameListHeader
+  self.updateSettingsList('GameListHeaders', self.gameListHeader)
   self.saveSettings()
+
+ @QtCore.pyqtSlot()
+ def gameListChanged(self):
+  self.setInfoLabel(True)
   self.setChessWindowTitle(True)
 
  @QtCore.pyqtSlot(chess.pgn.Headers)
@@ -1219,6 +1249,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   else:
    self.gameTreeViewWidget.addVariant(gameNode)
   self.gameChanged(self.game)
+  self.setMoveLabel(self.gameNode.board())
    
  @QtCore.pyqtSlot(chess.pgn.GameNode)
  def gameNodeSelected(self, gameNode):
@@ -1226,6 +1257,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.boardGraphicsView.setGameNode(self.gameNode)
   self.gameTreeViewWidget.selectNodeItem(self.gameNode)
   self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
+  self.setMoveLabel(self.gameNode.board())
 
  @QtCore.pyqtSlot(chess.pgn.Game)
  def gameChanged(self, game):

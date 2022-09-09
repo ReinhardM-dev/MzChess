@@ -1,3 +1,19 @@
+'''Database Editor
+================================
+The *database* editor is based on Qt's QTableView. 
+
+|DatabaseEditor|
+
+It allows for 3 types of actions:
+
+ * select a game by a double-click into the corresponding row
+ * add/remove the displayed header items (limited to the 7-tag roster) by a right-clicking the column header
+ * changing the sequence of games in the database by drag/drop or the menu items *Move Games>Up/Down*
+
+.. |DatabaseEditor| image:: gameListTableView.png
+  :width: 800
+  :alt: Game Editor
+'''
 import sys,  os.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import MzChess
@@ -22,14 +38,20 @@ class GameListTableModel(QtCore.QAbstractTableModel):
  def columnCount(self, parent = None):
   return len(self.gameHeaderKeys)
 
+ def flags(self, index):
+  return QtCore.Qt.ItemFlag.ItemIsEnabled | QtCore.Qt.ItemFlag.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsDragEnabled | QtCore.Qt.ItemFlag.ItemIsDropEnabled
+
+ def supportedDropActions(self):
+  return QtCore.Qt.DropAction.MoveAction
+
  def data(self, index, role = QtCore.Qt.ItemDataRole.DisplayRole):
   if index.isValid():
    if role == QtCore.Qt.ItemDataRole.DisplayRole:
     actGameHeaders = self.gameList[index.row()].headers
     columnKey = self.gameHeaderKeys[index.column()]
     return actGameHeaders[columnKey]
-   if role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
-    return QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.AlignmentFlag.AlignVCenter
+   elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
+    return int(QtCore.Qt.AlignmentFlag.AlignCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
   return None
 
  def headerData(self, col, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
@@ -40,6 +62,42 @@ class GameListTableModel(QtCore.QAbstractTableModel):
     return '#{0:}'.format(col)
   return None
 
+ def moveRows(self, srcRowRange, tgtRow):
+  if tgtRow < 0 or tgtRow > self.rowCount():
+   return False
+  assert isinstance(srcRowRange, range)
+  parent = QtCore.QModelIndex()
+  self.beginMoveRows(parent, srcRowRange.start, srcRowRange.stop - 1, parent, tgtRow)
+  newGameList = list()
+  if tgtRow < srcRowRange.start:
+   newGameList += self.gameList[:tgtRow]
+   newGameList += self.gameList[srcRowRange.start:srcRowRange.stop]
+   newGameList += self.gameList[tgtRow:srcRowRange.start]
+   newGameList += self.gameList[srcRowRange.stop:]
+  else:
+   newGameList += self.gameList[:srcRowRange.start]
+   newGameList += self.gameList[srcRowRange.stop:tgtRow]
+   newGameList += self.gameList[srcRowRange.start:srcRowRange.stop]
+   newGameList += self.gameList[tgtRow:]
+  for n, game in enumerate(newGameList):
+   self.gameList[n] = newGameList[n]
+  self.endMoveRows()
+  return True
+
+ def removeRows(self, srcRowList):
+  if len(srcRowList) == 0:
+   return False
+  newGameList = list()
+  for row, game in enumerate(self.gameList):
+   if row not in srcRowList:
+    newGameList.append(game)
+  self.beginResetModel()
+  for n, game in enumerate(newGameList):
+   self.gameList[n] = newGameList[n]
+  del self.gameList[len(newGameList):]
+  self.endResetModel()
+  return True
+  
 class GameListTableView(QtWidgets.QTableView):
  sevenTagRoster = ["Event", "Site", "Round", "Date", "White", "Black", "Result"]
 
@@ -50,6 +108,8 @@ class GameListTableView(QtWidgets.QTableView):
   self.horizontalScrollBar().setDisabled(True)
   self.notifyDoubleClickSignal = None
   self.notifyHeaderChangedSignal = None
+  self.notifyListChangedSignal = None
+  self.setSelectionBehavior(QtWidgets.QTableView.SelectionBehavior.SelectRows)
   self.sizeHints = None
   self.gameHeaderKeys = ["Date", "White", "Black", "Result"]
   headerWidget = self.horizontalHeader()
@@ -61,6 +121,10 @@ class GameListTableView(QtWidgets.QTableView):
    self.context.addAction('Show {}'.format(tag))
   self.context.addSeparator()
   self.context.addAction('Hide')
+  
+  self.setAcceptDrops(True)
+  self.setDragEnabled(True)
+  self.setDragDropMode(QtWidgets.QAbstractItemView.DragDropMode.InternalMove)
   
  @QtCore.pyqtSlot(QAction)
  def on_menuContext_triggered(self, action):
@@ -77,7 +141,55 @@ class GameListTableView(QtWidgets.QTableView):
   self.gameHeaderKeys = newGameHeaderKeys
   if self.notifyHeaderChangedSignal is not None:
    self.notifyHeaderChangedSignal.emit(newGameHeaderKeys)
-  
+   
+ def _selection2rowRange(self):
+  selection = self.selectionModel().selectedRows()   
+  srcRowList = list()
+  for rowSelection in selection:
+   srcRowList.append(rowSelection.row())
+  srcRowList = sorted(srcRowList)
+  for n, srcRow in enumerate(srcRowList):
+   if n > 0:
+    if srcRowList[n] - srcRowList[n-1] != 1:
+     self.notifyError('The selected rows must be simply connected.')
+     return None
+  return range(srcRowList[0], srcRowList[-1] + 1)
+
+ def on_actionRemoveGames_triggered(self):
+  selection = self.selectionModel().selectedRows()   
+  srcRowList = list()
+  for rowSelection in selection:
+   srcRowList.append(rowSelection.row())
+  return self.model().removeRows(srcRowList)
+
+ def on_menuMoveGame_triggered(self, action):
+  srcRowRange = self._selection2rowRange()
+  if srcRowRange is None:
+   return False
+  if action.text() == 'Down':
+   return self.model().moveRows(srcRowRange, srcRowRange.stop + 1)
+  else:
+   return self.model().moveRows(srcRowRange, srcRowRange.start - 1)
+
+ def dropEvent(self, event):
+  if (event.source() is self \
+   and event.dropAction() == QtCore.Qt.DropAction.MoveAction and self.dragDropMode() == QtWidgets.QAbstractItemView.DragDropMode.InternalMove):
+   if MzChess.useQt5():
+    tgtRow = self.indexAt(event.pos()).row()
+   else:
+    tgtRow = self.indexAt(event.position().toPoint()).row()
+   srcRowRange = self._selection2rowRange()
+   if srcRowRange is not None and tgtRow != srcRowRange.start + 1:
+    if tgtRow >= srcRowRange.start and tgtRow <= srcRowRange.stop:
+     self.notifyError('The target row must be outside the range of source rows.')
+     return None
+    self.model().moveRows(srcRowRange, tgtRow)
+   if self.notifyListChangedSignal is not None:
+    self.notifyListChangedSignal.emit()
+   event.accept()
+  else:
+   super().dropEvent(event)
+   
  def on_menuHorizontalHeader_requested(self, pos):
   self.contextColumn = self.columnAt(pos.x())
   self.context.exec(self.mapToGlobal(pos))
@@ -92,6 +204,16 @@ class GameListTableView(QtWidgets.QTableView):
   msgBox.setText(str)
   msgBox.setWindowTitle("Error ...")
   msgBox.exec()
+
+ def moveRow(self, up=True):
+  selection = self.selectedIndexes()
+  if selection:
+   header = self.verticalHeader()
+   row = header.visualIndex(selection[0].row())
+   if up and row > 0:
+    header.moveSection(row, row - 1)
+   elif not up and row < header.count() - 1:
+    header.moveSection(row, row + 1)
 
  @property
  def gameHeaderKeys(self):
@@ -130,9 +252,10 @@ class GameListTableView(QtWidgets.QTableView):
     self.sizeHints[column] = max(self.sizeHints[column], actSize)
   self.setColumnWidths()
   
- def setup(self, notifyDoubleClickSignal = None, notifyHeaderChangedSignal = None):
+ def setup(self, notifyDoubleClickSignal = None, notifyHeaderChangedSignal = None, notifyListChangedSignal = None):
   self.notifyDoubleClickSignal = notifyDoubleClickSignal
   self.notifyHeaderChangedSignal = notifyHeaderChangedSignal
+  self.notifyListChangedSignal  = notifyListChangedSignal 
   
  def resetDB(self):
   self.reset()

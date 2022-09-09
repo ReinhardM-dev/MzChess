@@ -365,10 +365,18 @@
     <property name="title">
      <string>Database</string>
     </property>
+    <widget class="QMenu" name="menuMove_Game">
+     <property name="title">
+      <string>Move Game</string>
+     </property>
+     <addaction name="actionGameUp"/>
+     <addaction name="actionGameDown"/>
+    </widget>
     <addaction name="actionCloseDB"/>
     <addaction name="separator"/>
     <addaction name="actionAddGame"/>
     <addaction name="actionRemoveGames"/>
+    <addaction name="menuMove_Game"/>
     <addaction name="separator"/>
     <addaction name="actionPasteFEN"/>
     <addaction name="actionPasteGame"/>
@@ -529,6 +537,9 @@
   <action name="actionRemoveGames">
    <property name="text">
     <string>Remove Games</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+X</string>
    </property>
   </action>
   <action name="actionFlipBoard">
@@ -877,6 +888,22 @@
    </property>
    <property name="toolTip">
     <string>Save active DB</string>
+   </property>
+  </action>
+  <action name="actionGameUp">
+   <property name="text">
+    <string>Up</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Up</string>
+   </property>
+  </action>
+  <action name="actionGameDown">
+   <property name="text">
+    <string>Down</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Down</string>
    </property>
   </action>
  </widget>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>qboardviewclass &mdash; MzChess V2.0.0 documentation</title>
+  <title>qboardviewclass &mdash; MzChess V2.2.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../index.html" class="icon icon-home"> MzChess
           </a>
               <div class="version">
-                V2.0
+                V2.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -151,6 +151,7 @@
   <span class="bp">self</span><span class="o">.</span><span class="n">game</span> <span class="o">=</span> <span class="n">Game</span><span class="p">()</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">setMouseTracking</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">setScene</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">installEventFilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span>
   
 <div class="viewcode-block" id="QBoardViewClass.setup"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.QBoardViewClass.setup">[docs]</a> <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notifyNewGameNodeSignal</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
                        <span class="n">notifyGameNodeSelectedSignal</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
@@ -631,20 +632,21 @@
 
  <span class="c1"># -------------------------------------------------------</span>
 
-<div class="viewcode-block" id="Game.mouseMoveEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mouseMoveEvent">[docs]</a> <span class="k">def</span> <span class="nf">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span> <span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsSceneMouseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">squareLabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-   <span class="n">square</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getChessSquareAt</span><span class="p">(</span><span class="n">qGraphicsSceneMouseEvent</span><span class="o">.</span><span class="n">scenePos</span><span class="p">())</span>
-   <span class="c1"># print(&#39;==&gt; mouseMoveEvent: pos = {} =&gt; square = {}&#39;.format(qGraphicsSceneMouseEvent.scenePos(), chess.square_name(square)))</span>
-   <span class="k">if</span> <span class="n">square</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">squareLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">square_name</span><span class="p">(</span><span class="n">square</span><span class="p">))</span>
-   <span class="k">else</span><span class="p">:</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">squareLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
-  <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsScene</span><span class="o">.</span><span class="n">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="Game.mouseDoubleClickEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mouseDoubleClickEvent">[docs]</a> <span class="k">def</span> <span class="nf">mouseDoubleClickEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouseEvent</span><span class="p">):</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">mousePressed</span> <span class="o">=</span> <span class="kc">False</span></div>
   <span class="c1"># print(&#39;==&gt; mouseDoubleClickEvent&#39;)</span>
-  
+
+<div class="viewcode-block" id="Game.eventFilter"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.eventFilter">[docs]</a> <span class="k">def</span> <span class="nf">eventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">GraphicsSceneMouseMove</span><span class="p">:</span>
+   <span class="n">square</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getChessSquareAt</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">scenePos</span><span class="p">())</span>
+   <span class="k">if</span> <span class="n">square</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">squareLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">square_name</span><span class="p">(</span><span class="n">square</span><span class="p">))</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">squareLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">GraphicsSceneLeave</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">squareLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsScene</span><span class="o">.</span><span class="n">eventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Game.mousePressEvent"><a class="viewcode-back" href="../qboardview.html#qboardviewclass.Game.mousePressEvent">[docs]</a> <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qGraphicsSceneMouseEvent</span> <span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsSceneMouseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">mousePressed</span> <span class="o">=</span> <span class="kc">True</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span> <span class="o">=</span> <span class="kc">None</span>

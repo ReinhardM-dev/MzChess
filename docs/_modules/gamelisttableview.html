@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gamelisttableview &mdash; MzChess V2.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> MzChess
+          </a>
+              <div class="version">
+                V2.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MzChess</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>gamelisttableview</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for gamelisttableview</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;Database Editor</span>
+<span class="sd">================================</span>
+<span class="sd">The *database* editor is based on Qt&#39;s QTableView. </span>
+
+<span class="sd">|DatabaseEditor|</span>
+
+<span class="sd">It allows for 3 types of actions:</span>
+
+<span class="sd"> * select a game by a double-click into the corresponding row</span>
+<span class="sd"> * add/remove the displayed header items (limited to the 7-tag roster) by a right-clicking the column header</span>
+<span class="sd"> * changing the sequence of games in the database by drag/drop or the menu items *Move Games&gt;Up/Down*</span>
+
+<span class="sd">.. |DatabaseEditor| image:: gameListTableView.png</span>
+<span class="sd">  :width: 800</span>
+<span class="sd">  :alt: Game Editor</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span>  <span class="nn">os.path</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))))</span>
+<span class="kn">import</span> <span class="nn">MzChess</span>
+
+<span class="k">if</span> <span class="n">MzChess</span><span class="o">.</span><span class="n">useQt5</span><span class="p">():</span>
+ <span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
+ <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QAction</span>
+<span class="k">else</span><span class="p">:</span>
+ <span class="kn">from</span> <span class="nn">PyQt6</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
+ <span class="kn">from</span> <span class="nn">PyQt6.QtGui</span> <span class="kn">import</span> <span class="n">QAction</span>
+
+<div class="viewcode-block" id="GameListTableModel"><a class="viewcode-back" href="../gameListTableView.html#gamelisttableview.GameListTableModel">[docs]</a><span class="k">class</span> <span class="nc">GameListTableModel</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QAbstractTableModel</span><span class="p">):</span>
+ 
+ <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameList</span><span class="p">,</span> <span class="n">gameHeaderKeys</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">GameListTableModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaderKeys</span> <span class="o">=</span> <span class="n">gameHeaderKeys</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameList</span> <span class="o">=</span> <span class="n">gameList</span>
+
+<div class="viewcode-block" id="GameListTableModel.rowCount"><a class="viewcode-back" href="../gameListTableView.html#gamelisttableview.GameListTableModel.rowCount">[docs]</a> <span class="k">def</span> <span class="nf">rowCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+  <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gameList</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameListTableModel.columnCount"><a class="viewcode-back" href="../gameListTableView.html#gamelisttableview.GameListTableModel.columnCount">[docs]</a> <span class="k">def</span> <span class="nf">columnCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+  <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gameHeaderKeys</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameListTableModel.flags"><a class="viewcode-back" href="../gameListTableView.html#gamelisttableview.GameListTableModel.flags">[docs]</a> <span class="k">def</span> <span class="nf">flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemFlag</span><span class="o">.</span><span class="n">ItemIsEnabled</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemFlag</span><span class="o">.</span><span class="n">ItemIsSelectable</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemFlag</span><span class="o">.</span><span class="n">ItemIsDragEnabled</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemFlag</span><span class="o">.</span><span class="n">ItemIsDropEnabled</span></div>
+
+<div class="viewcode-block" id="GameListTableModel.supportedDropActions"><a class="viewcode-back" href="../gameListTableView.html#gamelisttableview.GameListTableModel.supportedDropActions">[docs]</a> <span class="k">def</span> <span class="nf">supportedDropActions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">DropAction</span><span class="o">.</span><span class="n">MoveAction</span></div>
+
+<div class="viewcode-block" id="GameListTableModel.data"><a class="viewcode-back" href="../gameListTableView.html#gamelisttableview.GameListTableModel.data">[docs]</a> <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">role</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
+   <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">:</span>
+    <span class="n">actGameHeaders</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameList</span><span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">()]</span><span class="o">.</span><span class="n">headers</span>
+    <span class="n">columnKey</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaderKeys</span><span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">column</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">actGameHeaders</span><span class="p">[</span><span class="n">columnKey</span><span class="p">]</span>
+   <span class="k">elif</span> <span class="n">role</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">TextAlignmentRole</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignmentFlag</span><span class="o">.</span><span class="n">AlignCenter</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignmentFlag</span><span class="o">.</span><span class="n">AlignVCenter</span><span class="p">)</span>
+  <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="GameListTableModel.headerData"><a class="viewcode-back" href="../gameListTableView.html#gamelisttableview.GameListTableModel.headerData">[docs]</a> <span class="k">def</span> <span class="nf">headerData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">role</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Orientation</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">:</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaderKeys</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+   <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Orientation</span><span class="o">.</span><span class="n">Vertical</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s1">&#39;#</span><span class="si">{0:}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+  <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="GameListTableModel.moveRows"><a class="viewcode-back" href="../gameListTableView.html#gamelisttableview.GameListTableModel.moveRows">[docs]</a> <span class="k">def</span> <span class="nf">moveRows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">srcRowRange</span><span class="p">,</span> <span class="n">tgtRow</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">tgtRow</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">tgtRow</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowCount</span><span class="p">():</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">srcRowRange</span><span class="p">,</span> <span class="nb">range</span><span class="p">)</span>
+  <span class="n">parent</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QModelIndex</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">beginMoveRows</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">srcRowRange</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">srcRowRange</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">tgtRow</span><span class="p">)</span>
+  <span class="n">newGameList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">tgtRow</span> <span class="o">&lt;</span> <span class="n">srcRowRange</span><span class="o">.</span><span class="n">start</span><span class="p">:</span>
+   <span class="n">newGameList</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameList</span><span class="p">[:</span><span class="n">tgtRow</span><span class="p">]</span>
+   <span class="n">newGameList</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameList</span><span class="p">[</span><span class="n">srcRowRange</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="n">srcRowRange</span><span class="o">.</span><span class="n">stop</span><span class="p">]</span>
+   <span class="n">newGameList</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameList</span><span class="p">[</span><span class="n">tgtRow</span><span class="p">:</span><span class="n">srcRowRange</span><span class="o">.</span><span class="n">start</span><span class="p">]</span>
+   <span class="n">newGameList</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameList</span><span class="p">[</span><span class="n">srcRowRange</span><span class="o">.</span><span class="n">stop</span><span class="p">:]</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">newGameList</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameList</span><span class="p">[:</span><span class="n">srcRowRange</span><span class="o">.</span><span class="n">start</span><span class="p">]</span>
+   <span class="n">newGameList</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameList</span><span class="p">[</span><span class="n">srcRowRange</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span><span class="n">tgtRow</span><span class="p">]</span>
+   <span class="n">newGameList</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameList</span><span class="p">[</span><span class="n">srcRowRange</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="n">srcRowRange</span><span class="o">.</span><span class="n">stop</span><span class="p">]</span>
+   <span class="n">newGameList</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameList</span><span class="p">[</span><span class="n">tgtRow</span><span class="p">:]</span>
+  <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">game</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">newGameList</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">gameList</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">newGameList</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">endMoveRows</span><span class="p">()</span>
+  <span class="k">return</span> <span class="kc">True</span></div></div>
+  
+<div class="viewcode-block" id="GameListTableView"><a class="viewcode-back" href="../gameListTableView.html#gamelisttableview.GameListTableView">[docs]</a><span class="k">class</span> <span class="nc">GameListTableView</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTableView</span><span class="p">):</span>
+ <span class="n">sevenTagRoster</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Event&quot;</span><span class="p">,</span> <span class="s2">&quot;Site&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">,</span> <span class="s2">&quot;Date&quot;</span><span class="p">,</span> <span class="s2">&quot;White&quot;</span><span class="p">,</span> <span class="s2">&quot;Black&quot;</span><span class="p">,</span> <span class="s2">&quot;Result&quot;</span><span class="p">]</span>
+
+ <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">GameListTableView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">doubleClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_doubleClicked</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span><span class="o">.</span><span class="n">setStretchLastSection</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">horizontalScrollBar</span><span class="p">()</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyDoubleClickSignal</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyHeaderChangedSignal</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyListChangedSignal</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setSelectionBehavior</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTableView</span><span class="o">.</span><span class="n">SelectionBehavior</span><span class="o">.</span><span class="n">SelectRows</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">sizeHints</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaderKeys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Date&quot;</span><span class="p">,</span> <span class="s2">&quot;White&quot;</span><span class="p">,</span> <span class="s2">&quot;Black&quot;</span><span class="p">,</span> <span class="s2">&quot;Result&quot;</span><span class="p">]</span>
+  <span class="n">headerWidget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span>
+  <span class="n">headerWidget</span><span class="o">.</span><span class="n">setContextMenuPolicy</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ContextMenuPolicy</span><span class="o">.</span><span class="n">CustomContextMenu</span><span class="p">)</span>
+  <span class="n">headerWidget</span><span class="o">.</span><span class="n">customContextMenuRequested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_menuHorizontalHeader_requested</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_menuContext_triggered</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sevenTagRoster</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s1">&#39;Show </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s1">&#39;Hide&#39;</span><span class="p">)</span>
+  
+  <span class="bp">self</span><span class="o">.</span><span class="n">setAcceptDrops</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setDragEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setDragDropMode</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">DragDropMode</span><span class="o">.</span><span class="n">InternalMove</span><span class="p">)</span>
+  
+ <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">QAction</span><span class="p">)</span>
+ <span class="k">def</span> <span class="nf">on_menuContext_triggered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+  <span class="n">actionText</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+  <span class="n">newGameHeaderKeys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaderKeys</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">actionText</span> <span class="o">==</span> <span class="s1">&#39;Hide&#39;</span><span class="p">:</span>
+   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">newGameHeaderKeys</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">notifyError</span><span class="p">(</span><span class="s1">&#39;At least 1 column required&#39;</span><span class="p">)</span>
+    <span class="k">return</span>
+   <span class="n">newGameHeaderKeys</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contextColumn</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">item</span> <span class="o">=</span> <span class="n">actionText</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+   <span class="n">newGameHeaderKeys</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contextColumn</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaderKeys</span> <span class="o">=</span> <span class="n">newGameHeaderKeys</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyHeaderChangedSignal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">notifyHeaderChangedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">newGameHeaderKeys</span><span class="p">)</span>
+   
+ <span class="k">def</span> <span class="nf">_selection2rowRange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="n">selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectionModel</span><span class="p">()</span><span class="o">.</span><span class="n">selectedRows</span><span class="p">()</span>   
+  <span class="n">srcRowList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">rowSelection</span> <span class="ow">in</span> <span class="n">selection</span><span class="p">:</span>
+   <span class="n">srcRowList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rowSelection</span><span class="o">.</span><span class="n">row</span><span class="p">())</span>
+  <span class="n">srcRowList</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">srcRowList</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">srcRow</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">srcRowList</span><span class="p">):</span>
+   <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">srcRowList</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">-</span> <span class="n">srcRowList</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">notifyError</span><span class="p">(</span><span class="s1">&#39;The selected rows must be simply connected.&#39;</span><span class="p">)</span>
+     <span class="k">return</span> <span class="kc">None</span>
+  <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">srcRowList</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">srcRowList</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="nf">on_menuMoveGame_triggered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+  <span class="n">srcRowRange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection2rowRange</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">srcRowRange</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Down&#39;</span><span class="p">:</span>
+   <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">moveRows</span><span class="p">(</span><span class="n">srcRowRange</span><span class="p">,</span> <span class="n">srcRowRange</span><span class="o">.</span><span class="n">stop</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">moveRows</span><span class="p">(</span><span class="n">srcRowRange</span><span class="p">,</span> <span class="n">srcRowRange</span><span class="o">.</span><span class="n">start</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GameListTableView.dropEvent"><a class="viewcode-back" href="../gameListTableView.html#gamelisttableview.GameListTableView.dropEvent">[docs]</a> <span class="k">def</span> <span class="nf">dropEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">source</span><span class="p">()</span> <span class="ow">is</span> <span class="bp">self</span> \
+   <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">dropAction</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">DropAction</span><span class="o">.</span><span class="n">MoveAction</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dragDropMode</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">DragDropMode</span><span class="o">.</span><span class="n">InternalMove</span><span class="p">):</span>
+   <span class="k">if</span> <span class="n">MzChess</span><span class="o">.</span><span class="n">useQt5</span><span class="p">():</span>
+    <span class="n">tgtRow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexAt</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span><span class="o">.</span><span class="n">row</span><span class="p">()</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">tgtRow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexAt</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">position</span><span class="p">()</span><span class="o">.</span><span class="n">toPoint</span><span class="p">())</span><span class="o">.</span><span class="n">row</span><span class="p">()</span>
+   <span class="n">srcRowRange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection2rowRange</span><span class="p">()</span>
+   <span class="k">if</span> <span class="n">srcRowRange</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tgtRow</span> <span class="o">!=</span> <span class="n">srcRowRange</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">tgtRow</span> <span class="o">&gt;=</span> <span class="n">srcRowRange</span><span class="o">.</span><span class="n">start</span> <span class="ow">and</span> <span class="n">tgtRow</span> <span class="o">&lt;=</span> <span class="n">srcRowRange</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">notifyError</span><span class="p">(</span><span class="s1">&#39;The target row must be outside the range of source rows.&#39;</span><span class="p">)</span>
+     <span class="k">return</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">moveRows</span><span class="p">(</span><span class="n">srcRowRange</span><span class="p">,</span> <span class="n">tgtRow</span><span class="p">)</span>
+   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyListChangedSignal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">notifyListChangedSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+   <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">dropEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+   
+ <span class="k">def</span> <span class="nf">on_menuHorizontalHeader_requested</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">contextColumn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columnAt</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">x</span><span class="p">())</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapToGlobal</span><span class="p">(</span><span class="n">pos</span><span class="p">))</span>
+  <span class="k">return</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">popupMenu</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMenu</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">popupMenu</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+  <span class="k">return</span>
+ 
+ <span class="k">def</span> <span class="nf">notifyError</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">str</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="n">msgBox</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="p">()</span>
+  <span class="n">msgBox</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Icon</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
+  <span class="n">msgBox</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+  <span class="n">msgBox</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Error ...&quot;</span><span class="p">)</span>
+  <span class="n">msgBox</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+
+ <span class="k">def</span> <span class="nf">moveRow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">up</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+  <span class="n">selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectedIndexes</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">selection</span><span class="p">:</span>
+   <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verticalHeader</span><span class="p">()</span>
+   <span class="n">row</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">visualIndex</span><span class="p">(</span><span class="n">selection</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">row</span><span class="p">())</span>
+   <span class="k">if</span> <span class="n">up</span> <span class="ow">and</span> <span class="n">row</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">header</span><span class="o">.</span><span class="n">moveSection</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="ow">not</span> <span class="n">up</span> <span class="ow">and</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">header</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">header</span><span class="o">.</span><span class="n">moveSection</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+ <span class="nd">@property</span>
+ <span class="k">def</span> <span class="nf">gameHeaderKeys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gameHeaderKeys</span>
+
+ <span class="nd">@gameHeaderKeys</span><span class="o">.</span><span class="n">setter</span>
+ <span class="k">def</span> <span class="nf">gameHeaderKeys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newGameHeaderKeys</span><span class="p">):</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">newGameHeaderKeys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">notifyError</span><span class="p">(</span><span class="s1">&#39;len(newGameHeaderKeys) &gt; 0&#39;</span><span class="p">)</span>
+   <span class="k">return</span>
+  <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">newGameHeaderKeys</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">tag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sevenTagRoster</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">notifyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> not in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sevenTagRoster</span><span class="p">))</span>
+    <span class="k">return</span>     
+  <span class="bp">self</span><span class="o">.</span><span class="n">_gameHeaderKeys</span> <span class="o">=</span> <span class="n">newGameHeaderKeys</span>
+  <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">model</span><span class="o">.</span><span class="n">beginResetModel</span><span class="p">()</span>
+   <span class="n">model</span><span class="o">.</span><span class="n">gameHeaderKeys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gameHeaderKeys</span> 
+   <span class="n">model</span><span class="o">.</span><span class="n">endResetModel</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">contextColumn</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="k">return</span> 
+
+ <span class="k">def</span> <span class="nf">setGameList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameList</span><span class="p">):</span>
+  <span class="n">model</span> <span class="o">=</span> <span class="n">GameListTableModel</span><span class="p">(</span><span class="n">gameList</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameHeaderKeys</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">sizeHints</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">totSize</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">gameHeaderKeys</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">sizeHints</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fontMetrics</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">TextFlag</span><span class="o">.</span><span class="n">TextSingleLine</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+   <span class="n">totSize</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columnWidth</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+   <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">game</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gameList</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
+     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;GameListTableModel: key </span><span class="si">{}</span><span class="s1"> not in game #</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">n</span><span class="p">))</span>
+    <span class="n">actSize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fontMetrics</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">TextFlag</span><span class="o">.</span><span class="n">TextSingleLine</span><span class="p">,</span> <span class="n">game</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="n">key</span><span class="p">])</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">sizeHints</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sizeHints</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> <span class="n">actSize</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidths</span><span class="p">()</span>
+  
+ <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notifyDoubleClickSignal</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">notifyHeaderChangedSignal</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">notifyListChangedSignal</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyDoubleClickSignal</span> <span class="o">=</span> <span class="n">notifyDoubleClickSignal</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyHeaderChangedSignal</span> <span class="o">=</span> <span class="n">notifyHeaderChangedSignal</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyListChangedSignal</span>  <span class="o">=</span> <span class="n">notifyListChangedSignal</span> 
+  
+ <span class="k">def</span> <span class="nf">resetDB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+ 
+ <span class="k">def</span> <span class="nf">setColumnWidths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sizeHints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">return</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sizeHints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">1.2</span><span class="p">))</span>
+  <span class="c1">#self.setColumnWidth(1, middleWidth)</span>
+  <span class="c1">#self.setColumnWidth(2, middleWidth)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sizeHints</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+<div class="viewcode-block" id="GameListTableView.resizeEvent"><a class="viewcode-back" href="../gameListTableView.html#gamelisttableview.GameListTableView.resizeEvent">[docs]</a> <span class="k">def</span> <span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">):</span>
+  <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidths</span><span class="p">()</span></div>
+  
+ <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QModelIndex</span><span class="p">)</span>
+ <span class="k">def</span> <span class="nf">on_doubleClicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifyDoubleClickSignal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">notifyDoubleClickSignal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">())</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;game #</span><span class="si">{}</span><span class="s1"> selected&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">()))</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+ <span class="kn">from</span> <span class="nn">pgnParse</span> <span class="kn">import</span> <span class="n">read_game</span>
+
+ <span class="n">fileDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+ <span class="n">pgnName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fileDirectory</span><span class="p">,</span> <span class="s1">&#39;training&#39;</span><span class="p">,</span> <span class="s1">&#39;matein&#39;</span><span class="p">,</span> <span class="s1">&#39;matein1.pgn&#39;</span><span class="p">)</span>
+ <span class="n">pgn</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">pgnName</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span>  <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+ <span class="n">gameList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+ <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+  <span class="n">game</span> <span class="o">=</span> <span class="n">read_game</span><span class="p">(</span><span class="n">pgn</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">game</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">break</span>
+  <span class="n">gameList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+ <span class="n">app</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+
+ <span class="n">gameView</span> <span class="o">=</span> <span class="n">GameListTableView</span><span class="p">()</span>
+ <span class="n">gameView</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+ <span class="n">gameView</span><span class="o">.</span><span class="n">setGameList</span><span class="p">(</span><span class="n">gameList</span><span class="p">)</span>
+ <span class="n">gameView</span><span class="o">.</span><span class="n">gameHeaderKeys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="s1">&#39;Date&#39;</span><span class="p">]</span>
+ 
+ <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Reinhard März.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

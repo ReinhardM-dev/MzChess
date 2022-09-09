@@ -247,7 +247,8 @@ class Game(QtWidgets.QGraphicsScene):
   self.boardPieces = list()
   self.flipped = False
   self.engine = None
-  self.hint = 0
+  self.hint = False
+  self.score = False
   self.drawOptions = False
   self.warnOfDanger = False
   self.materialLabel = None

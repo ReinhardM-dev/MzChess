@@ -29,10 +29,11 @@ Versions:
               fullmove_number, halfmove_clock info in statusbar provided
               Game info in statusbar improved
               Square info in statusbar improved
+ 2.2.1      bug fix
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2022-09-08"
-__version__ = "2.2.0"
+__date__ = "2022-09-09"
+__version__ = "2.2.1"
 
 __all__ = [
  'AboutDialog', 

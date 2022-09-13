@@ -211,7 +211,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.engineOptions = {
    'selectedEngine' : (self.menuSelectEngine, None), 
    'searchDepth' : (self.menuSearchDepth, 15), 
-   'blunderLimit' : (self.menuBlunderLimit, None), 
+   'blunderLimit' : (self.menuBlunderLimit, -float('inf')), 
    'numberOfAnnotations' : (self.menuNumberOfAnnotations, 1), 
    'annotateVariants' : (self.menuAnnotateVariants, None), 
    'showScores' : (self.actionShowScores, False), 
@@ -324,6 +324,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.loadOptionDict('Menu/Game', self.gameOptions)
   self.resetSelectEngine()
   self.loadOptionDict('Menu/Engine', self.engineOptions)
+  blunderLimit = self.engineOptions['blunderLimit'][1]
+  if blunderLimit == -float('inf'):
+   self.actionBLNone.setChecked(True)
   hintValue = int(self.settings['Menu/Engine'].get('showHints', 0))
   for actAction in self.menuShowHints.actions():
    if actAction.text() == self.hintList[hintValue]:
@@ -939,7 +942,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   action.setChecked(True)
   blValue = action.text()
   if blValue == 'None':
-   blunderLimit = None
+   blunderLimit = -float('inf')
   else:
    blunderLimit = -float(blValue.split(' ')[0])
   self.settings['Menu/Engine']['blunderLimit'] = str(blunderLimit)
@@ -950,13 +953,13 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   for actAction in self.menuAnnotateVariants.actions():
    actAction.setChecked(False)
   action.setChecked(True)
-  avValue = action.text().split(' ')
+  avValue = action.text().split(' ')[0]
   if avValue == 'None':
    self.settings['Menu/Engine']['annotateVariants'] = str(None)
   elif avValue == 'All':
    self.settings['Menu/Engine']['annotateVariants'] = str(2^32 - 1)
   else:
-   self.settings['Menu/Engine']['annotateVariants'] = str(int(avValue[0]))
+   self.settings['Menu/Engine']['annotateVariants'] = str(int(avValue))
   self.saveSettings()
 
  @QtCore.pyqtSlot()
@@ -1013,7 +1016,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   aEngine = MzChess.AnnotateEngine(notifyFunction = self.notifySignal.emit)
   annotateVariants = self.settings['Menu/Engine']['annotateVariants']
   if annotateVariants is not None and annotateVariants.isdigit():
-   annotateVariants = int(annotateVariants)
+   annotateVariants = int(annotateVariants.split(' ')[0])
   else:
    annotateVariants = 0
   self.notify('Annotating game #{} ...'.format(self.gameID))

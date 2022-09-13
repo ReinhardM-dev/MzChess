@@ -30,10 +30,11 @@ Versions:
               Game info in statusbar improved
               Square info in statusbar improved
  2.2.1      bug fix
+ 2.2.2      bug fix
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2022-09-09"
-__version__ = "2.2.1"
+__date__ = "2022-09-12"
+__version__ = "2.2.2"
 
 __all__ = [
  'AboutDialog', 

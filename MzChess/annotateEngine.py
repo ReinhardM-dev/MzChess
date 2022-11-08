@@ -114,11 +114,11 @@ class Annotator():
    try: 
     score = float(whiteScore)
    except:
-    score = float(whiteScore[1:])
+    score = 1001 - float(whiteScore[1:])
    try: 
     lastScore = float(lastWhiteScore)
    except:
-    lastScore = float(lastWhiteScore[1:])
+    lastScore = 1001 - float(lastWhiteScore[1:])
    if not turn:
     score = -score
     lastScore = -lastScore
@@ -163,13 +163,15 @@ class Annotator():
                 game : Union[chess.pgn.Game, chess.pgn.GameNode] = chess.pgn.Game(), 
                 scoreListList : List[List[float]] = list(), 
                 pvListList : Optional[List[List[List[chess.Move]]]] = None, 
-                forceHints : bool = False) -> None:
+                forceHints : bool = False) -> bool:
   '''Apply the results of AnnotateEngine.run to a game 
   
 :param game: game or gameNode where annotation starts (required)
 :param scoreListList: for each move a list of scores for each variant, see AnnotateEngine.scoreListList
 :param pvListList: for each move a list of lists of moves for each variant, see AnnotateEngine.pvListList
 :param forceHints: force the creation of variants independent of the setXX definitions
+
+:return: boolean indicating whether any hints are added
   '''
   
   assert len(scoreListList) > 0, 'Empty scoreListList detected'
@@ -185,11 +187,13 @@ class Annotator():
   else:
    gameNode = game
   lastWsc = 0
+  pvList = None
+  anyHintsAdded = False
   for plyID, scoreList in enumerate(scoreListList):
    if gameNode is None:
     break
-   if pvListList is not None:
-    pvList = pvListList[plyID]
+   if pvListList is not None and plyID > 0:
+    pvList = pvListList[plyID - 1]
    else:
     pvList = None
    wsc = scoreList[0]
@@ -201,12 +205,13 @@ class Annotator():
    if self.notifyFunction is not None:
     self.notifyFunction('{}. {}: score = {}, nags = {}'.format(plyID, gameNode.move, wsc, nag))
    if addHints:
+    anyHintsAdded = True
     for n, score in enumerate(scoreList):
      if self.notifyFunction is not None:
       self.notifyFunction('--> {}'.format(pvList[n]))
-     gameNode.parent.add_line(pvList[n], starting_comment = '<-[%eval {}]'.format(score))
+     gameNode.parent.add_line(pvList[n])
    gameNode = gameNode.next()
-  return game
+  return anyHintsAdded
 
 class AnnotateEngine(QtCore.QObject):
  '''A wrapper class collecting score and variant (pv) data from an engine 

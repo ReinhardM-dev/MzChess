@@ -260,7 +260,7 @@ class ScorePlot(QtCharts.QChartView):
   
 :param gameNode: game node to be selected
   '''
-  if gameNode is None or gameNode.parent is None or not gameNode.is_mainline():
+  if gameNode is None or gameNode.parent is None or not gameNode.is_mainline() or self.materialSeries.count() == 0:
    return
   relPly = gameNode.ply() - gameNode.game().ply() - 1
   assert relPly < self.materialSeries.count()

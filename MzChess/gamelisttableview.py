@@ -144,6 +144,9 @@ class GameListTableView(QtWidgets.QTableView):
    
  def _selection2rowRange(self):
   selection = self.selectionModel().selectedRows()   
+  if len(selection) == 0:
+   self.notifyError('No game selected.')
+   return None
   srcRowList = list()
   for rowSelection in selection:
    srcRowList.append(rowSelection.row())

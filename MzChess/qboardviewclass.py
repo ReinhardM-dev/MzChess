@@ -42,6 +42,7 @@ It seem that ``b8-d8`` is the best move, but it is dubious ...
 '''
 from typing import Optional
 import sys, os, os.path
+import copy
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import MzChess
@@ -659,7 +660,12 @@ class Game(QtWidgets.QGraphicsScene):
      if isinstance(rookPiece,QtWidgets.QGraphicsRectItem):
       raise ValueError('UIE: QGraphicsRectItem found')
       rookPiece.setPos(self.getScenePos(releasedSquareId))
-     rookPiece.setPos(rookTargetPos )
+     rookPiece.setPos(rookTargetPos)
+    elif oldBoard.is_en_passant(move):
+     pawnSquareID = chess.square(chess.square_file(move.to_square), chess.square_rank(move.from_square))
+     pawnItem = self.itemAt(self.getScenePos(pawnSquareID), QtGui.QTransform())
+     self.removeItem(pawnItem)
+     print('en passant move detected')
     self.pressedPiece.setPos(self.getScenePos(releasedSquareId))
    self.gameNode = self.gameNode.add_variation(move)
    board = self.gameNode.board()

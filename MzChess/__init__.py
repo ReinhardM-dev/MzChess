@@ -31,10 +31,12 @@ Versions:
               Square info in statusbar improved
  2.2.1      bug fix
  2.2.2      bug fix
+ 2.3.0      undo/redo functions implemented
+              bug fixes for annotation machinery
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2022-09-12"
-__version__ = "2.2.2"
+__date__ = "2022-11-08"
+__version__ = "2.3.0"
 
 __all__ = [
  'AboutDialog', 

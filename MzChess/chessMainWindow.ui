@@ -120,7 +120,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tabGame">
         <attribute name="title">
@@ -129,6 +129,12 @@
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="GameTreeView" name="gameTreeViewWidget">
+           <property name="editTriggers">
+            <set>QAbstractItemView::EditKeyPressed</set>
+           </property>
+           <property name="expandsOnDoubleClick">
+            <bool>true</bool>
+           </property>
            <column>
             <property name="text">
              <string notr="true">1</string>
@@ -252,9 +258,15 @@
     <addaction name="actionCopyFEN"/>
     <addaction name="actionCopyGame"/>
     <addaction name="separator"/>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="actionUndoCurrentMove"/>
+    <addaction name="separator"/>
+    <addaction name="actionDeleteAllNAGs"/>
+    <addaction name="actionDeleteAllComments"/>
+    <addaction name="separator"/>
     <addaction name="actionNextMove"/>
     <addaction name="actionPreviousMove"/>
-    <addaction name="actionUndoMove"/>
     <addaction name="separator"/>
     <addaction name="actionNextVariant"/>
     <addaction name="actionPreviousVariant"/>
@@ -262,6 +274,7 @@
     <addaction name="actionPromoteVariant2Main"/>
     <addaction name="actionDemoteVariant"/>
     <addaction name="actionDeleteVariant"/>
+    <addaction name="actionDeleteAllVariants"/>
    </widget>
    <widget class="QMenu" name="menuGame">
     <property name="title">
@@ -349,7 +362,7 @@
     <addaction name="menuSelectEngine"/>
     <addaction name="menuSearchDepth"/>
     <addaction name="separator"/>
-    <addaction name="actionAnnotateLastMove"/>
+    <addaction name="actionAnnotateCurrentMove"/>
     <addaction name="actionAnnotateAll"/>
     <addaction name="menuNumberOfAnnotations"/>
     <addaction name="menuBlunderLimit"/>
@@ -500,6 +513,9 @@
    <property name="text">
     <string>Open DB ...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="actionSaveDBAs">
    <property name="text">
@@ -532,6 +548,9 @@
   <action name="actionAddGame">
    <property name="text">
     <string>Add Game</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+N</string>
    </property>
   </action>
   <action name="actionRemoveGames">
@@ -588,20 +607,20 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="actionUndoMove">
+  <action name="actionUndo">
    <property name="text">
-    <string>Undo Move</string>
+    <string>Undo Last Action</string>
    </property>
    <property name="toolTip">
-    <string>Undo the last move of the current sequence</string>
+    <string>Undo Last Action</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
    </property>
   </action>
-  <action name="actionAnnotateLastMove">
+  <action name="actionAnnotateCurrentMove">
    <property name="text">
-    <string>Annotate Last Move</string>
+    <string>Score Current Move</string>
    </property>
   </action>
   <action name="actionBLNone">
@@ -729,7 +748,7 @@
     <string>Promote Variant</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+P</string>
+    <string>Ctrl+Up</string>
    </property>
   </action>
   <action name="actionDeleteVariant">
@@ -737,7 +756,7 @@
     <string>Delete Variant</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R</string>
+    <string>Ctrl+Del</string>
    </property>
   </action>
   <action name="actionAnnotateAll">
@@ -806,7 +825,7 @@
     <string>Demote Variant</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+D</string>
+    <string>Ctrl+Down</string>
    </property>
   </action>
   <action name="actionPromoteVariant2Main">
@@ -814,7 +833,7 @@
     <string>Promote Variant to Main</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+M</string>
+    <string>Ctrl+Shift+Up</string>
    </property>
   </action>
   <action name="actionSelectHeaderElements">
@@ -889,6 +908,9 @@
    <property name="toolTip">
     <string>Save active DB</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionGameUp">
    <property name="text">
@@ -904,6 +926,40 @@
    </property>
    <property name="shortcut">
     <string>Alt+Down</string>
+   </property>
+  </action>
+  <action name="actionUndoCurrentMove">
+   <property name="text">
+    <string>Undo Current Move</string>
+   </property>
+   <property name="toolTip">
+    <string>Undo Current Move</string>
+   </property>
+  </action>
+  <action name="actionDeleteAllVariants">
+   <property name="text">
+    <string>Delete All Variants</string>
+   </property>
+  </action>
+  <action name="actionDeleteAllNAGs">
+   <property name="text">
+    <string>Delete All Annotation Glyphs</string>
+   </property>
+  </action>
+  <action name="actionDeleteAllComments">
+   <property name="text">
+    <string>Delete All Comments and Scores</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete All Comments and Scores</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo Last Action</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
    </property>
   </action>
  </widget>

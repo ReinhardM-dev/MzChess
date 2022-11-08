@@ -3,18 +3,23 @@
 The *game* editor is based on Qt's QTreeWidget. 
 
 |GameEditor|
-It has 2 types of lines:
+Since Qt's QTreeWidget does not fit the tree representing the Portable Game Notation (PGN), i.e.
+
+ * *n* variations per move supported
+ * the main (first) variation is privileged.
+
+This behavior is implemented using 2 types of lines:
 
  * regular moves where all columns have a white background
- * beginning of a variant where the middle columns have a grey background
+ * beginning of a variation marked with a green cross
 
 The tree widget has 4 colums:
 
- #. *Move* shows the actual move or the beginning of a variant in SAN notation 
+ #. *Move* shows the actual move or the beginning of a variation in SAN notation 
  #. *Ann* shows the annotation, i.e. a symbolic move assessment
  #. *Pos* shows the position assessment
  #. *Score* shows the engine or material score of the last move in pawns, material score ending with M
- #. *Comment* shows either the move comment or starting comment of a variant
+ #. *Comment* shows either the move comment or starting comment of a variation
  
 By clicking the annotation (*Ann*) and position assessment (*Pos*) fields, a popup dialog
 opens which allows to change the contents   
@@ -26,6 +31,7 @@ opens which allows to change the contents
 from typing import Optional, Set
 
 import sys,  os.path
+import copy
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import MzChess
 
@@ -85,7 +91,9 @@ class GameTreeView(QtWidgets.QTreeWidget):
   chess.ROOK : 5, 
   chess.QUEEN : 9
  }
-
+ cross16x16File = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pieces', 'cross16x16.ico')
+ crossIcon = QtGui.QIcon(cross16x16File)
+ 
  def __init__(self, parent = None) -> None:
   super(GameTreeView, self).__init__(parent)
   self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
@@ -136,14 +144,18 @@ class GameTreeView(QtWidgets.QTreeWidget):
   super(GameTreeView, self).clear()
 
  def setup(self, notifyGameNodeSelectedSignal : Optional[QtCore.pyqtSignal], 
-                       notifyGameChangedSignal : Optional[QtCore.pyqtSignal]) -> None:
+                       notifyGameNodeChangedSignal : Optional[QtCore.pyqtSignal]) -> None:
   '''Set up of the game editor
   
 :param notifyGameNodeSelectedSignal: signal to be emitted if a game node is selected
 :param notifyGameChangedSignal: signal to be emitted if the loaded game is changed
   '''
   self.notifyGameNodeSelectedSignal = notifyGameNodeSelectedSignal
-  self.notifyGameChangedSignal = notifyGameChangedSignal
+  self.notifyGameNodeChangedSignal = notifyGameNodeChangedSignal
+ 
+ def getGameNode(self, item : QtWidgets.QTreeWidgetItem):
+  index = self.gameNodeList.index(item)
+  return self.gameNodeList[index]
 
  def addVariant(self, gameNode :  chess.pgn.GameNode) -> None:
   '''Adds a new variant, parent node must exist in the editor
@@ -161,6 +173,7 @@ class GameTreeView(QtWidgets.QTreeWidget):
   parentIndex = self.gameNodeList.index(parent)
   parentItem = self.gameItemList[parentIndex]
   newVariant = QtWidgets.QTreeWidgetItem()
+  newVariant.setIcon(0, self.crossIcon)
   for column in range(1, 4):
    newVariant.setBackground(column, self.inactiveBrush)
   newVariant.setFlags(self.itemFlags)
@@ -271,7 +284,6 @@ class GameTreeView(QtWidgets.QTreeWidget):
    result = gameResult[3]
   if len(self.gameItemList) > 0:
    self.gameItemList[0].setText(0, 'Result: {}'.format(result))
-
    
  def setGame(self, game : chess.pgn.Game) -> None:
   '''Clears the editor and sets new game
@@ -367,23 +379,17 @@ class GameTreeView(QtWidgets.QTreeWidget):
  def on_clicked(self, index):
   item = self.itemFromIndex(index)
   column = index.column()
-  if self._isVariant(item):
+  if item in self.gameVariantItemList:
    if column == 4:
-    if item in self.gameVariantItemList:
-     selIndex = self.gameVariantItemList.index(item)
-     gameNode = self.gameVariantNodeList[selIndex]
-     gameNode.starting_comment = self._editComment(item)
-    else:
-     self.game.comment = self._editComment(item)
-     gameNode = self.game
+    selIndex = self.gameVariantItemList.index(item)
+    gameNode = self.gameVariantNodeList[selIndex]
+    attr = 'starting_comment'
+    oldAttrValue = gameNode.starting_comment
+    gameNode.starting_comment = self._editComment(item)
    else:
     if column == 0 and self.notifyGameNodeSelectedSignal is not None:
-     if item in self.gameVariantItemList:
-      selIndex = self.gameVariantItemList.index(item)
-      gameNode = self.gameVariantNodeList[selIndex]
-     else:
-      selIndex = self.gameItemList.index(item)
-      gameNode = self.gameNodeList[selIndex]
+     selIndex = self.gameVariantItemList.index(item)
+     gameNode = self.gameVariantNodeList[selIndex]
      self.notifyGameNodeSelectedSignal.emit(gameNode)
     return
   else:
@@ -405,95 +411,102 @@ class GameTreeView(QtWidgets.QTreeWidget):
      return
    elif column == 1:
     self.annotationLine.move(treeWidgetItemPos(item))
+    attr = 'nags'
+    oldAttrValue = copy.copy(gameNode.nags)
     nag = self.annotationLine.exec()
     gameNode.nags = self._updateNAGs(True, gameNode, nag)
     item.setText(column, self._findNAGSymbol (True,  gameNode))
    elif column == 2:
     self.positionLine.move(treeWidgetItemPos(item))
+    attr = 'nags'
+    oldAttrValue = copy.copy(gameNode.nags)
     nag = self.positionLine.exec()
     gameNode.nags = self._updateNAGs(True, gameNode, nag)
     item.setText(column, self._findNAGSymbol (False,  gameNode))
    elif column == 4:
+    attr = 'comment'
+    oldAttrValue = gameNode.comment
     gameNode.comment = self._editComment(item)
    else:
     return
-  self._emitGameChanged()
+  if self.notifyGameNodeChangedSignal is not None:
+   self.notifyGameNodeChangedSignal.emit(gameNode, (attr, oldAttrValue))
+
+ def moveVariant(self, parentNode : chess.pgn.GameNode, nodeID : int,  promoteItem : Optional[bool]) -> None:
+  assert parentNode in self.gameNodeList and nodeID is not None and nodeID > 0
+  gameNode = parentNode.variations[nodeID]
+  assert gameNode in self.gameVariantNodeList
+  oldIndex = self.gameVariantNodeList.index(gameNode)
+  item = self.gameVariantItemList[oldIndex]
+  parentItem = item.parent()
+  if promoteItem is None:
+   parentItem.removeChild(item)
+   self.gameVariantItemList.pop(oldIndex)
+   self.gameVariantNodeList.pop(oldIndex)
+   self.setCurrentItem(parentItem)
+   return
+  itemID = parentItem.indexOfChild(item)
+  if promoteItem:
+   assert itemID > 0
+   itemID2 = itemID - 1
+  else:
+   assert itemID < len(parentNode.variations) - 2
+   itemID2 = itemID + 1
+  childItem = parentItem.takeChild(itemID)
+  parentItem.insertChild(itemID2, childItem)
+  self.setCurrentItem(childItem)
+  return
+
+ def _takeChildren(self, startingNode : QtWidgets.QTreeWidgetItem, parentNode : Optional[QtWidgets.QTreeWidgetItem] = None):
+  if parentNode is None:
+   parentNode = startingNode.parent()
+  else:
+   assert startingNode.parent() == parentNode
+  children = list()
+  startNodeIndex = parentNode.indexOfChild(startingNode)
+  for index in range(parentNode.childCount(), startNodeIndex, -1):
+   children.insert(0, parentNode.takeChild(index - 1))
+  return children
+  index = parentNode.indexOfChild(startingNode)
+  while True:
+   item = parentNode.takeChild(index)
+   if item is None:
+    return children
+   children.append(item)
+   index += 1
   
- def _isVariant(self, item : QtWidgets.QTreeWidgetItem) -> bool:
-  return item is not None and ((item in self.gameVariantItemList) or (item.parent() in self.gameVariantItemList))
-
- def removeVariant(self) -> bool:
-  '''Remove variant, if currently selected item is a variant
-  '''
-  item = self.currentItem()
-  if not self._isVariant(item):
-   return False
-  if item in self.gameItemList:
-   item =item.parent()
-  parent = item.parent()
-  self.setCurrentItem(parent)
-  selIndex = self.gameVariantItemList.index(item)
-  itemNode = self.gameVariantNodeList[selIndex]
-  newItemNode = itemNode.parent
-  newItemNode.remove_variation(itemNode)
-  parent.removeChild(item)
-  self.selectNodeItem(newItemNode)
-  return True
-
- def promoteVariant(self) -> bool:
-  '''Promote variant, if currently selected item is a variant
-  '''
-  item = self.currentItem()
-  if not self._isVariant(item):
-   return False
-  if item in self.gameVariantItemList:
-   n = self.gameVariantItemList.index(item)
-   itemNode = self.gameVariantNodeList[n]
+ def moveVariant2Main(self, parentNode : chess.pgn.GameNode, nodeID : Optional[int]) -> None:
+  assert parentNode in self.gameNodeList
+  deleteItem = nodeID is None
+  if deleteItem:
+   nodeID = 1
   else:
-   n = self.gameItemList.index(item)
-   itemNode = self.gameNodeList[n]
-  itemNode.parent.promote(itemNode)
-  self.setGame(self.game)
-  self.selectNodeItem(itemNode)
-  return True
-
- def demoteVariant(self) -> bool:
-  '''Demote variant, if currently selected item is a variant
-  '''
-  item = self.currentItem()
-  if item in self.gameVariantItemList:
-   n = self.gameVariantItemList.index(item)
-   itemNode = self.gameVariantNodeList[n]
-  else:
-   n = self.gameItemList.index(item)
-   itemNode = self.gameNodeList[n]
-  if itemNode.parent.variations[-1] == itemNode:
-   return False
-  itemNode.parent.demote(itemNode)
-  self.setGame(self.game)
-  self.selectNodeItem(itemNode)
-  return True
-
- def promoteVariant2Main(self) -> bool:
-  '''Promote variant to main line, if currently selected item is a variant
-  '''
-  item = self.currentItem()
-  if not self._isVariant(item):
-   return False
-  if item in self.gameVariantItemList:
-   n = self.gameVariantItemList.index(item)
-   itemNode = self.gameVariantNodeList[n]
-  else:
-   n = self.gameItemList.index(item)
-   itemNode = self.gameNodeList[n]
-  itemNode.parent.promote_to_main(itemNode)
-  self.setGame(self.game)
-  self.selectNodeItem(itemNode)
-  return True
-  
- def _emitGameChanged(self) -> None:
-  if self.notifyGameChangedSignal is not None:
-   self.notifyGameChangedSignal.emit(self.game)
+   assert nodeID > 0
+  gameNode = parentNode.variations[nodeID]
+  assert gameNode in self.gameVariantNodeList
+  oldIndex = self.gameVariantNodeList.index(gameNode)
+  item = self.gameVariantItemList[oldIndex]
+  self.gameVariantItemList.pop(oldIndex)
+  self.gameVariantNodeList.pop(oldIndex)
+  parentItem = item.parent()
+  itemID = parentItem.indexOfChild(item)
+  self.setUpdatesEnabled(False)
+  nodeItemList = self._takeChildren(item.child(0))
+  variantItem = parentItem.takeChild(itemID)
+  children = parentItem.takeChildren()
+  mainParentItem = parentItem.parent()
+  mainItemList = self._takeChildren(parentItem)
+  mainParentItem.addChildren(nodeItemList)
+  if not deleteItem:
+   variantItem.setText(0,'{} ...'.format(mainItemList[0].text(0)))
+   newIndex = self.gameItemList.index(mainItemList[0])
+   nodeItemList[0].addChild(variantItem)
+   variantItem.addChildren(mainItemList)
+   self.gameVariantItemList.append(variantItem)
+   self.gameVariantNodeList.append(self.gameNodeList[newIndex])
+  nodeItemList[0].addChildren(children)
+  self.setUpdatesEnabled(True)
+  return
 
 if __name__ == "__main__":
  import io, sys
@@ -525,18 +538,6 @@ if __name__ == "__main__":
 
  tree = GameTreeView()
  
- msgSc = QtGui.QShortcut(QtGui.QKeySequence('Ctrl+U'), tree)
- msgSc.activated.connect(tree.promoteVariant)
-
- msgSc = QtGui.QShortcut(QtGui.QKeySequence('Ctrl+D'), tree)
- msgSc.activated.connect(tree.demoteVariant)
-
- msgSc = QtGui.QShortcut(QtGui.QKeySequence('Ctrl+X'), tree)
- msgSc.activated.connect(tree.removeVariant)
-
- msgSc = QtGui.QShortcut(QtGui.QKeySequence('Ctrl+M'), tree)
- msgSc.activated.connect(tree.promoteVariant2Main)
-
  tree.setGame(game)
  tree.resize(500,400)
  tree.show()

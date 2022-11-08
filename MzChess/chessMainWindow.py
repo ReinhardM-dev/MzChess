@@ -43,7 +43,7 @@ On the top, the menu with
     * *Promote/Demote Variant* promote/demote the variant selected in the Game TAB
     * *Promote Variant to Main* promote the variant selected in the Game TAB to mainline
     * *Delete Variant* delete the variant selected in the Game TAB
-    * *Undo Move* deletes the end move of a sequence (main line or variant)
+    * *Undo Current Action* deletes the end move of a sequence (main line or variant)
 
  * *Database* menu with obvious functionality with the exception of
  
@@ -62,9 +62,10 @@ On the top, the menu with
  
     * *Select Engine* sub-menu to select the engine for hints/scores and annotations
     * *Search Depth* sub-menu to set the search depth of the selected engine
-    * *Annotate Last Move* annotates the move leading to actual position
-    * *Annotate All* annotates the actual game
+    * *Score Current Move* annotates the move leading to actual position
+    * *Annotate All* annotates the actual game or variant
     * *# Annotations* defines the number of variants to be suggested in case of a blunder
+    * *Blunder Limit* defines the limit to add a variant
     * *Annotate Variants* defines the number of half moves (PLY) to be shown in variants 
     * *Show Scores* toggle actions enables the *score* part of the *hint/score* label of the status bar
     * *Show Hints* toggle actions enables the *hint* part of the *hint/score* label of the status bar
@@ -117,6 +118,7 @@ In addition, several *standard* key strokes are supported:
 from typing import Optional, Callable, Dict, List, Tuple, Union, Any
 import configparser
 import os, os.path
+import copy
 import platform
 import pickle
 import io
@@ -139,7 +141,7 @@ except:
   import PyQt5.QtSvg
   import PyQt5.QtChart
  except:
-  raise ModuleNotFoundError('Neither the required PyQt6 nor PyQt5 modules installed')
+  raise ModuleNotFoundError('Neither the required PyQt6 nor PyQt5 modules completely installed')
 
 import chess, chess.pgn
 import MzChess
@@ -156,6 +158,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  notifyGameHeadersChangedSignal = QtCore.pyqtSignal(chess.pgn.Headers)
 
  notifyGameNodeSelectedSignal = QtCore.pyqtSignal(chess.pgn.GameNode)
+ notifyGameNodeChangedSignal = QtCore.pyqtSignal(chess.pgn.GameNode, tuple)
  notifyGameChangedSignal = QtCore.pyqtSignal(chess.pgn.Game)
  notifyNewGameNodeSignal = QtCore.pyqtSignal(chess.pgn.GameNode)
  hintDict = { 'None' :  '0',  'White' : '1',  'Black' : '2',  'All' : '3' }
@@ -192,13 +195,14 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.toolBar.addSeparator()
   self._setIcon(self.actionNextMove, QtWidgets.QStyle.StandardPixmap.SP_ArrowDown)
   self._setIcon(self.actionPreviousMove, QtWidgets.QStyle.StandardPixmap.SP_ArrowUp)
-  self._setIcon(self.actionUndoMove, QtWidgets.QStyle.StandardPixmap.SP_BrowserStop)
   self._setIcon(self.actionNextVariant, QtWidgets.QStyle.StandardPixmap.SP_ArrowForward)
   self._setIcon(self.actionPreviousVariant, QtWidgets.QStyle.StandardPixmap.SP_ArrowBack)
   self._setIcon(self.actionPromoteVariant, QtWidgets.QStyle.StandardPixmap.SP_MediaSeekBackward)
   self._setIcon(self.actionDemoteVariant, QtWidgets.QStyle.StandardPixmap.SP_MediaSeekForward)
   self._setIcon(self.actionPromoteVariant2Main, QtWidgets.QStyle.StandardPixmap.SP_MediaSkipBackward)
   self._setIcon(self.actionDeleteVariant, QtWidgets.QStyle.StandardPixmap.SP_DialogCloseButton)
+  self.toolBar.addSeparator()
+  self._setIcon(self.actionUndo, QtWidgets.QStyle.StandardPixmap.SP_BrowserStop)
   self.addToolBar(self.toolBar)
   
   self.gameOptions = { 
@@ -211,12 +215,12 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.engineOptions = {
    'selectedEngine' : (self.menuSelectEngine, None), 
    'searchDepth' : (self.menuSearchDepth, 15), 
-   'blunderLimit' : (self.menuBlunderLimit, -float('inf')), 
    'numberOfAnnotations' : (self.menuNumberOfAnnotations, 1), 
    'annotateVariants' : (self.menuAnnotateVariants, None), 
    'showScores' : (self.actionShowScores, False), 
    }
   
+  #  'blunderLimit' : (self.menuBlunderLimit, -float('inf')), 
   self.gameListHeaders = ['Date',  'White',  'Black',  'Result']
   
   self.engineDict = dict()
@@ -324,9 +328,11 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.loadOptionDict('Menu/Game', self.gameOptions)
   self.resetSelectEngine()
   self.loadOptionDict('Menu/Engine', self.engineOptions)
-  blunderLimit = self.engineOptions['blunderLimit'][1]
-  if blunderLimit == -float('inf'):
-   self.actionBLNone.setChecked(True)
+  blunderLimit = float(self.settings['Menu/Engine'].get('blunderLimit', '-inf'))
+  for action in self.menuBlunderLimit.actions():
+   tList = action.text().split(' ')
+   action.setChecked((len(tList) == 1 and blunderLimit == -float('inf')) \
+                        or  (len(tList) == 2 and blunderLimit == -float(tList[0])))
   hintValue = int(self.settings['Menu/Engine'].get('showHints', 0))
   for actAction in self.menuShowHints.actions():
    if actAction.text() == self.hintList[hintValue]:
@@ -341,13 +347,15 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.pgnFile = None
   self.gameListFile = ''
   self.gameList = list()
-  self.gameListChanged = None
+  self.gameListChanged = False
   self.gameFile = ''
   self.game = chess.pgn.Game()
   self.gameNode = self.game
   self.gameID = None
+  self.undoListList = list()
+  self.redoListList = list()
   self._addGame(game = None, isNew = True)
-  self.setChessWindowTitle(False)
+  self.setChessWindowTitle()
   self.gameSelected(0)
  
   self.gameHeaderTableView.setup(
@@ -360,9 +368,10 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    materialLabel = self.materialLabel, squareLabel = self.squareLabel, 
    turnFrame= self.turnFrame, hintLabel = self.hintLabel, 
    flipped = False)
-  self.gameTreeViewWidget.setup(self.notifyGameNodeSelectedSignal, self.notifyGameChangedSignal)
+  self.gameTreeViewWidget.setup(self.notifyGameNodeSelectedSignal, self.notifyGameNodeChangedSignal)
   self.scorePlotGraphicsView.setup(self.notifyGameNodeSelectedSignal)
   self.notifyGameNodeSelectedSignal.connect(self.gameNodeSelected)
+  self.notifyGameNodeChangedSignal.connect(self.gameNodeChanged)
   self.notifyNewGameNodeSignal.connect(self.newGameNode)
   self.notifyGameChangedSignal.connect(self.gameChanged)
   self.notifySignal.connect(self.notify)
@@ -536,8 +545,12 @@ class ChessMainWindow(QtWidgets.QMainWindow):
      QtWidgets.QMessageBox.StandardButton.No)
    if rc == QtWidgets.QMessageBox.StandardButton.No:
     return False
-  self.gameListChanged = None
+  self.gameListChanged = False
+  self.undoListList = list()
+  self.redoListList = list()
   self.gameList = list()
+  self.pgnFile = None
+
   self._addGame(game = None, isNew = True)
   return True
 
@@ -550,11 +563,13 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameNode = self.game
   self.gameID = len(self.gameList)
   self.gameList.append(self.game)
+  self.undoListList.append(list())
+  self.redoListList.append(list())
   self.gameListTableView.setGameList(self.gameList)
   self._showEcoCode(self.game, fromBeginning = True)
   self.gameSelected(self.gameID)
   if not isNew:
-   self.setChessWindowTitle(True)
+   self.setChessWindowTitle()
 
  def _setGameHeader(self, optionalHeaderItems : List[str]) -> chess.pgn.Headers:
   selectedItems =  list(chess.pgn.Headers()) + optionalHeaderItems
@@ -578,12 +593,12 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   if ext == '.ppgn':
    try:
     with open(pgnFile, mode = 'rb') as f:
-     self.gameList += pickle.load(f)
+     self.gameList = pickle.load(f)
      encoding = None
    except:
     self.notifyError('Cannot open PPGN file {}'.format(pgnFile))
     return
-  else:
+  elif ext == '.pgn':
    try:
     pgn = open(pgnFile, mode = 'r', encoding = encoding)
    except:
@@ -601,8 +616,12 @@ class ChessMainWindow(QtWidgets.QMainWindow):
      self.notifyError('Failed to load game #{}'.format(n))
      return
     n += 1
-  if len(self.gameList) < 2:
+  else:
+   self.notifyError('Cannot handle file with extension "{}"'.format(ext))
+   return
+  if len(self.gameList) < 1:   
    self.notifyError('No game loaded')
+   return
   with open(self.recoverFile, mode = 'wb') as f:
    pickle.dump(self.gameList, f)
   self.gameListTableView.setGameList(self.gameList)
@@ -622,7 +641,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   if pgnFile != self.recoverFile:
    os.chdir(os.path.dirname(pgnFile))
    self.pgnFile = pgnFile
-  self.setChessWindowTitle(False)
+  self.setChessWindowTitle()
  
  @QtCore.pyqtSlot(QAction)
  def on_menuEncoding_triggered(self, action):
@@ -650,16 +669,14 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  def on_actionGameUp_triggered(self):
   if self.gameListTableView.on_menuMoveGame_triggered(self.actionGameUp):
    self.setInfoLabel(True)
-   self.setChessWindowTitle(True)
+   self.setChessWindowTitle()
 
  @QtCore.pyqtSlot()
  def on_actionCloseDB_triggered(self):
   if not self._allowNewGameList():
    return
   self.notify('Closing database ...')
-  self.pgnFile = None
-  self.gameSelected(0)
-  self.setChessWindowTitle(False)
+  self.setChessWindowTitle()
 
  @QtCore.pyqtSlot(QtGui.QCloseEvent)
  def closeEvent(self, ev):
@@ -689,10 +706,15 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   else:
    pgnFile, _ = QtWidgets.QFileDialog.getSaveFileName(self,
      "Save Game Database ...", self.gameListFile,
-     "Pickle Portable Game Notation Files (*.ppgn);;Portable Game Notation Files (*.pgn);;All Files (*)", options = self.fileDialogOptions)
+     "Portable Game Notation Files (*.ppgn *.pgn)", options = self.fileDialogOptions)
    if pgnFile is None or len(pgnFile) == 0:
     return
   _,  ext = os.path.splitext(pgnFile)
+  if len(ext) == 0:
+   ext = '.pgn'
+   self.notify('Saving database to PGN file {}.pgn ...'.format(pgnFile))
+  else:
+   self.notify('Saving database to file {} ...'.format(pgnFile))
   if ext == '.ppgn':
    if mode == 'a':
     self.notifyError('Cannot append to PPGN file {}'.format(pgnFile))
@@ -728,7 +750,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameListFile = os.path.split(pgnFile)[1]
   os.chdir(os.path.dirname(pgnFile))
   self.pgnFile = pgnFile
-  self.setChessWindowTitle(False)
+  self.undoListList = list()
+  self.redoListList = list()
+  self.setChessWindowTitle()
 
  @QtCore.pyqtSlot()
  def on_actionAppend2DB_triggered(self):
@@ -737,12 +761,10 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   
  @QtCore.pyqtSlot()
  def on_actionSaveDB_triggered(self):
-  self.notify('Saving database ...')
   self.saveDB(forceAppend = False, saveCurrent = True)
    
  @QtCore.pyqtSlot()
  def on_actionSaveDBAs_triggered(self):
-  self.notify('Saving database as ...')
   self.saveDB(forceAppend = False, saveCurrent = False)
 
  @QtCore.pyqtSlot()
@@ -757,13 +779,13 @@ class ChessMainWindow(QtWidgets.QMainWindow):
     self.setInfoLabel(True)
    else:
     self.gameSelected(0)
-   self.setChessWindowTitle(True)
+   self.setChessWindowTitle()
 
  @QtCore.pyqtSlot()
  def on_actionGameDown_triggered(self):
   if self.gameListTableView.on_menuMoveGame_triggered(self.actionGameDown):
    self.setInfoLabel(True)
-   self.setChessWindowTitle(True)
+   self.setChessWindowTitle()
  
  @QtCore.pyqtSlot(QAction)
  def on_menuRecentDB_triggered(self, action):
@@ -834,46 +856,138 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  def on_actionPreviousVariant_triggered(self):
   self.gameTreeViewWidget.selectSubnodeItem(self.gameNode, next = False)
 
- @QtCore.pyqtSlot()
- def on_actionPromoteVariant_triggered(self):
-  if self.gameTreeViewWidget.promoteVariant():
-   self.notifyError('You cannot promote from main line nodes')
-   return
-  if self.gameNode.is_main_variation():
+ @staticmethod
+ def variantHead(gameNode):
+  if gameNode is None:
+   return (None, None)
+  parentNode = gameNode.parent
+  while parentNode is not None and len(parentNode.variations) < 2:
+   gameNode = parentNode
+   parentNode = gameNode.parent
+  return (parentNode, gameNode)
+ 
+ def promoteVariant(self, toMain):
+  headParentNode, headNode = self.variantHead(self.gameNode)
+  oldVariations = copy.copy(headParentNode.variations)
+  oldID = oldVariations.index(headNode)
+  if headParentNode is None or oldID == 0:
+    self.notifyError('You cannot promote main line nodes')
+    return
+  if toMain or oldID < 2:
+   self.gameTreeViewWidget.moveVariant2Main(headParentNode, oldID)
+   headParentNode.promote_to_main(headNode)
+  else:
+   self.gameTreeViewWidget.moveVariant(headParentNode, oldID, True)
+   headParentNode.promote(headNode)
+  self.undoListList[self.gameID].append(('variations', [(headParentNode, oldVariations)]))
+  self.gameNodeSelected(self.gameNode)
+  if self.gameNode.is_mainline():
    self.scorePlotGraphicsView.setGame(self.game)
    self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
-  self.setChessWindowTitle(True)
+  self.setChessWindowTitle()
+  
+ @QtCore.pyqtSlot()
+ def on_actionPromoteVariant_triggered(self):
+  self.promoteVariant(False)
 
  @QtCore.pyqtSlot()
  def on_actionPromoteVariant2Main_triggered(self):
-  if not self.gameTreeViewWidget.promoteVariant2Main():
-   self.notifyError('You cannot promote from main line nodes')
-   return
-  self.scorePlotGraphicsView.setGame(self.game)
-  self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
-  self.setChessWindowTitle(True)
+  self.promoteVariant(True)
 
  @QtCore.pyqtSlot()
  def on_actionDemoteVariant_triggered(self):
-  isMainVariation = self.gameNode.is_main_variation()
-  if not self.gameTreeViewWidget.demoteVariant():
-   self.notifyError('You cannot promote from main line nodes')
-   return
-  if isMainVariation:
+  headParentNode, headNode = self.variantHead(self.gameNode)
+  oldVariations = copy.copy(headParentNode.variations)
+  oldID = oldVariations.index(headNode)
+  isMainline = headNode.is_mainline()
+  if headParentNode is None \
+   or oldID == len(headParentNode.variations) - 1:
+    self.notifyError('You cannot demote last line nodes')
+    return
+  if oldID > 0:
+   self.gameTreeViewWidget.moveVariant(headParentNode, oldID, False)
+  else:
+   self.gameTreeViewWidget.moveVariant2Main(headParentNode, 1)
+  headParentNode.demote(headNode)
+  self.undoListList[self.gameID].append(('variations', [(headParentNode, oldVariations)]))
+  if False:
+   self.gameTreeViewWidget.setGame(self.game)
+  self.gameNodeSelected(self.gameNode)
+  if isMainline:
    self.scorePlotGraphicsView.setGame(self.game)
    self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
-  self.setChessWindowTitle(True)
-
+  self.setChessWindowTitle()
+  
  @QtCore.pyqtSlot()
  def on_actionDeleteVariant_triggered(self):
-  if self.gameTreeViewWidget.removeVariant():
+  headParentNode, headNode = self.variantHead(self.gameNode)
+  if headParentNode is None:
    self.notifyError('Use "Database/Remove Games" to remove a complete game')
    return
-  self.boardGraphicsView.setGameNode(self.gameNode)
-  self.setChessWindowTitle(True)
+  oldVariations = copy.copy(headParentNode.variations)
+  oldID = oldVariations.index(headNode)
+  isMainline = headNode.is_mainline()
+  if oldID > 0:
+   self.gameTreeViewWidget.moveVariant(headParentNode, oldID, None)
+  else:
+   self.gameTreeViewWidget.moveVariant2Main(headParentNode, None)
+  headParentNode.remove_variation(headNode)
+  self.undoListList[self.gameID].append(('variations', [(headParentNode, oldVariations)]))
+  if False:
+   self.gameTreeViewWidget.setGame(self.game)
+  if isMainline:
+   self.scorePlotGraphicsView.setGame(self.game)
+  self.gameNodeSelected(headParentNode)
+  self.setChessWindowTitle()
 
  @QtCore.pyqtSlot()
- def on_actionUndoMove_triggered(self):
+ def on_actionDeleteAllVariants_triggered(self):
+  while not self.gameNode.is_mainline():
+   self.gameNode = self.gameNode.parent
+  gameNodeValueDict = dict()
+  for gameNode in self.game.mainline():
+   if len(gameNode.variations) > 1:
+    gameNodeValueDict[gameNode] = copy.copy(gameNode.variations)
+    del gameNode.variations[:1]
+  if len(gameNodeValueDict) > 0:
+   gameNodeValueList = [gameNodeValueDict.pop(self.gameNode, str())]
+   gameNodeValueList += gameNodeValueDict.items()
+   self.undoListList[self.gameID].append(('nags', gameNodeValueList))
+   self.gameNodeSelected(self.gameNode)
+   self.setChessWindowTitle()
+ 
+ @staticmethod
+ def _deleteGameNodesLenGtZero(gameNode, attr, clearedAttr, gameNodeValueDict = dict()):
+  attrValue = getattr(gameNode, attr)
+  if len(attrValue) > 0:
+   gameNodeValueDict[gameNode] = attrValue
+   setattr(gameNode, attr, clearedAttr)
+  for subNode in gameNode.variations:
+   ChessMainWindow._deleteGameNodesLenGtZero(subNode, attr, clearedAttr, gameNodeValueDict)
+  return gameNodeValueDict
+   
+ @QtCore.pyqtSlot()
+ def on_actionDeleteAllNAGs_triggered(self):
+  gameNodeValueDict = self._deleteGameNodesLenGtZero(self.game, 'nags', set())
+  if len(gameNodeValueDict) != 0:
+   gameNodeValueList = [(self.game, gameNodeValueDict.pop(self.game, set()))]
+   gameNodeValueList += gameNodeValueDict.items()
+   self.undoListList[self.gameID].append(('nags', gameNodeValueList))
+   self.gameTreeViewWidget.setGame(self.game)
+   self.setChessWindowTitle()
+   
+ @QtCore.pyqtSlot()
+ def on_actionDeleteAllComments_triggered(self):
+  gameNodeValueDict = self._deleteGameNodesLenGtZero(self.game, 'comment', str())
+  if len(gameNodeValueDict) != 0:
+   gameNodeValueList = [(self.game, gameNodeValueDict.pop(self.game, str()))]
+   gameNodeValueList += gameNodeValueDict.items()
+   self.undoListList[self.gameID].append(('comment', gameNodeValueList))
+   self.gameTreeViewWidget.setGame(self.game)
+   self.setChessWindowTitle()
+   
+ @QtCore.pyqtSlot()
+ def on_actionUndoCurrentMove_triggered(self):
   if self.gameNode is None or self.gameNode.parent is None:
    return
   if not self.gameNode.is_end():
@@ -889,12 +1003,113 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   if gameNode.is_mainline():
    self.scorePlotGraphicsView.removeLastNode()
   self.gameNode.remove_variation(gameNode)
-  self.setChessWindowTitle(True)
+  self.setChessWindowTitle()
 
- def setChessWindowTitle(self, targetChanged : bool):
-  if targetChanged == self.gameListChanged:
+ @QtCore.pyqtSlot()
+ def on_actionUndo_triggered(self):
+  if self.gameID is None or len(self.undoListList[self.gameID]) == 0:
    return
-  self.gameListChanged = targetChanged
+  item = self.undoListList[self.gameID].pop(-1)
+  if isinstance(item, chess.pgn.GameNode):
+   self.redoListList[self.gameID].append(item)
+   gameNode = item
+   parent = gameNode.parent
+   self.gameTreeViewWidget.removeGameNode(gameNode)
+   if gameNode.is_mainline():
+    self.scorePlotGraphicsView.removeLastNode()
+   parent.remove_variation(gameNode)
+   self.gameNodeSelected(parent)
+  elif isinstance(item, tuple):
+   attr, gameNodeValueList = item
+   gameNode = gameNodeValueList[0][0]
+   if attr == 'headers':
+    self.redoListList[self.gameID].append((attr, (gameNode, getattr(self.game, attr))))
+    setattr(self.game, attr, gameNodeValueList[0][1])
+   else:
+    redoGameNodeValueList = list()
+    if attr == 'variations':
+     for headParentNode, savedVariations in gameNodeValueList:
+      redoGameNodeValueList.append((headParentNode, getattr(headParentNode, attr)))
+      variantDeleted = len(headParentNode.variations) < len(savedVariations)
+      mainlineChanged = headParentNode.variations[0] != savedVariations[0]
+      promotedToMain = mainlineChanged and not variantDeleted
+      if not (promotedToMain or variantDeleted):
+       for firstId, gameNode in enumerate(savedVariations):
+        if headParentNode.variations[firstId] != savedVariations[firstId]:
+         self.gameTreeViewWidget.moveVariant(headParentNode, firstId, False)
+         headParentNode.variations = savedVariations
+         break
+      else:
+       gameNode.variations = savedVariations
+       self.gameSelected(self.gameID)
+    elif attr == 'game':
+     self.redoListList[self.gameID].append((attr, [(self.gameNode, pickle.dumps(self.game))]))
+     self.game = pickle.dumps(gameNodeValueList[0][1])
+    else:
+     for node, oldAttrValue in gameNodeValueList:
+      redoGameNodeValueList.append((node, getattr(node, attr)))
+      setattr(node, attr, oldAttrValue)
+     self.gameSelected(self.gameID)
+    self.redoListList[self.gameID].append((attr, redoGameNodeValueList))
+    self.gameNodeSelected(gameNode)
+  else:
+   raise ValueError('UIE: Undo item type {} not expected'.format(type(item)))
+  if self.gameNode == self.game:
+   self.scorePlotGraphicsView.setGame(self.game)
+  self.gameTreeViewWidget.setGame(self.game)
+  self.setChessWindowTitle()
+
+ @QtCore.pyqtSlot()
+ def on_actionRedo_triggered(self):
+  if self.gameID is None or len(self.redoListList[self.gameID]) == 0:
+   return
+  item = self.redoListList[self.gameID].pop(-1)
+  if isinstance(item, chess.pgn.GameNode):
+   item.parent.variations.append(item)
+   self.newGameNode(item)
+   self.gameNodeSelected(item)
+  elif isinstance(item, tuple):
+   attr, gameNodeValueList = item
+   gameNode = gameNodeValueList[0][0]
+   if attr == 'headers':
+    self.undoListList[self.gameID].append((attr, (gameNode, getattr(self.game, attr))))
+    setattr(self.game, attr, gameNodeValueList[0][1])
+   else:
+    redoGameNodeValueList = list()
+    if attr == 'variations':
+     for headParentNode, savedVariations in gameNodeValueList:
+      redoGameNodeValueList.append((headParentNode, getattr(headParentNode, attr)))
+      variantDeleted = len(headParentNode.variations) < len(savedVariations)
+      mainlineChanged = headParentNode.variations[0] != savedVariations[0]
+      promotedToMain = mainlineChanged and not variantDeleted
+      if not (promotedToMain or variantDeleted):
+       for firstId, gameNode in enumerate(savedVariations):
+        if headParentNode.variations[firstId] != savedVariations[firstId]:
+         self.gameTreeViewWidget.moveVariant(headParentNode, firstId, False)
+         headParentNode.variations = savedVariations
+         break
+      else:
+       headParentNode.variations = savedVariations
+       self.gameTreeViewWidget.setGame(self.game)
+    else:
+     for node, oldAttrValue in gameNodeValueList:
+      redoGameNodeValueList.append((node, getattr(node, attr)))
+      setattr(node, attr, oldAttrValue)
+    self.undoListList[self.gameID].append((attr, redoGameNodeValueList))
+    self.gameNodeSelected(gameNode)
+  else:
+   raise ValueError('UIE: Undo item type {} not expected'.format(type(item)))
+  if self.gameNode == self.game:
+   self.scorePlotGraphicsView.setGame(self.game)
+  self.gameTreeViewWidget.setGame(self.game)
+  self.setChessWindowTitle()
+
+ def setChessWindowTitle(self):
+  self.gameListChanged = False 
+  for undoList in self.undoListList:
+   self.gameListChanged = self.gameListChanged or len(undoList) > 0
+   if self.gameListChanged:
+    break
   title = 'MzChess - '
   if self.pgnFile is not None:
    title += os.path.basename(self.pgnFile)
@@ -963,7 +1178,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.saveSettings()
 
  @QtCore.pyqtSlot()
- def on_actionAnnotateLastMove_triggered(self):
+ def on_actionAnnotateCurrentMove_triggered(self):
   if self.settings['Menu/Engine']['selectedEngine'] is None:
    self.notifyError('No engine selected')
    return
@@ -982,21 +1197,23 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    annotateVariants = int(annotateVariants)
   else:
    annotateVariants = 0
-  self.notify('Annotating move {} of game #{} ...'.format(self.gameNode.move.uci(), self.gameID))
+  self.notify('Scoring move {} of game #{} ...'.format(self.gameNode.move.uci(), self.gameID))
   aEngine.setup(engine, hintPLYs = annotateVariants, multiPV = int(self.settings['Menu/Engine']['numberOfAnnotations']))
-  if aEngine.run(self.gameNode.parent, numberOfPlys = 2):
+  if aEngine.run(self.gameNode, numberOfPlys = 1):
    annotator = MzChess.Annotator(self.settings['Menu/Engine']['selectedEngine'], notifyFunction = self.notifySignal.emit)
-   if self.settings['Menu/Engine']['blunderLimit'] is None:
-    annotator.setBlunder(-float('inf'), addVariant = False)
-   else:
-    annotator.setBlunder(float(self.settings['Menu/Engine']['blunderLimit']), addVariant = True)
-   annotator.apply(game = self.gameNode, scoreListList = aEngine.scoreListList, pvListList = aEngine.pvListList, forceHints = True)
-   self.scorePlotGraphicsView.setGame(self.game)
+   annotator.setBlunder(-float('inf'), addVariant = False)
+   oldAttrValue = self.gameNode.comment
+   annotator.apply(game = self.gameNode, scoreListList = aEngine.scoreListList, pvListList = None)
+   self.undoListList[self.gameID].append(('comment', [(self.gameNode, oldAttrValue)]))
+   if self.gameNode == self.game:
+    self.scorePlotGraphicsView.setGame(self.game)
    self.gameTreeViewWidget.setGame(self.game)
-   self.gameHeaderTableView.setGame(self.game)
-   self.setChessWindowTitle(True)
+   # self.gameHeaderTableView.setGame(self.game)
+   self.gameNodeSelected(self.gameNode)
+   self.setChessWindowTitle()
   else:
    self.notifyError('Annotation failed')
+   return
 
  @QtCore.pyqtSlot()
  def on_actionAnnotateAll_triggered(self):
@@ -1019,21 +1236,38 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    annotateVariants = int(annotateVariants.split(' ')[0])
   else:
    annotateVariants = 0
-  self.notify('Annotating game #{} ...'.format(self.gameID))
+  gameNode = self.gameNode
+  while gameNode.parent:
+   if gameNode.parent.variations[0] != gameNode:
+    break
+   gameNode = gameNode.parent
+  if gameNode == self.game:
+   self.notify('Annotating game #{} ...'.format(self.gameID))
+  else:
+   self.notify('Annotating variant {} of #{} ...'.format(gameNode, self.gameID))
   aEngine.setup(engine, hintPLYs = annotateVariants, multiPV = int(self.settings['Menu/Engine']['numberOfAnnotations']))
-  if aEngine.run(self.game, numberOfPlys = None):
+  if aEngine.run(gameNode, numberOfPlys = None):
    annotator = MzChess.Annotator(self.settings['Menu/Engine']['selectedEngine'])
-   if self.settings['Menu/Engine']['blunderLimit'] is None:
-    annotator.setBlunder(-float('inf'), addVariant = False)
+   addVariant = self.settings['Menu/Engine']['blunderLimit'] != '-inf'
+   annotator.setBlunder(float(self.settings['Menu/Engine']['blunderLimit']), addVariant = addVariant)
+   undoGameNodeValueList = list()
+   for actGameNode in gameNode.mainline():
+    if actGameNode.comment != '':
+     undoGameNodeValueList.append((actGameNode, gameNode.comment))
+   hintsAdded = annotator.apply(game = gameNode, scoreListList = aEngine.scoreListList, pvListList = aEngine.pvListList)
+   if hintsAdded:
+    self.undoListList[self.gameID].append(('game', [(self.gameNode, pickle.dumps(self.game))]))
    else:
-    annotator.setBlunder(float(self.settings['Menu/Engine']['blunderLimit']), addVariant = True)
-   self.game = annotator.apply(game = self.game, scoreListList = aEngine.scoreListList, pvListList = aEngine.pvListList)
-   self.scorePlotGraphicsView.setGame(self.game)
+    self.undoListList[self.gameID].append(('comment', [(self.gameNode, undoGameNodeValueList)]))
+   if gameNode == self.game:
+    self.scorePlotGraphicsView.setGame(self.game)
    self.gameTreeViewWidget.setGame(self.game)
-   self.gameHeaderTableView.setGame(self.game)
-   self.setChessWindowTitle(True)
+   # self.gameHeaderTableView.setGame(self.game)
+   self.gameNodeSelected(self.gameNode)
+   self.setChessWindowTitle()
   else:
    self.notifyError('Annotation failed')
+   return
 
  @QtCore.pyqtSlot(bool)
  def on_actionShowOptions_toggled(self, checked):
@@ -1074,6 +1308,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   if hintsChecked > 0 or scoresChecked:
    if self.settings['Menu/Engine']['searchDepth'] is None:
     self.notifyError('"Engine/Search Depth" undefined.')
+    return
    if self.debugEngine:
     logFunction = self.logSignal.emit
    else:
@@ -1182,11 +1417,12 @@ class ChessMainWindow(QtWidgets.QMainWindow):
 
  @QtCore.pyqtSlot(int)
  def gameSelected(self, gameID):
-  self.gameID = gameID
-  self.game = self.gameList[gameID]
-  self.gameNode = self.game
-  try:
+  if gameID != self.gameID or True:
+   self.gameID = gameID
+   self.game = self.gameList[gameID]
+   self.gameNode = self.game
    self.notify('Loading game #{} ...'.format(self.gameID))
+  try:
    self._showEcoCode(self.game, fromBeginning = True)
    self.boardGraphicsView.setGameNode(self.game)
    self.gameTreeViewWidget.setGame(self.game)
@@ -1196,6 +1432,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.setMoveLabel(self.gameNode.board())
   except:
    self.notifyError('UIE: Improper game ="{}"'.format(self.game))
+   return
 
  @QtCore.pyqtSlot(list)
  def gameListHeaderChanged(self, gameListHeader):
@@ -1206,10 +1443,11 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  @QtCore.pyqtSlot()
  def gameListChanged(self):
   self.setInfoLabel(True)
-  self.setChessWindowTitle(True)
+  self.setChessWindowTitle()
 
  @QtCore.pyqtSlot(chess.pgn.Headers)
  def gameHeadersChanged(self,  headers):
+  self.undoListList[self.gameID].append(('headers', [(self.gameNode, self.game.headers)]))
   if 'Comment' in headers:
    self.game.comment = headers['Comment']
    del headers['Comment']
@@ -1225,11 +1463,12 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    self.updateSettingsList('Sites', self.siteList, firstValue = headers["Site"])
   self.saveSettings()
   self.game.headers = headers
-  self.setChessWindowTitle(True)
+  self.setChessWindowTitle()
 
  @QtCore.pyqtSlot(chess.pgn.GameNode)
  def newGameNode(self, gameNode):
   self.gameNode = gameNode
+  self.undoListList[self.gameID].append(self.gameNode)
   self._showEcoCode(self.game, fromBeginning = False)
   if gameNode.is_mainline():
    self.scorePlotGraphicsView.addGameNodes(gameNode)
@@ -1259,7 +1498,8 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameNode = gameNode
   self.boardGraphicsView.setGameNode(self.gameNode)
   self.gameTreeViewWidget.selectNodeItem(self.gameNode)
-  self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
+  if self.gameNode.is_mainline():
+   self.scorePlotGraphicsView.selectNodeItem(self.gameNode)
   self.setMoveLabel(self.gameNode.board())
 
  @QtCore.pyqtSlot(chess.pgn.Game)
@@ -1267,8 +1507,14 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameHeaderTableView.setGameResult(game.headers['Result'])
   self.gameTreeViewWidget.setGameResult(game.headers['Result'])
   self.game = game
-  self.setChessWindowTitle(True)
+  self.setChessWindowTitle()
   
+ @QtCore.pyqtSlot(chess.pgn.GameNode, tuple)
+ def gameNodeChanged(self, gameNode, attrTuple):
+  attr, oldAttrValue = attrTuple
+  self.undoListList[self.gameID].append((attr, [(gameNode, oldAttrValue)]))
+  self.setChessWindowTitle()
+
 class MzClassApplication(QtWidgets.QApplication):
  def __init__(self, argv : List[str], notifyFct : Callable[[str], None] = print) -> None: 
   super(MzClassApplication, self).__init__(argv)

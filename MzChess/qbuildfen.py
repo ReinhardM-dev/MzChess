@@ -151,6 +151,7 @@ class BuildFenClass(QtWidgets.QMainWindow):
    QtWidgets.QApplication.clipboard().setText(fen)
   except ValueError as err:
    self.notifyError('Improper FEN {}:\n{}'.format(fen, str(err)))
+   return
    
  @QtCore.pyqtSlot()
  def on_actionPaste_triggered(self):
@@ -161,6 +162,7 @@ class BuildFenClass(QtWidgets.QMainWindow):
    self._resetFen()
   except ValueError as err:
    self.notifyError('Improper FEN {}:\n{}'.format(fen, str(err)))
+   return
 
  @QtCore.pyqtSlot()
  def on_fenChanged(self):
@@ -384,6 +386,7 @@ class PlacementBoard(ChessGroupBox):
    self.buildFenClass.notify(self.buildFenClass.board.fen())
   except ValueError as err:
    self.buildFenClass.notifyError('Improper placemenent @ {}:\n{}'.format(chess.square_name(square), str(err)))
+   return
    
 def showStatus(board):
  print('fen = {}'.format(board.fen()))

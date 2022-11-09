@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game Editor &mdash; MzChess V2.2.0 documentation</title>
+  <title>Game Editor &mdash; MzChess V2.3.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -31,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> MzChess
           </a>
               <div class="version">
-                V2.2
+                V2.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -46,9 +47,24 @@
 <li class="toctree-l2"><a class="reference internal" href="chessMainWindow.html">Main Window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qboardview.html">Chess Board</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Game Editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gametreeview.GameTreeView"><code class="docutils literal notranslate"><span class="pre">GameTreeView</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gametreeview.GameTreeView.addGameNodes"><code class="docutils literal notranslate"><span class="pre">GameTreeView.addGameNodes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gametreeview.GameTreeView.addVariant"><code class="docutils literal notranslate"><span class="pre">GameTreeView.addVariant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gametreeview.GameTreeView.selectNodeItem"><code class="docutils literal notranslate"><span class="pre">GameTreeView.selectNodeItem()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gametreeview.GameTreeView.selectSubnodeItem"><code class="docutils literal notranslate"><span class="pre">GameTreeView.selectSubnodeItem()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gametreeview.GameTreeView.setGame"><code class="docutils literal notranslate"><span class="pre">GameTreeView.setGame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gametreeview.GameTreeView.setGameResult"><code class="docutils literal notranslate"><span class="pre">GameTreeView.setGameResult()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gametreeview.GameTreeView.setup"><code class="docutils literal notranslate"><span class="pre">GameTreeView.setup()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="gameHeaderView.html">Game Header Editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameHeaderView.html#gameheaderview.GameHeaderView"><code class="docutils literal notranslate"><span class="pre">GameHeaderView</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameHeaderView.html#gameheaderview.KeyType"><code class="docutils literal notranslate"><span class="pre">KeyType</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="gameListTableView.html">Database Editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameListTableView.html#gamelisttableview.GameListTableModel"><code class="docutils literal notranslate"><span class="pre">GameListTableModel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameListTableView.html#gamelisttableview.GameListTableView"><code class="docutils literal notranslate"><span class="pre">GameListTableView</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="scoreplotgraphicsview.html">Score Chart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scoreplotgraphicsview.html#scoreplotgraphicsview.ScorePlot"><code class="docutils literal notranslate"><span class="pre">ScorePlot</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="configureEngine.html">UCI Configuration</a></li>
 </ul>
 </li>
@@ -68,9 +84,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="gui.html">GUI</a> &raquo;</li>
-      <li>Game Editor</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="gui.html">GUI</a></li>
+      <li class="breadcrumb-item active">Game Editor</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/gameTreeView.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -84,25 +100,33 @@
 <h1>Game Editor<a class="headerlink" href="#game-editor" title="Permalink to this heading"></a></h1>
 <p>The <em>game</em> editor is based on Qt’s QTreeWidget.</p>
 <p><a class="reference internal" href="_images/gameEditor.png"><img alt="Game Editor" src="_images/gameEditor.png" style="width: 800px;" /></a>
-It has 2 types of lines:</p>
+Since Qt’s QTreeWidget does not fit the tree representing the Portable Game Notation (PGN), i.e.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>n</em> variations per move supported</p></li>
+<li><p>the main (first) variation is privileged.</p></li>
+</ul>
+</div></blockquote>
+<p>This behavior is implemented using 2 types of lines:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>regular moves where all columns have a white background</p></li>
-<li><p>beginning of a variant where the middle columns have a grey background</p></li>
+<li><p>beginning of a variation marked with a green cross</p></li>
 </ul>
 </div></blockquote>
 <p>The tree widget has 4 colums:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p><em>Move</em> shows the actual move or the beginning of a variant in SAN notation</p></li>
+<li><p><em>Move</em> shows the actual move or the beginning of a variation in SAN notation</p></li>
 <li><p><em>Ann</em> shows the annotation, i.e. a symbolic move assessment</p></li>
 <li><p><em>Pos</em> shows the position assessment</p></li>
 <li><p><em>Score</em> shows the engine or material score of the last move in pawns, material score ending with M</p></li>
-<li><p><em>Comment</em> shows either the move comment or starting comment of a variant</p></li>
+<li><p><em>Comment</em> shows either the move comment or starting comment of a variation</p></li>
 </ol>
 </div></blockquote>
 <p>By clicking the annotation (<em>Ann</em>) and position assessment (<em>Pos</em>) fields, a popup dialog
 opens which allows to change the contents</p>
+</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="gametreeview.GameTreeView">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gametreeview.</span></span><span class="sig-name descname"><span class="pre">GameTreeView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gametreeview.html#GameTreeView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gametreeview.GameTreeView" title="Permalink to this definition"></a></dt>
@@ -130,30 +154,6 @@ opens which allows to change the contents</p>
 <dd class="field-odd"><p><strong>gameNode</strong> – game node to be added (must not be main_variation !!)</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="gametreeview.GameTreeView.demoteVariant">
-<span class="sig-name descname"><span class="pre">demoteVariant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/gametreeview.html#GameTreeView.demoteVariant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gametreeview.GameTreeView.demoteVariant" title="Permalink to this definition"></a></dt>
-<dd><p>Demote variant, if currently selected item is a variant</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="gametreeview.GameTreeView.promoteVariant">
-<span class="sig-name descname"><span class="pre">promoteVariant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/gametreeview.html#GameTreeView.promoteVariant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gametreeview.GameTreeView.promoteVariant" title="Permalink to this definition"></a></dt>
-<dd><p>Promote variant, if currently selected item is a variant</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="gametreeview.GameTreeView.promoteVariant2Main">
-<span class="sig-name descname"><span class="pre">promoteVariant2Main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/gametreeview.html#GameTreeView.promoteVariant2Main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gametreeview.GameTreeView.promoteVariant2Main" title="Permalink to this definition"></a></dt>
-<dd><p>Promote variant to main line, if currently selected item is a variant</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="gametreeview.GameTreeView.removeVariant">
-<span class="sig-name descname"><span class="pre">removeVariant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/gametreeview.html#GameTreeView.removeVariant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gametreeview.GameTreeView.removeVariant" title="Permalink to this definition"></a></dt>
-<dd><p>Remove variant, if currently selected item is a variant</p>
 </dd></dl>
 
 <dl class="py method">
@@ -205,7 +205,7 @@ opens which allows to change the contents</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="gametreeview.GameTreeView.setup">
-<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">notifyGameNodeSelectedSignal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyqtSignal</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notifyGameChangedSignal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyqtSignal</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/gametreeview.html#GameTreeView.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gametreeview.GameTreeView.setup" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">notifyGameNodeSelectedSignal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyqtSignal</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notifyGameNodeChangedSignal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyqtSignal</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/gametreeview.html#GameTreeView.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gametreeview.GameTreeView.setup" title="Permalink to this definition"></a></dt>
 <dd><p>Set up of the game editor</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -219,7 +219,6 @@ opens which allows to change the contents</p>
 
 </dd></dl>
 
-</section>
 
 
            </div>

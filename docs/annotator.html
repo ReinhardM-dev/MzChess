@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Annotation Tools &mdash; MzChess V2.2.0 documentation</title>
+  <title>Annotation Tools &mdash; MzChess V2.3.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -31,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> MzChess
           </a>
               <div class="version">
-                V2.2
+                V2.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -46,7 +47,25 @@
 <li class="toctree-l1 current"><a class="reference internal" href="utilities.html">Utilities</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="pgnParse.html">PGN Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chessengine.html">UCI Engine</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Annotation Tools</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Annotation Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#annotateEngine.Annotator"><code class="docutils literal notranslate"><span class="pre">Annotator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#annotateEngine.Annotator.apply"><code class="docutils literal notranslate"><span class="pre">Annotator.apply()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#annotateEngine.Annotator.remove"><code class="docutils literal notranslate"><span class="pre">Annotator.remove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#annotateEngine.Annotator.setBlunder"><code class="docutils literal notranslate"><span class="pre">Annotator.setBlunder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#annotateEngine.Annotator.setBrillantMove"><code class="docutils literal notranslate"><span class="pre">Annotator.setBrillantMove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#annotateEngine.Annotator.setDubiousMove"><code class="docutils literal notranslate"><span class="pre">Annotator.setDubiousMove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#annotateEngine.Annotator.setGoodMove"><code class="docutils literal notranslate"><span class="pre">Annotator.setGoodMove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#annotateEngine.Annotator.setPoorMove"><code class="docutils literal notranslate"><span class="pre">Annotator.setPoorMove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#annotateEngine.Annotator.setSpeculativeMove"><code class="docutils literal notranslate"><span class="pre">Annotator.setSpeculativeMove()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#annotateEngine.AnnotateEngine"><code class="docutils literal notranslate"><span class="pre">AnnotateEngine</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#annotateEngine.AnnotateEngine.run"><code class="docutils literal notranslate"><span class="pre">AnnotateEngine.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#annotateEngine.AnnotateEngine.setup"><code class="docutils literal notranslate"><span class="pre">AnnotateEngine.setup()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="eco.html">ECO Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="warnOfDanger.html">Warn of Danger</a></li>
 </ul>
@@ -66,9 +85,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="utilities.html">Utilities</a> &raquo;</li>
-      <li>Annotation Tools</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="utilities.html">Utilities</a></li>
+      <li class="breadcrumb-item active">Annotation Tools</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/annotator.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -94,7 +113,7 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="annotateEngine.Annotator.apply">
-<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game:</span> <span class="pre">~typing.Union[~chess.pgn.Game</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~chess.pgn.GameNode]</span> <span class="pre">=</span> <span class="pre">&lt;Game</span> <span class="pre">at</span> <span class="pre">0x2c1b8e1d510</span> <span class="pre">('?'</span> <span class="pre">vs.</span> <span class="pre">'?'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'????.??.??')&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoreListList:</span> <span class="pre">~typing.List[~typing.List[float]]</span> <span class="pre">=</span> <span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pvListList:</span> <span class="pre">~typing.Optional[~typing.List[~typing.List[~typing.List[~chess.Move]]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forceHints:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/annotateEngine.html#Annotator.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.Annotator.apply" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game:</span> <span class="pre">~typing.Union[~chess.pgn.Game</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~chess.pgn.GameNode]</span> <span class="pre">=</span> <span class="pre">&lt;Game</span> <span class="pre">at</span> <span class="pre">0x27afb581f60</span> <span class="pre">('?'</span> <span class="pre">vs.</span> <span class="pre">'?'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'????.??.??')&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoreListList:</span> <span class="pre">~typing.List[~typing.List[float]]</span> <span class="pre">=</span> <span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pvListList:</span> <span class="pre">~typing.Optional[~typing.List[~typing.List[~typing.List[~chess.Move]]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forceHints:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/annotateEngine.html#Annotator.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#annotateEngine.Annotator.apply" title="Permalink to this definition"></a></dt>
 <dd><p>Apply the results of AnnotateEngine.run to a game</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -104,6 +123,9 @@
 <li><p><strong>pvListList</strong> – for each move a list of lists of moves for each variant, see AnnotateEngine.pvListList</p></li>
 <li><p><strong>forceHints</strong> – force the creation of variants independent of the setXX definitions</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>boolean indicating whether any hints are added</p>
 </dd>
 </dl>
 </dd></dl>

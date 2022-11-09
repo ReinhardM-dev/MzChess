@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scoreplotgraphicsview &mdash; MzChess V2.2.0 documentation</title>
+  <title>scoreplotgraphicsview &mdash; MzChess V2.3.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -15,6 +15,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -28,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> MzChess
           </a>
               <div class="version">
-                V2.2
+                V2.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -56,9 +57,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">Module code</a> &raquo;</li>
-      <li>scoreplotgraphicsview</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scoreplotgraphicsview</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -330,7 +331,7 @@
 <span class="sd">  </span>
 <span class="sd">:param gameNode: game node to be selected</span>
 <span class="sd">  &#39;&#39;&#39;</span>
-  <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">is_mainline</span><span class="p">():</span>
+  <span class="k">if</span> <span class="n">gameNode</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">is_mainline</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">materialSeries</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
    <span class="k">return</span>
   <span class="n">relPly</span> <span class="o">=</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">ply</span><span class="p">()</span> <span class="o">-</span> <span class="n">gameNode</span><span class="o">.</span><span class="n">game</span><span class="p">()</span><span class="o">.</span><span class="n">ply</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
   <span class="k">assert</span> <span class="n">relPly</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">materialSeries</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>

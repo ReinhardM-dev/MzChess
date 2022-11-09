@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UCI Engine &mdash; MzChess V2.2.0 documentation</title>
+  <title>UCI Engine &mdash; MzChess V2.3.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -31,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> MzChess
           </a>
               <div class="version">
-                V2.2
+                V2.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -45,7 +46,23 @@
 <li class="toctree-l1"><a class="reference internal" href="gui.html">GUI</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="utilities.html">Utilities</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="pgnParse.html">PGN Parser</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">UCI Engine</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">UCI Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#chessengine.ChessEngine"><code class="docutils literal notranslate"><span class="pre">ChessEngine</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chessengine.ChessEngine.getScore"><code class="docutils literal notranslate"><span class="pre">ChessEngine.getScore()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chessengine.ChessEngine.isReady"><code class="docutils literal notranslate"><span class="pre">ChessEngine.isReady()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chessengine.ChessEngine.kill"><code class="docutils literal notranslate"><span class="pre">ChessEngine.kill()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chessengine.ChessEngine.setLog"><code class="docutils literal notranslate"><span class="pre">ChessEngine.setLog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chessengine.ChessEngine.startAnalysis"><code class="docutils literal notranslate"><span class="pre">ChessEngine.startAnalysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chessengine.ChessEngine.startPlay"><code class="docutils literal notranslate"><span class="pre">ChessEngine.startPlay()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chessengine.ChessEngine.uciGo"><code class="docutils literal notranslate"><span class="pre">ChessEngine.uciGo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chessengine.ChessEngine.uciNewGame"><code class="docutils literal notranslate"><span class="pre">ChessEngine.uciNewGame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chessengine.ChessEngine.uciQuit"><code class="docutils literal notranslate"><span class="pre">ChessEngine.uciQuit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chessengine.ChessEngine.uciSetOption"><code class="docutils literal notranslate"><span class="pre">ChessEngine.uciSetOption()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#chessengine.ChessEngine.uciStop"><code class="docutils literal notranslate"><span class="pre">ChessEngine.uciStop()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="annotator.html">Annotation Tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eco.html">ECO Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="warnOfDanger.html">Warn of Danger</a></li>
@@ -66,9 +83,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="utilities.html">Utilities</a> &raquo;</li>
-      <li>UCI Engine</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="utilities.html">Utilities</a></li>
+      <li class="breadcrumb-item active">UCI Engine</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/chessengine.rst.txt" rel="nofollow"> View page source</a>
       </li>

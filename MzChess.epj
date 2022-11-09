@@ -2,7 +2,7 @@
   "header": {
     "comment": "eric project file for project MzChess",
     "copyright": "Copyright (C) 2022 Reinhard M\u00e4rz, ",
-    "saved": "2022-08-31, 14:23:54"
+    "saved": "2022-09-08, 11:53:58"
   },
   "project": {
     "AUTHOR": "Reinhard M\u00e4rz",
@@ -30,7 +30,7 @@
       }
     },
     "DESCRIPTION": "",
-    "DOCSTRING": "",
+    "DOCSTRING": "sphinxdoc",
     "DOCUMENTATIONPARMS": {},
     "EMAIL": "",
     "EOL": 1,
@@ -71,6 +71,7 @@
     },
     "INTERFACES": [],
     "LEXERASSOCS": {},
+    "LICENSE": "",
     "MAINSCRIPT": "MzChess/chessMainWindow.py",
     "MAKEPARAMS": {
       "MakeEnabled": false,
@@ -168,6 +169,7 @@
       "doc/configureEngine.rst",
       "doc/eco.rst",
       "doc/gameHeaderView.rst",
+      "doc/gameListTableView.rst",
       "doc/gameTreeView.rst",
       "doc/gui.rst",
       "doc/index.rst",
@@ -198,6 +200,7 @@
     "SPELLEXCLUDES": "",
     "SPELLLANGUAGE": "en_US",
     "SPELLWORDS": "",
+    "TESTING_FRAMEWORK": "",
     "TRANSLATIONEXCEPTIONS": [],
     "TRANSLATIONPATTERN": "",
     "TRANSLATIONS": [],

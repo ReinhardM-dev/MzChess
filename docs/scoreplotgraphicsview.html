@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Score Chart &mdash; MzChess V2.2.0 documentation</title>
+  <title>Score Chart &mdash; MzChess V2.3.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -32,7 +33,7 @@
             <a href="index.html" class="icon icon-home"> MzChess
           </a>
               <div class="version">
-                V2.2
+                V2.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -47,9 +48,25 @@
 <li class="toctree-l2"><a class="reference internal" href="chessMainWindow.html">Main Window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qboardview.html">Chess Board</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gameTreeView.html">Game Editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameTreeView.html#gametreeview.GameTreeView"><code class="docutils literal notranslate"><span class="pre">GameTreeView</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="gameHeaderView.html">Game Header Editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameHeaderView.html#gameheaderview.GameHeaderView"><code class="docutils literal notranslate"><span class="pre">GameHeaderView</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameHeaderView.html#gameheaderview.KeyType"><code class="docutils literal notranslate"><span class="pre">KeyType</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="gameListTableView.html">Database Editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameListTableView.html#gamelisttableview.GameListTableModel"><code class="docutils literal notranslate"><span class="pre">GameListTableModel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameListTableView.html#gamelisttableview.GameListTableView"><code class="docutils literal notranslate"><span class="pre">GameListTableView</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Score Chart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scoreplotgraphicsview.ScorePlot"><code class="docutils literal notranslate"><span class="pre">ScorePlot</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scoreplotgraphicsview.ScorePlot.addGameNodes"><code class="docutils literal notranslate"><span class="pre">ScorePlot.addGameNodes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scoreplotgraphicsview.ScorePlot.copyAsBitmap"><code class="docutils literal notranslate"><span class="pre">ScorePlot.copyAsBitmap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scoreplotgraphicsview.ScorePlot.minQtVersion"><code class="docutils literal notranslate"><span class="pre">ScorePlot.minQtVersion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scoreplotgraphicsview.ScorePlot.mouseReleaseEvent"><code class="docutils literal notranslate"><span class="pre">ScorePlot.mouseReleaseEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scoreplotgraphicsview.ScorePlot.resetChart"><code class="docutils literal notranslate"><span class="pre">ScorePlot.resetChart()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scoreplotgraphicsview.ScorePlot.selectNodeItem"><code class="docutils literal notranslate"><span class="pre">ScorePlot.selectNodeItem()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scoreplotgraphicsview.ScorePlot.setGame"><code class="docutils literal notranslate"><span class="pre">ScorePlot.setGame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scoreplotgraphicsview.ScorePlot.setup"><code class="docutils literal notranslate"><span class="pre">ScorePlot.setup()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="configureEngine.html">UCI Configuration</a></li>
 </ul>
 </li>
@@ -69,9 +86,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="gui.html">GUI</a> &raquo;</li>
-      <li>Score Chart</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="gui.html">GUI</a></li>
+      <li class="breadcrumb-item active">Score Chart</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/scoreplotgraphicsview.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -131,6 +148,7 @@ It is updated when it changes.</p>
 </tr>
 </tbody>
 </table>
+</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="scoreplotgraphicsview.ScorePlot">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scoreplotgraphicsview.</span></span><span class="sig-name descname"><span class="pre">ScorePlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">QObject</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scoreplotgraphicsview.html#ScorePlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scoreplotgraphicsview.ScorePlot" title="Permalink to this definition"></a></dt>
@@ -221,7 +239,6 @@ It is updated when it changes.</p>
 
 </dd></dl>
 
-</section>
 
 
            </div>

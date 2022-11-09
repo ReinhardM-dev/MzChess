@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ECO Utilities &mdash; MzChess V2.2.0 documentation</title>
+  <title>ECO Utilities &mdash; MzChess V2.3.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -31,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> MzChess
           </a>
               <div class="version">
-                V2.2
+                V2.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -47,7 +48,16 @@
 <li class="toctree-l2"><a class="reference internal" href="pgnParse.html">PGN Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chessengine.html">UCI Engine</a></li>
 <li class="toctree-l2"><a class="reference internal" href="annotator.html">Annotation Tools</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ECO Utilities</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ECO Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#eco.ECODatabase"><code class="docutils literal notranslate"><span class="pre">ECODatabase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#eco.ECODatabase.createGame"><code class="docutils literal notranslate"><span class="pre">ECODatabase.createGame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#eco.ECODatabase.loadTSVFile"><code class="docutils literal notranslate"><span class="pre">ECODatabase.loadTSVFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#eco.ECODatabase.statistics"><code class="docutils literal notranslate"><span class="pre">ECODatabase.statistics()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#eco.TSVType"><code class="docutils literal notranslate"><span class="pre">TSVType</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="warnOfDanger.html">Warn of Danger</a></li>
 </ul>
 </li>
@@ -66,9 +76,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="utilities.html">Utilities</a> &raquo;</li>
-      <li>ECO Utilities</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="utilities.html">Utilities</a></li>
+      <li class="breadcrumb-item active">ECO Utilities</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/eco.rst.txt" rel="nofollow"> View page source</a>
       </li>

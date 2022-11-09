@@ -1,3 +1,23 @@
+try:
+ from PyQt6 import QtWidgets, QtGui, QtCore
+ from PyQt6.QtGui import QAction
+ from PyQt6 import uic
+ import PyQt6.QtSvgWidgets
+ import PyQt6.QtCharts
+except:
+ try:
+  from PyQt5 import QtWidgets, QtGui, QtCore
+  from PyQt5.QtWidgets import QAction
+  from PyQt5 import uic
+  import PyQt5.QtSvg
+  import PyQt5.QtChart
+ except:
+  raise ModuleNotFoundError('Neither the required PyQt6 nor PyQt5 modules completely installed')
+
+import sys
+# We must create the QtWidgets.QApplication here to avoid Sphinx issues
+qApp = QtWidgets.QApplication(sys.argv)
+
 '''
 Main Window of the Chess GUI
 ================================
@@ -123,25 +143,8 @@ import platform
 import pickle
 import io
 import re
-import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-try:
- from PyQt6 import QtWidgets, QtGui, QtCore
- from PyQt6.QtGui import QAction
- from PyQt6 import uic
- import PyQt6.QtSvgWidgets
- import PyQt6.QtCharts
-except:
- try:
-  from PyQt5 import QtWidgets, QtGui, QtCore
-  from PyQt5.QtWidgets import QAction
-  from PyQt5 import uic
-  import PyQt5.QtSvg
-  import PyQt5.QtChart
- except:
-  raise ModuleNotFoundError('Neither the required PyQt6 nor PyQt5 modules completely installed')
 
 import chess, chess.pgn
 import MzChess
@@ -1530,11 +1533,10 @@ class MzClassApplication(QtWidgets.QApplication):
 import os,  os.path
 
 def runMzChess(notifyFct : Optional[Callable[[str], None]] = None):
+ global qApp
  os.chdir(os.path.expanduser('~'))
  if notifyFct is not None:
   qApp = MzClassApplication(sys.argv)
- else:
-  qApp = QtWidgets.QApplication(sys.argv)
  chessMainWindow = ChessMainWindow()
  chessMainWindow.show()
  chessMainWindow.setup()

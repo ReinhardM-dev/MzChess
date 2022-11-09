@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>qboardviewclass &mdash; MzChess V2.2.0 documentation</title>
+  <title>qboardviewclass &mdash; MzChess V2.3.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -15,6 +15,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -28,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> MzChess
           </a>
               <div class="version">
-                V2.2
+                V2.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -56,9 +57,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">Module code</a> &raquo;</li>
-      <li>qboardviewclass</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">qboardviewclass</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -112,6 +113,7 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))))</span>
 <span class="kn">import</span> <span class="nn">MzChess</span>
@@ -317,7 +319,8 @@
   <span class="bp">self</span><span class="o">.</span><span class="n">boardPieces</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span> <span class="o">=</span> <span class="kc">False</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">engine</span> <span class="o">=</span> <span class="kc">None</span>
-  <span class="bp">self</span><span class="o">.</span><span class="n">hint</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">hint</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="kc">False</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">drawOptions</span> <span class="o">=</span> <span class="kc">False</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">warnOfDanger</span> <span class="o">=</span> <span class="kc">False</span>
   <span class="bp">self</span><span class="o">.</span><span class="n">materialLabel</span> <span class="o">=</span> <span class="kc">None</span>
@@ -728,7 +731,12 @@
      <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rookPiece</span><span class="p">,</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsRectItem</span><span class="p">):</span>
       <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;UIE: QGraphicsRectItem found&#39;</span><span class="p">)</span>
       <span class="n">rookPiece</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="n">releasedSquareId</span><span class="p">))</span>
-     <span class="n">rookPiece</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="n">rookTargetPos</span> <span class="p">)</span>
+     <span class="n">rookPiece</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="n">rookTargetPos</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">oldBoard</span><span class="o">.</span><span class="n">is_en_passant</span><span class="p">(</span><span class="n">move</span><span class="p">):</span>
+     <span class="n">pawnSquareID</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">square_file</span><span class="p">(</span><span class="n">move</span><span class="o">.</span><span class="n">to_square</span><span class="p">),</span> <span class="n">chess</span><span class="o">.</span><span class="n">square_rank</span><span class="p">(</span><span class="n">move</span><span class="o">.</span><span class="n">from_square</span><span class="p">))</span>
+     <span class="n">pawnItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="n">pawnSquareID</span><span class="p">),</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QTransform</span><span class="p">())</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="n">pawnItem</span><span class="p">)</span>
+     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;en passant move detected&#39;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">pressedPiece</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getScenePos</span><span class="p">(</span><span class="n">releasedSquareId</span><span class="p">))</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">add_variation</span><span class="p">(</span><span class="n">move</span><span class="p">)</span>
    <span class="n">board</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameNode</span><span class="o">.</span><span class="n">board</span><span class="p">()</span>

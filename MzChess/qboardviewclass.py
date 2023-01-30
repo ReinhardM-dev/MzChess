@@ -459,7 +459,7 @@ class Game(QtWidgets.QGraphicsScene):
   if not self.warnOfDanger:
    return 
   elementSize = QtCore.QSizeF(self.pieceSize, self.pieceSize)
-  square2ScoreDict = warnOfDanger.warnOfDanger(self.gameNode)
+  square2ScoreDict = warnOfDanger.warnOfDanger(self.gameNode.board())
   if square2ScoreDict is None or len(square2ScoreDict) == 0:
    return
   self.warnOfDangerGroup = len(square2ScoreDict)*[None]

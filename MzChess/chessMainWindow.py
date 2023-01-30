@@ -1,23 +1,3 @@
-try:
- from PyQt6 import QtWidgets, QtGui, QtCore
- from PyQt6.QtGui import QAction
- from PyQt6 import uic
- import PyQt6.QtSvgWidgets
- import PyQt6.QtCharts
-except:
- try:
-  from PyQt5 import QtWidgets, QtGui, QtCore
-  from PyQt5.QtWidgets import QAction
-  from PyQt5 import uic
-  import PyQt5.QtSvg
-  import PyQt5.QtChart
- except:
-  raise ModuleNotFoundError('Neither the required PyQt6 nor PyQt5 modules completely installed')
-
-import sys
-# We must create the QtWidgets.QApplication here to avoid Sphinx issues
-qApp = QtWidgets.QApplication(sys.argv)
-
 '''
 Main Window of the Chess GUI
 ================================
@@ -143,7 +123,23 @@ import platform
 import pickle
 import io
 import re
+try:
+ from PyQt6 import QtWidgets, QtGui, QtCore
+ from PyQt6.QtGui import QAction
+ from PyQt6 import uic
+ import PyQt6.QtSvgWidgets
+ import PyQt6.QtCharts
+except:
+ try:
+  from PyQt5 import QtWidgets, QtGui, QtCore
+  from PyQt5.QtWidgets import QAction
+  from PyQt5 import uic
+  import PyQt5.QtSvg
+  import PyQt5.QtChart
+ except:
+  raise ModuleNotFoundError('Neither the required PyQt6 nor PyQt5 modules are completely installed')
 
+import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import chess, chess.pgn
@@ -162,7 +158,6 @@ class ChessMainWindow(QtWidgets.QMainWindow):
 
  notifyGameNodeSelectedSignal = QtCore.pyqtSignal(chess.pgn.GameNode)
  notifyGameNodeChangedSignal = QtCore.pyqtSignal(chess.pgn.GameNode, tuple)
- notifyGameChangedSignal = QtCore.pyqtSignal(chess.pgn.Game)
  notifyNewGameNodeSignal = QtCore.pyqtSignal(chess.pgn.GameNode)
  hintDict = { 'None' :  '0',  'White' : '1',  'Black' : '2',  'All' : '3' }
  hintList = [ 'None', 'White',  'Black',  'All' ]
@@ -314,7 +309,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.hintLabel = QtWidgets.QLabel()
   self.hintLabel.setFont(sbText)
   self.hintLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-  self.hintLabel.setToolTip("Best move/Score[Pawns]")
+  self.hintLabel.setToolTip("Best move/Score[centipawn]")
   self.statusBar().addWidget(self.hintLabel, 30)
   self.ecoLabel = QtWidgets.QLabel()
   self.ecoLabel.setFont(sbText)
@@ -376,7 +371,6 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.notifyGameNodeSelectedSignal.connect(self.gameNodeSelected)
   self.notifyGameNodeChangedSignal.connect(self.gameNodeChanged)
   self.notifyNewGameNodeSignal.connect(self.newGameNode)
-  self.notifyGameChangedSignal.connect(self.gameChanged)
   self.notifySignal.connect(self.notify)
   self.logSignal.connect(self.toLog)
 
@@ -487,14 +481,19 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   msgBox.setWindowTitle("Error ...")
   msgBox.exec()
 
- def setInfoLabel(self, setupGameID = False):
-  if setupGameID:
-   if self.game in self.gameList:
-    self.gameID = self.gameList.index(self.game)
-   else:
-    if self.gameID > 0:
-     self.gameID = self.gameID - 1
-    self.game = self.gameList[self.game]
+ def setInfoLabel(self):
+  if self.game in self.gameList:
+   self.gameID = self.gameList.index(self.game)
+  else:
+   if self.gameID > 0:
+    self.gameID = 0
+   self.game = self.gameList[self.gameID]
+  if self.gameID >= len(self.undoListList)-1:
+   self.undoListList = list()
+   self.redoListList = list()
+   for n in range(len(self.gameList)):
+    self.undoListList.append(list())
+    self.redoListList.append(list())
   self.infoLabel.setText('game #{} of {} ({} moves): {} = {}'.format(self.gameID, len(self.gameList), 
    self.gameList[self.gameID].end().board().fullmove_number, self.gameListHeaders[0], self.game.headers[self.gameListHeaders[0]]))
   self.infoLabel.update()
@@ -549,6 +548,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
    if rc == QtWidgets.QMessageBox.StandardButton.No:
     return False
   self.gameListChanged = False
+  self.gameID = None
   self.undoListList = list()
   self.redoListList = list()
   self.gameList = list()
@@ -567,7 +567,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.gameID = len(self.gameList)
   self.gameList.append(self.game)
   self.undoListList.append(list())
+  self.undoListList[self.gameID] = list()
   self.redoListList.append(list())
+  self.redoListList[self.gameID] = list()
   self.gameListTableView.setGameList(self.gameList)
   self._showEcoCode(self.game, fromBeginning = True)
   self.gameSelected(self.gameID)
@@ -671,7 +673,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  @QtCore.pyqtSlot()
  def on_actionGameUp_triggered(self):
   if self.gameListTableView.on_menuMoveGame_triggered(self.actionGameUp):
-   self.setInfoLabel(True)
+   self.setInfoLabel()
    self.setChessWindowTitle()
 
  @QtCore.pyqtSlot()
@@ -779,7 +781,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  def on_actionRemoveGames_triggered(self):
   if self.gameListTableView.on_actionRemoveGames_triggered():
    if self.game in self.gameList:
-    self.setInfoLabel(True)
+    self.setInfoLabel()
    else:
     self.gameSelected(0)
    self.setChessWindowTitle()
@@ -787,7 +789,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  @QtCore.pyqtSlot()
  def on_actionGameDown_triggered(self):
   if self.gameListTableView.on_menuMoveGame_triggered(self.actionGameDown):
-   self.setInfoLabel(True)
+   self.setInfoLabel()
    self.setChessWindowTitle()
  
  @QtCore.pyqtSlot(QAction)
@@ -1399,6 +1401,11 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   self.fenBuilder.start(sys.executable, [os.path.join(self.fileDirectory,'qbuildfen.py')], QtCore.QIODevice.OpenModeFlag.NotOpen)
   
  @QtCore.pyqtSlot() 
+ def on_actionAnalysePosition_triggered(self):
+  self.analysePositionBuilder = QtCore.QProcess()
+  self.analysePositionBuilder.start(sys.executable, [os.path.join(self.fileDirectory,'analysePosition.py'), self.gameNode.board().fen()], QtCore.QIODevice.OpenModeFlag.NotOpen)
+  
+ @QtCore.pyqtSlot() 
  def on_actionCopyGame_triggered(self):
   self.notify('Copying game #{} to clipboard ...'.format(self.gameID))
   exporter = chess.pgn.StringExporter(headers=True, variations=True, comments=True)
@@ -1445,7 +1452,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
 
  @QtCore.pyqtSlot()
  def gameListChanged(self):
-  self.setInfoLabel(True)
+  self.setInfoLabel()
   self.setChessWindowTitle()
 
  @QtCore.pyqtSlot(chess.pgn.Headers)
@@ -1471,7 +1478,6 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  @QtCore.pyqtSlot(chess.pgn.GameNode)
  def newGameNode(self, gameNode):
   self.gameNode = gameNode
-  self.undoListList[self.gameID].append(self.gameNode)
   self._showEcoCode(self.game, fromBeginning = False)
   if gameNode.is_mainline():
    self.scorePlotGraphicsView.addGameNodes(gameNode)
@@ -1494,7 +1500,9 @@ class ChessMainWindow(QtWidgets.QMainWindow):
   else:
    self.gameTreeViewWidget.addVariant(gameNode)
   self.gameChanged(self.game)
+  self.setInfoLabel()
   self.setMoveLabel(self.gameNode.board())
+  self.undoListList[self.gameID].append(self.gameNode)
    
  @QtCore.pyqtSlot(chess.pgn.GameNode)
  def gameNodeSelected(self, gameNode):
@@ -1531,12 +1539,15 @@ class MzClassApplication(QtWidgets.QApplication):
  # ---------------------------------------------------------------------------
 
 import os,  os.path
+# We must create the QtWidgets.QApplication here to avoid Sphinx issues
 
 def runMzChess(notifyFct : Optional[Callable[[str], None]] = None):
  global qApp
  os.chdir(os.path.expanduser('~'))
  if notifyFct is not None:
   qApp = MzClassApplication(sys.argv)
+ else:
+  qApp = QtWidgets.QApplication(sys.argv)
  chessMainWindow = ChessMainWindow()
  chessMainWindow.show()
  chessMainWindow.setup()

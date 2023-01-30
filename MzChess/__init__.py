@@ -33,16 +33,19 @@ Versions:
  2.2.2      bug fix
  2.3.0      undo/redo functions implemented
               bug fixes for annotation machinery
+ 2.4.0      position analyser implemented
+              bug fix in scoreplot 
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2022-11-08"
-__version__ = "2.3.0"
+__date__ = "2023-01-30"
+__version__ = "2.3.1"
 
 __all__ = [
  'AboutDialog', 
  'AnnotateEngine', 'Annotator', 
  'ChessMainWindow', 'runMzChess', 
  'BuildFenClass', 'runFenBuilder', 
+ 'AnalysePositionClass', 'runAnalysePosition', 
  'installLeipFont'
  'ChessEngine', 
  'ConfigureEngine', 'loadEngineSettings', 'saveEngineSettings', 
@@ -61,6 +64,7 @@ __all__ = [
 
 
 import os.path, sys
+import chess
 def useQt5():
  try:
   import PyQt6.QtSvgWidgets
@@ -90,5 +94,16 @@ from .scoreplotgraphicsview import ScorePlot
 from .specialDialogs import ButtonLine, ItemSelector, treeWidgetItemPos
 from .uciedit import QUCIEdit, UCIHighlighter
 from .warnOfDanger import warnOfDanger
-from .qbuildfen import BuildFenClass, SelectionBox, PlacementBoard, runFenBuilder
+from .position import Position
+from .analysePosition import AnalysePositionClass, PlacementBoard, runAnalysePosition
+from .qbuildfen import BuildFenClass, SelectionBox, PlacementBoard, runFenBuilder 
 from .chessMainWindow import ChessMainWindow, runMzChess
+
+mateScore = 10000
+piecePawnScoreDict = {
+ chess.PAWN : 100, 
+ chess.KNIGHT : 320, 
+ chess.BISHOP : 330, 
+ chess.ROOK : 500, 
+ chess.QUEEN : 900
+}

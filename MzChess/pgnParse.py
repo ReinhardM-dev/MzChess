@@ -38,8 +38,9 @@ def checkFEN(boardOrFen : Union[chess.Board, str], allowIncompleteBoard : bool =
  else:
   board = chess.Board()
   board.set_fen(boardOrFen)
- boardStatus = board.status()
- if allowIncompleteBoard:
+ boardStatus = chess.STATUS_VALID
+ if not allowIncompleteBoard:
+  boardStatus = board.status()
   boardStatus &= ~chess.STATUS_EMPTY
   boardStatus &= ~chess.STATUS_NO_WHITE_KING
   boardStatus &= ~chess.STATUS_NO_BLACK_KING

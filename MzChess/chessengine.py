@@ -112,7 +112,7 @@ class ChessEngine(QtCore.QObject):
    return None
   score = self.playResult.info[hintID]['score'].white()
   if isinstance(score, chess.engine.Cp):
-   score = '{:+.1f}'.format(0.01 * score.score())
+   score = '{}'.format(score.score())
   elif score is not None:
    score = str(score)
   return score

@@ -18,7 +18,7 @@ The tree widget has 4 colums:
  #. *Move* shows the actual move or the beginning of a variation in SAN notation 
  #. *Ann* shows the annotation, i.e. a symbolic move assessment
  #. *Pos* shows the position assessment
- #. *Score* shows the engine or material score of the last move in pawns, material score ending with M
+ #. *Score* shows the engine or material score [centipawn] of the last move, material score ending with M
  #. *Comment* shows either the move comment or starting comment of a variation
  
 By clicking the annotation (*Ann*) and position assessment (*Pos*) fields, a popup dialog
@@ -84,13 +84,6 @@ class GameTreeView(QtWidgets.QTreeWidget):
                               '-+'   : 'decisive advantage for white',
                               '+--' : 'white should resign',
                               '-++' : 'black should resign' }
- piecePawnScoreDict = {
-  chess.PAWN : 1, 
-  chess.KNIGHT : 3, 
-  chess.BISHOP : 3, 
-  chess.ROOK : 5, 
-  chess.QUEEN : 9
- }
  cross16x16File = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pieces', 'cross16x16.ico')
  crossIcon = QtGui.QIcon(cross16x16File)
  
@@ -99,7 +92,7 @@ class GameTreeView(QtWidgets.QTreeWidget):
   self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
   self.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
   self.notifyGameNodeSelectedSignal = None
-  self.notifyGameChangedSignal = None
+  self.notifyGameNodeChangedSignal = None
   self._clear()
   self.setColumnCount(5)
   self.setHeaderLabels(['Move', 'Ann', 'Pos', 'Score', 'Comment'])
@@ -107,7 +100,7 @@ class GameTreeView(QtWidgets.QTreeWidget):
   headerItem.setToolTip(0, 'SAN notation')
   headerItem.setToolTip(1, 'Move assessments')
   headerItem.setToolTip(2, 'Positional assessments')
-  headerItem.setToolTip(3, 'Score [pawns] (<float>M == material score)')
+  headerItem.setToolTip(3, 'Score [centipawn] (<int>M == material score)')
   headerItem.setToolTip(4, 'Comment of move or variation')
   self._resetColumnWidth()
   self.clicked.connect(self.on_clicked)
@@ -148,7 +141,7 @@ class GameTreeView(QtWidgets.QTreeWidget):
   '''Set up of the game editor
   
 :param notifyGameNodeSelectedSignal: signal to be emitted if a game node is selected
-:param notifyGameChangedSignal: signal to be emitted if the loaded game is changed
+:param notifyGameNodeChangedSignal: signal to be emitted if the loaded game is changed
   '''
   self.notifyGameNodeSelectedSignal = notifyGameNodeSelectedSignal
   self.notifyGameNodeChangedSignal = notifyGameNodeChangedSignal
@@ -250,9 +243,9 @@ class GameTreeView(QtWidgets.QTreeWidget):
      for piece in list(pieceMap.values()):
       if piece.piece_type != chess.KING:
        if piece.color == chess.WHITE:
-        pawnScore += self.piecePawnScoreDict[piece.piece_type]
+        pawnScore += MzChess.piecePawnScoreDict[piece.piece_type]
        else:
-        pawnScore -= self.piecePawnScoreDict[piece.piece_type]
+        pawnScore -= MzChess.piecePawnScoreDict[piece.piece_type]
      scoreText = '{}M'.format(pawnScore)
    newNode.setText(3, scoreText)
    newNode.setText(4, comment)

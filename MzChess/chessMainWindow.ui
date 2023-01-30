@@ -296,6 +296,7 @@
     <addaction name="separator"/>
     <addaction name="actionShowOptions"/>
     <addaction name="actionWarnOfDanger"/>
+    <addaction name="actionAnalysePosition"/>
    </widget>
    <widget class="QMenu" name="menuEngine">
     <property name="title">
@@ -960,6 +961,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="actionAnalysePosition">
+   <property name="text">
+    <string>Analyse Position ...</string>
    </property>
   </action>
  </widget>

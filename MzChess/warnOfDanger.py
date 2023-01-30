@@ -1,24 +1,23 @@
 from typing import Optional, Callable, Dict 
 import chess, chess.pgn
 
-def warnOfDanger(gameNode : chess.pgn.GameNode, log : Optional[Callable[[str], None]] = None,  depth : int = 0) -> Optional[Dict[chess.Square, int]]:
+def warnOfDanger(originalBoard : chess.Board, log : Optional[Callable[[str], None]] = None,  depth : int = 0) -> Optional[Dict[chess.Square, int]]:
  ''' Warns, if certain pieces are in danger
  
 Basis are the material scores from the attackers point of view, 
 i.e. positive scores show an advantage of the attacker
 
-:param gameNode: game node to be analysed
+:param originalBoard: input board to be analysed
 :returns: a dictionary of square/score pairs
   '''
  pieceScoreDict = {
   chess.PAWN : 1, 
-  chess.KNIGHT : 3, 
-  chess.BISHOP : 3, 
+  chess.KNIGHT : 3.2, 
+  chess.BISHOP : 3.2, 
   chess.ROOK : 5, 
   chess.QUEEN : 9, 
   chess.KING : 1000
  }
- originalBoard = gameNode.board()
  fen = originalBoard.fen()
  if originalBoard.is_game_over():
   return None
@@ -92,7 +91,7 @@ if __name__ == "__main__":
  ply = 2
  while gameNode is not None:
   print(' move {}: {} ------------------------------'.format(ply/2, gameNode.move.uci()))
-  square2ScoreDict = warnOfDanger(gameNode, log = print, depth = 0)
+  square2ScoreDict = warnOfDanger(gameNode.board(), log = print, depth = 0)
   gameNode = gameNode.next()
   if len(square2ScoreDict) > 0:
    print(' square2ScoreDict: ------------------------------')

@@ -57,10 +57,16 @@ class BuildFenClass(QtWidgets.QMainWindow):
   sizePolicy.setVerticalStretch(0)
   sizePolicy.setHeightForWidth(self.castlingGroupBox.sizePolicy().hasHeightForWidth())
   self.castlingGroupBox.setSizePolicy(sizePolicy)
-  self.wkCheckBox = self. _addCastlingBox(chess.WHITE, True)
-  self.wqCheckBox = self. _addCastlingBox(chess.WHITE, False)
-  self.bkCheckBox = self. _addCastlingBox(chess.BLACK, True)
-  self.bqCheckBox = self. _addCastlingBox(chess.BLACK, False)
+  if True:
+   self.wkCheckBox.toggled.connect(self.on_castlingCheckBox_toggled)
+   self.wqCheckBox.toggled.connect(self.on_castlingCheckBox_toggled)
+   self.bkCheckBox.toggled.connect(self.on_castlingCheckBox_toggled)
+   self.bqCheckBox.toggled.connect(self.on_castlingCheckBox_toggled)
+  else:
+   self.wkCheckBox = self. _addCastlingBox(chess.WHITE, True)
+   self.wqCheckBox = self. _addCastlingBox(chess.WHITE, False)
+   self.bkCheckBox = self. _addCastlingBox(chess.BLACK, True)
+   self.bqCheckBox = self. _addCastlingBox(chess.BLACK, False)
   
   self.aboutDialog = AboutDialog.AboutDialog()
   self.aboutDialog.setup(
@@ -146,7 +152,7 @@ class BuildFenClass(QtWidgets.QMainWindow):
  @QtCore.pyqtSlot()
  def on_actionCopy_triggered(self):
   try:
-   MzChess.checkFEN(self.board)
+   MzChess.checkFEN(self.board, allowIncompleteBoard = True)
    fen = self.board.fen()
    QtWidgets.QApplication.clipboard().setText(fen)
   except ValueError as err:
@@ -377,6 +383,8 @@ class PlacementBoard(ChessGroupBox):
    else:
     pieceDict[square] = piece
     txt = self.leipzigEncodeDict[piece.symbol()]
+  else:
+   return
   try:
    newBoard = chess.Board(self.buildFenClass.board.fen())
    newBoard.set_piece_map(pieceDict)
@@ -385,7 +393,7 @@ class PlacementBoard(ChessGroupBox):
    self.buildFenClass.board.set_piece_map(pieceDict)
    self.buildFenClass.notify(self.buildFenClass.board.fen())
   except ValueError as err:
-   self.buildFenClass.notifyError('Improper placemenent @ {}:\n{}'.format(chess.square_name(square), str(err)))
+   self.buildFenClass.notifyError('Improper placement @ {}:\n{}'.format(chess.square_name(square), str(err)))
    return
    
 def showStatus(board):

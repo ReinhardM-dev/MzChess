@@ -15,7 +15,7 @@ the pieces represent as usual the values
 
 If available, the scores emitted by a chess engine (red) are also shown.
 The engine annotations require command tags according to `PGNExt`_ supplement, i.e. tags like [%eval *score*] or [%  *score*]
-*score* is the score in pawns. 
+*score* is the score [centipawn]. 
 
 The handling of positions close to mate vary from GUI to GUI. This GUI delivers for
 a mate in *n* moves a score of
@@ -66,13 +66,6 @@ from chessengine import PGNEval_REGEX
 class ScorePlot(QtCharts.QChartView):
  '''Score plot object
  '''
- piecePawnScoreDict = {
-  chess.PAWN : 1, 
-  chess.KNIGHT : 3, 
-  chess.BISHOP : 3, 
-  chess.ROOK : 5, 
-  chess.QUEEN : 9
- }
  seriesPens = {
   'Material' : QtGui.QPen(QtGui.QBrush(QtCore.Qt.GlobalColor.blue), 1), 
   'Engine' : QtGui.QPen(QtGui.QBrush(QtCore.Qt.GlobalColor.red), 1), 
@@ -80,7 +73,6 @@ class ScorePlot(QtCharts.QChartView):
   
  axesPen = QtGui.QPen(QtGui.QBrush(QtCore.Qt.GlobalColor.blue), 2)
  axesBrush = QtGui.QBrush(QtCore.Qt.GlobalColor.black)
- mateScore = 100
 
  QtGui.QColor(QtCore.Qt.GlobalColor.blue)
 
@@ -108,7 +100,7 @@ class ScorePlot(QtCharts.QChartView):
  def _setupChart(self, notifyGameNodeSelectedSignal : Optional[QtCore.pyqtSignal] = None):
   self._createChart()
   self.xAxis = self._addAxis(QtCore.Qt.AlignmentFlag.AlignBottom, title = 'Move')
-  self.yAxis = self._addAxis(QtCore.Qt.AlignmentFlag.AlignLeft, title = 'Score [pawns]')
+  self.yAxis = self._addAxis(QtCore.Qt.AlignmentFlag.AlignLeft, title = 'Score [centipawn]')
   self.materialSeries = self._addSeries('Material', isLineSeries = True)
   self.engineSeries = self._addSeries('Engine', isLineSeries = True)
   self.selectedGameNode = None
@@ -127,6 +119,7 @@ class ScorePlot(QtCharts.QChartView):
   self.meLabels.setPointLabelsFormat('@yPoint')
   meLabelMarkers = self.chart.legend().markers(self.meLabels)
   meLabelMarkers[0].setVisible(False)
+  self.resetChart()
 
  @staticmethod
  def minQtVersion(major : int, minor : int, patch : int = 0) -> bool:
@@ -144,10 +137,10 @@ class ScorePlot(QtCharts.QChartView):
               
  def interval(self, minV : float, maxV : float) -> int:
   assert maxV > minV
-  if maxV - minV < 10:
-   return 1
-  if maxV - minV < 100:
-   return 10
+  if maxV - minV < 1000:
+   return 100
+  if maxV - minV < 10000:
+   return 1000
   return 100
   
  def _createChart(self, 
@@ -195,18 +188,26 @@ class ScorePlot(QtCharts.QChartView):
   self.chart.addAxis(axis, alignment)
   return axis
   
- def _setRange(self, axis : QtCharts.QValueAxis, minV : float, maxV : float ) -> None:
+ def _setRange(self, axis : QtCharts.QValueAxis, minV : int, maxV : int ) -> None:
   assert maxV > minV, '{} > {} required'.format(maxV, minV)
   if maxV - minV < 5:
    delta = 1
   elif maxV - minV < 10:
-   delta = 1
+   delta = 2
   elif maxV - minV < 50:
-   delta = 5
-  elif maxV - minV < 100:
    delta = 10
-  else:
+  elif maxV - minV < 100:
+   delta = 20
+  elif maxV - minV < 500:
    delta = 100
+  elif maxV - minV < 1000:
+   delta = 200
+  elif maxV - minV < 5000:
+   delta = 500
+  elif maxV - minV < 10000:
+   delta = 1000
+  else:
+   delta = 10000
   axis.setRange(minV, maxV)
   if self.minQtVersion(5, 12):
    axis.setTickInterval(delta)
@@ -227,7 +228,7 @@ class ScorePlot(QtCharts.QChartView):
   self.minY = float('inf')
   self.maxY = -float('inf')
   self.xAxis.setRange(0, 1)
-  self.yAxis.setRange(-1, 1)
+  self.yAxis.setRange(-100, 100)
   self.materialSeries.clear()
   self.engineSeries.clear()
   self.vLine.clear()
@@ -269,7 +270,7 @@ class ScorePlot(QtCharts.QChartView):
   self.meLabels.clear()
   xValue = self.materialSeries.at(relPly).x()
   self.vLine.append(xValue, self.yAxis.min())
-  self.vLine.append(xValue, 1000)
+  self.vLine.append(xValue, 100000)
   self.vLine.show()
   self.meLabels.append(self.materialSeries.at(relPly))
   if relPly in self.engineDict:
@@ -286,7 +287,6 @@ class ScorePlot(QtCharts.QChartView):
    return
   if 'materialSeries' not in vars(self):
    self._setupChart()
-   self.resetChart()
   self.chart.show()
   ply = gameNode.ply()
   xMin = (gameNode.game().ply() + 1) / 2
@@ -300,9 +300,9 @@ class ScorePlot(QtCharts.QChartView):
    for piece in list(pieceMap.values()):
     if piece.piece_type != chess.KING:
      if piece.color == chess.WHITE:
-      pawnScore += self.piecePawnScoreDict[piece.piece_type]
+      pawnScore += MzChess.piecePawnScoreDict[piece.piece_type]
      else:
-      pawnScore -= self.piecePawnScoreDict[piece.piece_type]
+      pawnScore -= MzChess.piecePawnScoreDict[piece.piece_type]
    materialData.append(QtCore.QPointF((ply + 1)/2, pawnScore))
    self.minY = min(self.minY, pawnScore)
    self.maxY = max(self.maxY, pawnScore)
@@ -314,7 +314,7 @@ class ScorePlot(QtCharts.QChartView):
       engineScore = float(engineScore)
      except:
       engineScore = float(engineScore[1:])
-      engineScore = math.copysign(1,engineScore) * (self.mateScore - abs(engineScore))
+      engineScore = math.copysign(1,engineScore) * (MzChess.mateScore - abs(engineScore))
      engineData.append(QtCore.QPointF((ply + 1)/2, engineScore))
      self.engineDict[nMaterial] = nEngine
      self.minY = min(self.minY, engineScore)
@@ -336,7 +336,7 @@ class ScorePlot(QtCharts.QChartView):
   if self.minY < self.maxY:
    self._setRange(self.yAxis, self.minY, self.maxY)
   else:
-   self._setRange(self.yAxis, self.minY - 0.5, self.minY + 0.5)
+   self._setRange(self.yAxis, self.minY - 50, self.minY + 50)
   
   self.update()
 

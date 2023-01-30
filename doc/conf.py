@@ -12,8 +12,17 @@
 #
 import sys
 import os
-
 sys.path.insert(0, os.path.abspath('..'))
+
+# We must create the QtWidgets.QApplication here to avoid Sphinx 5.x issues with pixmaps
+try:
+ from PyQt6 import QtWidgets
+except:
+ try:
+  from PyQt5 import QtWidgets
+ except:
+  raise ModuleNotFoundError('Neither the required PyQt6.QtWidgets nor PyQt5.QtWidgets installed')
+QtWidgets.QApplication(sys.argv)
 import MzChess
 
 # sys.setrecursionlimit(15000)
@@ -21,7 +30,7 @@ import MzChess
 # -- Project information -----------------------------------------------------
 
 project = 'MzChess'
-copyright = '2021, Reinhard März'
+copyright = '2022, Reinhard März'
 author = 'Reinhard März'
 
 # The full version, including alpha/beta/rc tags

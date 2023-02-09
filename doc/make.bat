@@ -70,6 +70,7 @@ if "%1" == "github" (
 	echo.
 	echo.Build finished. The HTML pages are in ..\docs.
  echo.Run now git commit -a -m "Vx.x.x"
+ echo.Documentation is at https://reinhardm-dev.github.io/MzChess
 	goto end
 )
 

@@ -1,5 +1,5 @@
 Position-Analyser
-=============
+===================
 
 .. automodule:: analysePosition
     :members:

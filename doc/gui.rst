@@ -1,5 +1,5 @@
 Chess GUI
-=======
+==========
 
 .. toctree::
    :maxdepth: 2
@@ -11,4 +11,5 @@ Chess GUI
    gameListTableView
    scoreplotgraphicsview
    configureEngine
+   utilities
    

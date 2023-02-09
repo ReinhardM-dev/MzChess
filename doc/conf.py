@@ -12,7 +12,6 @@
 #
 import sys
 import os
-import importlib, importlib.metadata
 
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -25,6 +24,8 @@ except:
   raise ModuleNotFoundError('Neither the required PyQt6.QtWidgets nor PyQt5.QtWidgets installed')
 
 # -- Project information -----------------------------------------------------
+# Avoid PyQt statements in the static part, since they are executed by sphinx
+import MzChess
 
 project = 'MzChess'
 copyright = '2022, Reinhard März'
@@ -32,7 +33,7 @@ author = 'Reinhard März'
 
 # The full version, including alpha/beta/rc tags
 # The use of importlib.metadata is the only way compliant with sphinx
-__version__ = importlib.metadata.version('MzChess')
+__version__ = MzChess.__version__
 release = 'V' + __version__
 version = 'V' + '.'.join(__version__.split('.')[:2])
 
@@ -87,6 +88,5 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ['_static']
 html_static_path = []
-importlib.import_module('MzChess')
-# import MzChess
+
 print('conf.py left')

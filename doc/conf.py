@@ -37,6 +37,9 @@ __version__ = MzChess.__version__
 release = 'V' + __version__
 version = 'V' + '.'.join(__version__.split('.')[:2])
 
+print('release: {}'.format(release))
+print('file: {}'.format(MzChess.__file__))
+
 # -- General configuration ---------------------------------------------------
 master_doc = 'index'
 

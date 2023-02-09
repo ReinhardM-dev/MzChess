@@ -1,35 +1,74 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pgnParse &mdash; MzChess V2.1.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+  <title>pgnParse &mdash; MzChess V2.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-    <script src="../_static/js/theme.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../index.html" class="icon icon-home"> MzChess
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
-                V2.1
+                V2.3
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -37,36 +76,83 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
-</ul>
 
+          
         </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">MzChess</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
           <li><a href="index.html">Module code</a> &raquo;</li>
+        
       <li>pgnParse</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for pgnParse</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;A new-Parser for Portable Game Notation (`PGN`_) files for `chess.pgn`_ items</span>
 <span class="sd"> </span>
@@ -131,7 +217,7 @@
   <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errList</span><span class="p">))</span>
 
 <div class="viewcode-block" id="PGNLexer"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer">[docs]</a><span class="k">class</span> <span class="nc">PGNLexer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
- <span class="sd">&#39;&#39;&#39;A Lexer for Portable Game Notation (PGN) files (see `ply`_)</span>
+<span class="w"> </span><span class="sd">&#39;&#39;&#39;A Lexer for Portable Game Notation (PGN) files (see `ply`_)</span>
 <span class="sd">tracking line number, gameID, position (in game) </span>
 
 <span class="sd">:param bufsize: size of the token buffer (min: 4096). The buffer is refilled at bufsize/4 </span>
@@ -157,7 +243,7 @@
   <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="PGNLexer.newGame"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.newGame">[docs]</a> <span class="k">def</span> <span class="nf">newGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ply</span><span class="o">.</span><span class="n">lex</span><span class="o">.</span><span class="n">LexToken</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Prepared the lexer to deliver tokens for a game </span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Prepared the lexer to deliver tokens for a game </span>
 <span class="sd">  </span>
 <span class="sd">:param f: file handle opened in text mode </span>
 <span class="sd">:returns: the first token of the game</span>
@@ -199,7 +285,7 @@
   <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msgList</span><span class="p">)</span>
   
 <div class="viewcode-block" id="PGNLexer.endOfGamePattern"><a class="viewcode-back" href="../pgnParse.html#pgnParse.PGNLexer.endOfGamePattern">[docs]</a> <span class="k">def</span> <span class="nf">endOfGamePattern</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Returns the compiled *t_ENDOFGAME* pattern</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Returns the compiled *t_ENDOFGAME* pattern</span>
 <span class="sd">  </span>
 <span class="sd">:returns: compiled *t_ENDOFGAME* pattern</span>
 <span class="sd">  &#39;&#39;&#39;</span>
@@ -461,7 +547,7 @@
  <span class="k">return</span> <span class="n">tok</span><span class="p">,</span> <span class="n">semanticError</span>
 
 <div class="viewcode-block" id="read_game"><a class="viewcode-back" href="../pgnParse.html#pgnParse.read_game">[docs]</a><span class="k">def</span> <span class="nf">read_game</span><span class="p">(</span><span class="n">f</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Visitor</span> <span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">BaseVisitor</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">ResultT</span><span class="p">]]</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">GameBuilder</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">ResultT</span><span class="p">]:</span>
- <span class="sd">&quot;&quot;&quot;Reads a game from an open handle PGN-file in text mode.</span>
+<span class="w"> </span><span class="sd">&quot;&quot;&quot;Reads a game from an open handle PGN-file in text mode.</span>
 <span class="sd"> </span>
 <span class="sd">By using text mode, the parser does not need to handle encodings. </span>
 <span class="sd">The file must be opened using the correct encoding, usually </span>
@@ -563,7 +649,7 @@
  <span class="k">return</span> <span class="n">visitor</span><span class="o">.</span><span class="n">result</span><span class="p">()</span></div>
  
 <div class="viewcode-block" id="read_headers"><a class="viewcode-back" href="../pgnParse.html#pgnParse.read_headers">[docs]</a><span class="k">def</span> <span class="nf">read_headers</span><span class="p">(</span><span class="n">handle</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Headers</span><span class="p">]:</span>
- <span class="sd">&#39;&#39;&#39;Convenience function representing *read_game(handle, Visitor = chess.pgn.HeadersBuilder)*</span>
+<span class="w"> </span><span class="sd">&#39;&#39;&#39;Convenience function representing *read_game(handle, Visitor = chess.pgn.HeadersBuilder)*</span>
 
 <span class="sd"> :param f: file handle opened in text mode </span>
 <span class="sd"> :returns: a *chess.pgn.Headers* object or ``None`` if parsing failed.</span>
@@ -571,7 +657,7 @@
  <span class="k">return</span> <span class="n">read_game</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">Visitor</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">HeadersBuilder</span><span class="p">)</span></div>
  
 <div class="viewcode-block" id="read_board"><a class="viewcode-back" href="../pgnParse.html#pgnParse.read_board">[docs]</a><span class="k">def</span> <span class="nf">read_board</span><span class="p">(</span><span class="n">handle</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">]:</span>
- <span class="sd">&#39;&#39;&#39;Convenience function representing *read_game(handle, Visitor = chess.pgn.BoardBuilder)*</span>
+<span class="w"> </span><span class="sd">&#39;&#39;&#39;Convenience function representing *read_game(handle, Visitor = chess.pgn.BoardBuilder)*</span>
 
 <span class="sd"> :param f: file handle opened in text mode </span>
 <span class="sd"> :returns: a *chess.Board* object or ``None`` if parsing failed.</span>
@@ -579,7 +665,7 @@
  <span class="k">return</span> <span class="n">read_game</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">Visitor</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">BoardBuilder</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="skip_game"><a class="viewcode-back" href="../pgnParse.html#pgnParse.skip_game">[docs]</a><span class="k">def</span> <span class="nf">skip_game</span><span class="p">(</span><span class="n">handle</span> <span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
- <span class="sd">&#39;&#39;&#39;Convenience function representing *read_game(handle, Visitor = chess.pgn.SkipVisitor)*</span>
+<span class="w"> </span><span class="sd">&#39;&#39;&#39;Convenience function representing *read_game(handle, Visitor = chess.pgn.SkipVisitor)*</span>
 
 <span class="sd"> :param f: file handle opened in text mode </span>
 <span class="sd"> :returns: a *bool* indicating whether parsing was successful.</span>
@@ -747,30 +833,46 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Reinhard März.</p>
-  </div>
+    <p>
+        &#169; Copyright 2022, Reinhard März.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

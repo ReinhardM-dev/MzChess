@@ -1,0 +1,598 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>analysePosition &mdash; MzChess V2.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> MzChess
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                V2.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../gui.html">Chess GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysePosition.html">Position-Analyser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../buildFen.html">FEN-Builder</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MzChess</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>analysePosition</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for analysePosition</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Position-Analyser</span>
+<span class="sd">================================</span>
+<span class="sd">|PositionAnalyser| </span>
+
+<span class="sd">The Position-Analyser is an extra tool which can be started from the main window of the chess GUI.</span>
+<span class="sd">It allows to analyse the position using some properties shown in the chess programming website (`CPE`_).</span>
+<span class="sd">It consists of the *Board* displaying the current position and the several properties of the position with the:</span>
+
+<span class="sd">    * *Attacked pieces* </span>
+<span class="sd">    * *Attacking pieces*</span>
+<span class="sd">    * *Bad bishops*, i.e. bishops whose mobility is restricted by own pawns</span>
+<span class="sd">    * *Blocked pawns*, i.e. pawns blocked by a pawn of opposite color</span>
+<span class="sd">    * *Controlled central squares*, i.e. control over the center squares (E4, E5, D4, D5)</span>
+<span class="sd">    * *Fiancettoed bishops*, i.e. bishops on knight pawn squares</span>
+<span class="sd">    * *Hanging pieces*, i.e. pieces being undefended and attacked</span>
+<span class="sd">    * *Isolated pawns*, i.e. pawns without supporting pawns in the adjacent files</span>
+<span class="sd">    * *Passed pawns*, i.e. pawns which cannot be attacked by pawns of opposite color anymore</span>
+<span class="sd">    * *Pinned pieces*, i.e. pieces required at the current square to protect the king</span>
+<span class="sd">    * *Reachable Squares*, is an indicator of the piece mobility</span>
+<span class="sd">    * *Stacked pawns*, i.e. multiple pawns on a single file</span>
+<span class="sd">    * *Supported pawns*, i.e. pawns protected by pawns in the adjacent files</span>
+<span class="sd">    * *Trapped pieces*, i.e. pieces that cannot move anymore</span>
+<span class="sd">    * *Undefended pieces*, i.e. pieces which are not defended irrespective whether they are attacked</span>
+<span class="sd">    </span>
+<span class="sd">By selecting a color for a property, the corresponding pieces are highlighted on the board. The highlight color</span>
+
+<span class="sd">    * *green* for positive properties</span>
+<span class="sd">    * *yellow* for neutral properties</span>
+<span class="sd">    * *red* for negative properties</span>
+<span class="sd">    </span>
+<span class="sd">indicates the valuation of the position.</span>
+<span class="sd">    </span>
+<span class="sd">.. |PositionAnalyser| image:: positionAnalyser.png</span>
+<span class="sd">  :width: 800</span>
+<span class="sd">  :alt: Analyse Position Window</span>
+<span class="sd">.. _CPE: https://www.chessprogramming.org/Evaluation</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span>  <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span>  <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))))</span>
+
+<span class="k">try</span><span class="p">:</span>
+ <span class="kn">from</span> <span class="nn">PyQt6</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtCore</span>
+ <span class="kn">from</span> <span class="nn">PyQt6</span> <span class="kn">import</span> <span class="n">uic</span>
+<span class="k">except</span><span class="p">:</span>
+ <span class="k">try</span><span class="p">:</span>
+  <span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtCore</span>
+  <span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">uic</span>
+ <span class="k">except</span><span class="p">:</span>
+  <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="s1">&#39;Neither the required PyQt6 nor PyQt5 modules installed&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">chess</span><span class="o">,</span> <span class="nn">chess.pgn</span>
+<span class="kn">import</span> <span class="nn">MzChess</span>
+<span class="kn">import</span> <span class="nn">AboutDialog</span>
+<span class="kn">from</span> <span class="nn">installLeipFont</span> <span class="kn">import</span> <span class="n">installLeipFont</span>
+
+<div class="viewcode-block" id="AnalysePositionClass"><a class="viewcode-back" href="../analysePosition.html#analysePosition.AnalysePositionClass">[docs]</a><span class="k">class</span> <span class="nc">AnalysePositionClass</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="p">):</span>
+<span class="w"> </span><span class="sd">&#39;&#39;&#39;The *chessboard* is based on Qt&#39;s QGraphicsView.</span>
+<span class="sd"> &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="AnalysePositionClass.__init__"><a class="viewcode-back" href="../analysePosition.html#analysePosition.AnalysePositionClass.__init__">[docs]</a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">AnalysePositionClass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="n">installLeipFont</span><span class="p">()</span>
+  <span class="n">fileDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+  <span class="n">uic</span><span class="o">.</span><span class="n">loadUi</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fileDirectory</span><span class="p">,</span> <span class="s1">&#39;analysePosition.ui&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
+
+  <span class="bp">self</span><span class="o">.</span><span class="n">pgm</span> <span class="o">=</span> <span class="s1">&#39;Position Analyser&#39;</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">MzChess</span><span class="o">.</span><span class="n">__version__</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">dateString</span> <span class="o">=</span> <span class="n">MzChess</span><span class="o">.</span><span class="n">__date__</span>
+
+  <span class="bp">self</span><span class="o">.</span><span class="n">helpIndex</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QUrl</span><span class="p">(</span><span class="s1">&#39;https://www.chessprogramming.org/Evaluation&#39;</span><span class="p">)</span>
+ 
+  <span class="n">sbText</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">font</span><span class="p">()</span>
+  <span class="n">sbText</span><span class="o">.</span><span class="n">setPointSize</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+
+  <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">MzChess</span><span class="o">.</span><span class="n">Position</span><span class="p">()</span>
+
+  <span class="bp">self</span><span class="o">.</span><span class="n">msgBox</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">msgBox</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Icon</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">msgBox</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Error ...&quot;</span><span class="p">)</span>
+
+  <span class="bp">self</span><span class="o">.</span><span class="n">moveLabel</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">moveLabel</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">sbText</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">moveLabel</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignmentFlag</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">moveLabel</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Total Moves/Half-moves since the last capture or pawn move&quot;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moveLabel</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">scoreLabel</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">scoreLabel</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">sbText</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">scoreLabel</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignmentFlag</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">scoreLabel</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Material Score/Simple Position Score [centipawn]&quot;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scoreLabel</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">winLabel</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">winLabel</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">sbText</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">winLabel</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignmentFlag</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">winLabel</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Probability for WHITE to win&quot;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">winLabel</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+ 
+  <span class="bp">self</span><span class="o">.</span><span class="n">aboutDialog</span> <span class="o">=</span> <span class="n">AboutDialog</span><span class="o">.</span><span class="n">AboutDialog</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">aboutDialog</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span>
+   <span class="n">pgm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pgm</span><span class="p">,</span> 
+   <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> 
+   <span class="n">dateString</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dateString</span><span class="p">)</span></div>
+
+ <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">placementBoard</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">materialLabel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">propertyTableWidget</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">placementBoard</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="nf">notifyError</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">str</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">msgBox</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">msgBox</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+
+ <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+ <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">str</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">infoLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">infoLabel</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+  <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
+  
+ <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">()</span>
+ <span class="k">def</span> <span class="nf">on_actionCopy_triggered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="k">try</span><span class="p">:</span>
+   <span class="n">fen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">fen</span><span class="p">(</span><span class="n">en_passant</span> <span class="o">=</span> <span class="s1">&#39;fen&#39;</span><span class="p">)</span>
+   <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">clipboard</span><span class="p">()</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">fen</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">notifyError</span><span class="p">(</span><span class="s1">&#39;Improper FEN </span><span class="si">{}</span><span class="s1">:</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fen</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)))</span>
+   <span class="k">return</span>
+   
+ <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">()</span>
+ <span class="k">def</span> <span class="nf">on_actionPaste_triggered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setFen</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">clipboard</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+  
+ <span class="k">def</span> <span class="nf">setFen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fen</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">try</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">set_fen</span><span class="p">(</span><span class="n">fen</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">placementBoard</span><span class="o">.</span><span class="n">setPosition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">propertyTableWidget</span><span class="o">.</span><span class="n">setPosition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">moveLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">fullmove_number</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">halfmove_clock</span><span class="p">))</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">scoreLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">materialScore</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">WHITE</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">simplePositionScore</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">WHITE</span><span class="p">)))</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">winLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">%&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">winningProbability</span><span class="p">())))</span>
+  <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">notifyError</span><span class="p">(</span><span class="s1">&#39;Improper FEN </span><span class="si">{}</span><span class="s1">:</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fen</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)))</span>
+   <span class="k">return</span>
+
+ <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">()</span>
+ <span class="k">def</span> <span class="nf">on_actionAbout_triggered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">aboutDialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+ 
+ <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">()</span>
+ <span class="k">def</span> <span class="nf">on_actionHelp_triggered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="n">QtGui</span><span class="o">.</span><span class="n">QDesktopServices</span><span class="o">.</span><span class="n">openUrl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">helpIndex</span><span class="p">)</span></div>
+  
+
+<div class="viewcode-block" id="ChessGroupBox"><a class="viewcode-back" href="../analysePosition.html#analysePosition.ChessGroupBox">[docs]</a><span class="k">class</span> <span class="nc">ChessGroupBox</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGroupBox</span><span class="p">):</span>
+ <span class="n">leipzigEncodeDict</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s1">&#39;P&#39;</span> <span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span> <span class="p">:</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span> <span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span> <span class="p">:</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span> <span class="p">:</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span> <span class="p">:</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;p&#39;</span> <span class="p">:</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span> <span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span> <span class="p">:</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span> <span class="p">:</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span> <span class="p">:</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span> <span class="p">:</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span>
+ <span class="p">}</span>
+ <span class="n">colorName</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ChessGroupBox.__init__"><a class="viewcode-back" href="../analysePosition.html#analysePosition.ChessGroupBox.__init__">[docs]</a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">ChessGroupBox</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QFont</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">setFamily</span><span class="p">(</span><span class="s2">&quot;Chess Leipzig&quot;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">setPointSize</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gridLayout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gridLayout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">squareSize</span> <span class="o">=</span> <span class="mi">40</span></div></div>
+  
+<div class="viewcode-block" id="PlacementBoard"><a class="viewcode-back" href="../analysePosition.html#analysePosition.PlacementBoard">[docs]</a><span class="k">class</span> <span class="nc">PlacementBoard</span><span class="p">(</span><span class="n">ChessGroupBox</span><span class="p">):</span>
+ <span class="n">whiteSquare</span> <span class="o">=</span> <span class="s2">&quot;background-color: white; </span><span class="se">\n</span><span class="s2">;border: none;&quot;</span>
+ <span class="n">blackSquare</span> <span class="o">=</span> <span class="s2">&quot;background-color: lightgray; </span><span class="se">\n</span><span class="s2">;border: none;&quot;</span>
+ <span class="n">goodSquare</span> <span class="o">=</span> <span class="s2">&quot;background-color: green; </span><span class="se">\n</span><span class="s2">;border: none;&quot;</span>
+ <span class="n">badSquare</span> <span class="o">=</span> <span class="s2">&quot;background-color: red; </span><span class="se">\n</span><span class="s2">;border: none;&quot;</span>
+ <span class="n">neutralSquare</span> <span class="o">=</span> <span class="s2">&quot;background-color: yellow; </span><span class="se">\n</span><span class="s2">;border: none;&quot;</span>
+
+<div class="viewcode-block" id="PlacementBoard.__init__"><a class="viewcode-back" href="../analysePosition.html#analysePosition.PlacementBoard.__init__">[docs]</a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">PlacementBoard</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">materialLabel</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gridLayout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">button2SquareList</span> <span class="o">=</span> <span class="mi">64</span> <span class="o">*</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span> <span class="o">=</span> <span class="kc">False</span></div>
+ 
+ <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">materialLabel</span> <span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">,</span> <span class="n">turnFrame</span> <span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFrame</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span> <span class="o">=</span> <span class="n">turnFrame</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">materialLabel</span> <span class="o">=</span> <span class="n">materialLabel</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">MzChess</span><span class="o">.</span><span class="n">Position</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">pushButtonList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">square</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">64</span><span class="p">):</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">_addButton</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
+  
+ <span class="k">def</span> <span class="nf">setFlipped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flipped</span> <span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span> <span class="o">!=</span> <span class="n">flipped</span><span class="p">:</span>
+   <span class="k">for</span> <span class="n">square</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">):</span>
+    <span class="n">flippedSquare</span> <span class="o">=</span> <span class="n">square</span> <span class="o">^</span> <span class="mh">0x38</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">button2SquareList</span><span class="p">[</span><span class="n">flippedSquare</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">button2SquareList</span><span class="p">[</span><span class="n">flippedSquare</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">button2SquareList</span><span class="p">[</span><span class="n">square</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">button2SquareList</span><span class="p">[</span><span class="n">square</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_setBrushAndToolTip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">button2SquareList</span><span class="p">[</span><span class="n">square</span><span class="p">],</span> <span class="n">square</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_setBrushAndToolTip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">button2SquareList</span><span class="p">[</span><span class="n">flippedSquare</span><span class="p">],</span> <span class="n">flippedSquare</span><span class="p">)</span>
+    
+ <span class="k">def</span> <span class="nf">_setBrushAndToolTip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pushButton</span> <span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">,</span> <span class="n">square</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">square</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">square_rank</span><span class="p">(</span><span class="n">square</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">chess</span><span class="o">.</span><span class="n">square_file</span><span class="p">(</span><span class="n">square</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+   <span class="n">pushButton</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blackSquare</span><span class="p">)</span>  
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">pushButton</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">whiteSquare</span><span class="p">)</span>  
+  <span class="n">pushButton</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">square_name</span><span class="p">(</span><span class="n">square</span><span class="p">))</span>
+  
+ <span class="k">def</span> <span class="nf">_addButton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">square</span> <span class="p">:</span> <span class="n">chess</span><span class="o">.</span><span class="n">square</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="n">pushButton</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+  <span class="n">pushButton</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">squareSize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">squareSize</span><span class="p">))</span>
+  <span class="n">pushButton</span><span class="o">.</span><span class="n">setMaximumSize</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">squareSize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">squareSize</span><span class="p">))</span>
+  <span class="n">pushButton</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="p">)</span>
+  <span class="n">pushButton</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_setBrushAndToolTip</span><span class="p">(</span><span class="n">pushButton</span><span class="p">,</span> <span class="n">square</span><span class="p">)</span>
+  <span class="n">pushButton</span><span class="o">.</span><span class="n">installEventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gridLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">pushButton</span><span class="p">,</span> <span class="mi">7</span> <span class="o">-</span> <span class="n">chess</span><span class="o">.</span><span class="n">square_rank</span><span class="p">(</span><span class="n">square</span><span class="p">),</span> <span class="n">chess</span><span class="o">.</span><span class="n">square_file</span><span class="p">(</span><span class="n">square</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">button2SquareList</span><span class="p">[</span><span class="n">square</span><span class="p">]</span> <span class="o">=</span> <span class="n">pushButton</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">pushButtonList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pushButton</span><span class="p">)</span>
+ 
+ <span class="k">def</span> <span class="nf">setPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span> <span class="p">:</span> <span class="n">MzChess</span><span class="o">.</span><span class="n">Position</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position</span>
+  <span class="k">for</span> <span class="n">square</span> <span class="ow">in</span> <span class="n">chess</span><span class="o">.</span><span class="n">SQUARES</span><span class="p">:</span>
+   <span class="n">piece</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="n">square</span><span class="p">]</span>
+   <span class="k">if</span> <span class="n">piece</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pushButtonList</span><span class="p">[</span><span class="n">square</span><span class="p">]</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">leipzigEncodeDict</span><span class="p">[</span><span class="n">piece</span><span class="o">.</span><span class="n">symbol</span><span class="p">()])</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pushButtonList</span><span class="p">[</span><span class="n">square</span><span class="p">]</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_showMaterial</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">_showTurn</span><span class="p">()</span>
+
+ <span class="k">def</span> <span class="nf">_showMaterial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">materialLabel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">return</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">materialLabel</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QFont</span><span class="p">(</span><span class="s2">&quot;Chess Leipzig&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+  <span class="n">encodePiece</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">piece_type</span><span class="p">,</span> <span class="n">color</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">leipzigEncodeDict</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Piece</span><span class="p">(</span><span class="n">piece_type</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span><span class="o">.</span><span class="n">symbol</span><span class="p">()]</span>
+  <span class="n">pieceMap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">piece_map</span><span class="p">()</span>
+  <span class="n">whiteCountList</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">*</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">blackCountList</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">*</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pieceMap</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+   <span class="k">if</span> <span class="n">piece</span><span class="o">.</span><span class="n">color</span> <span class="o">==</span> <span class="n">chess</span><span class="o">.</span><span class="n">WHITE</span><span class="p">:</span>
+    <span class="n">whiteCountList</span><span class="p">[</span><span class="n">piece</span><span class="o">.</span><span class="n">piece_type</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">blackCountList</span><span class="p">[</span><span class="n">piece</span><span class="o">.</span><span class="n">piece_type</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="n">piece_text</span> <span class="o">=</span><span class="s1">&#39;&#39;</span>
+  <span class="k">for</span> <span class="n">piece_type</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+   <span class="n">delta</span> <span class="o">=</span> <span class="n">whiteCountList</span><span class="p">[</span><span class="n">piece_type</span><span class="p">]</span> <span class="o">-</span> <span class="n">blackCountList</span><span class="p">[</span><span class="n">piece_type</span><span class="p">]</span>
+   <span class="k">if</span> <span class="n">delta</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">continue</span>
+   <span class="k">if</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">piece_text</span> <span class="o">+=</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">encodePiece</span><span class="p">(</span><span class="n">piece_type</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">WHITE</span><span class="p">)</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="n">piece_text</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span> <span class="o">*</span> <span class="n">encodePiece</span><span class="p">(</span><span class="n">piece_type</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">BLACK</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">materialLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">piece_text</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="nf">_showTurn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">return</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">is_game_over</span><span class="p">()</span>
+  <span class="n">border</span> <span class="o">=</span> <span class="s1">&#39; border-color: black; border-style: solid; border-width: 1px;&#39;</span>
+  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gameIsOver</span><span class="p">:</span>
+   <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">is_checkmate</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: red;&#39;</span> <span class="o">+</span> <span class="n">border</span><span class="p">)</span>
+   <span class="k">else</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: yellow;&#39;</span> <span class="o">+</span> <span class="n">border</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">turn</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: white;&#39;</span> <span class="o">+</span> <span class="n">border</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">turnFrame</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;background-color: black;&#39;</span><span class="p">)</span>
+
+ <span class="k">def</span> <span class="nf">highlightSquareSet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">highlightSquareSetTuple</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">SquareSet</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="n">highlightSquareSetTuple</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="n">highlightKey</span><span class="p">,</span> <span class="n">squareSet</span> <span class="o">=</span> <span class="n">highlightSquareSetTuple</span>
+   <span class="k">if</span> <span class="n">highlightKey</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">highlightKey</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
+     <span class="n">highlightedSquare</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">goodSquare</span>
+    <span class="k">elif</span> <span class="n">highlightKey</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+     <span class="n">highlightedSquare</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">badSquare</span>
+    <span class="k">else</span><span class="p">:</span>
+     <span class="n">highlightedSquare</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neutralSquare</span>
+  <span class="k">else</span><span class="p">:</span>
+   <span class="n">squareSet</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">SquareSet</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">square</span> <span class="ow">in</span> <span class="n">chess</span><span class="o">.</span><span class="n">SQUARES</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">square</span> <span class="ow">in</span> <span class="n">squareSet</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pushButtonList</span><span class="p">[</span><span class="n">square</span><span class="p">]</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">highlightedSquare</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="p">(</span><span class="n">chess</span><span class="o">.</span><span class="n">square_rank</span><span class="p">(</span><span class="n">square</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">flipped</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">chess</span><span class="o">.</span><span class="n">square_file</span><span class="p">(</span><span class="n">square</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pushButtonList</span><span class="p">[</span><span class="n">square</span><span class="p">]</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blackSquare</span><span class="p">)</span>  
+   <span class="k">else</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pushButtonList</span><span class="p">[</span><span class="n">square</span><span class="p">]</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">whiteSquare</span><span class="p">)</span>  
+
+<div class="viewcode-block" id="PlacementBoard.eventFilter"><a class="viewcode-back" href="../analysePosition.html#analysePosition.PlacementBoard.eventFilter">[docs]</a> <span class="k">def</span> <span class="nf">eventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pushButton</span> <span class="p">:</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">,</span> <span class="n">ev</span> <span class="p">:</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+  <span class="n">evType</span> <span class="o">=</span> <span class="n">ev</span><span class="o">.</span><span class="n">type</span><span class="p">()</span>
+  
+  <span class="k">if</span> <span class="n">pushButton</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pushButtonList</span> \
+   <span class="ow">and</span> <span class="p">(</span><span class="n">evType</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">MouseButtonPress</span> \
+    <span class="ow">or</span>    <span class="n">evType</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">MouseButtonRelease</span><span class="p">):</span>
+   <span class="n">square</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pushButtonList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pushButton</span><span class="p">)</span>
+   <span class="n">piece</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="n">square</span><span class="p">]</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">piece</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">square</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">pinnedPieces</span><span class="p">(</span><span class="n">piece</span><span class="o">.</span><span class="n">color</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">evType</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">MouseButtonPress</span><span class="p">:</span>
+     <span class="n">attackedSquares</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">attacks</span><span class="p">(</span><span class="n">square</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">_bitboards</span><span class="p">[</span><span class="n">piece</span><span class="o">.</span><span class="n">color</span><span class="p">][</span><span class="n">chess</span><span class="o">.</span><span class="n">ALL</span><span class="p">])</span>
+     <span class="n">defendedSquares</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">defendedPieces</span><span class="p">(</span><span class="ow">not</span> <span class="n">piece</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+     <span class="k">for</span> <span class="n">actSquare</span> <span class="ow">in</span> <span class="n">attackedSquares</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">actSquare</span> <span class="ow">in</span> <span class="n">defendedSquares</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">is_attacked_by</span><span class="p">(</span><span class="ow">not</span> <span class="n">piece</span><span class="o">.</span><span class="n">color</span><span class="p">,</span> <span class="n">actSquare</span><span class="p">):</span>
+       <span class="n">highlightedSquare</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">badSquare</span>
+      <span class="k">else</span><span class="p">:</span>
+       <span class="n">highlightedSquare</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">goodSquare</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">pushButtonList</span><span class="p">[</span><span class="n">actSquare</span><span class="p">]</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">highlightedSquare</span><span class="p">)</span>
+     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MouseButtonPress, square = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">square</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">evType</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">MouseButtonRelease</span><span class="p">:</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">highlightSquareSet</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MouseButtonRelease, square = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">square</span><span class="p">))</span>
+  <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">PlacementBoard</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">eventFilter</span><span class="p">(</span><span class="n">pushButton</span><span class="p">,</span> <span class="n">ev</span><span class="p">)</span></div></div>
+   
+<span class="k">def</span> <span class="nf">showStatus</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+ <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fen = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">fen</span><span class="p">(</span><span class="n">en_passant</span> <span class="o">=</span> <span class="s1">&#39;fen&#39;</span><span class="p">)))</span>
+ <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+  <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+   <span class="n">chessSquare</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+   <span class="n">piece</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">piece_at</span><span class="p">(</span><span class="n">chessSquare</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">piece</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; square = </span><span class="si">{}</span><span class="s1">, name = </span><span class="si">{}</span><span class="s1">, symbol = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+     <span class="n">chessSquare</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">square_name</span><span class="p">(</span><span class="n">chessSquare</span><span class="p">),</span> <span class="n">piece</span><span class="o">.</span><span class="n">symbol</span><span class="p">()))</span>
+ <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">move</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">move_stack</span><span class="p">):</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">. </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">move</span><span class="o">.</span><span class="n">uci</span><span class="p">()))</span>
+
+<div class="viewcode-block" id="PositionPropertyTable"><a class="viewcode-back" href="../analysePosition.html#analysePosition.PositionPropertyTable">[docs]</a><span class="k">class</span> <span class="nc">PositionPropertyTable</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTableWidget</span><span class="p">):</span>
+ 
+<div class="viewcode-block" id="PositionPropertyTable.__init__"><a class="viewcode-back" href="../analysePosition.html#analysePosition.PositionPropertyTable.__init__">[docs]</a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="nb">super</span><span class="p">(</span><span class="n">PositionPropertyTable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">selectionModel</span><span class="p">()</span><span class="o">.</span><span class="n">currentChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_currentChanged</span><span class="p">)</span>
+  <span class="n">hHeader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span>
+  <span class="n">hHeader</span><span class="o">.</span><span class="n">setSectionResizeMode</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHeaderView</span><span class="o">.</span><span class="n">ResizeMode</span><span class="o">.</span><span class="n">Stretch</span><span class="p">)</span>
+  <span class="n">hHeader</span><span class="o">.</span><span class="n">setSectionResizeMode</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHeaderView</span><span class="o">.</span><span class="n">ResizeMode</span><span class="o">.</span><span class="n">Fixed</span><span class="p">)</span>
+  <span class="n">hHeader</span><span class="o">.</span><span class="n">resizeSection</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+  <span class="n">hHeader</span><span class="o">.</span><span class="n">setSectionResizeMode</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHeaderView</span><span class="o">.</span><span class="n">ResizeMode</span><span class="o">.</span><span class="n">Fixed</span><span class="p">)</span>
+  <span class="n">hHeader</span><span class="o">.</span><span class="n">resizeSection</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span></div>
+  
+ <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">placementBoard</span> <span class="p">:</span> <span class="n">PlacementBoard</span><span class="p">)</span><span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">placementBoard</span> <span class="o">=</span> <span class="n">placementBoard</span>
+  
+ <span class="k">def</span> <span class="nf">setPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MzChess</span><span class="o">.</span><span class="n">Position</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">clearContents</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">position</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+   <span class="k">return</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">position</span><span class="o">.</span><span class="n">squareSetMethodDict</span><span class="p">))</span>
+  <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">position</span><span class="o">.</span><span class="n">squareSetMethodDict</span><span class="p">):</span>
+   <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">position</span><span class="o">.</span><span class="n">squareSetMethodDict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">1</span><span class="p">:])</span>
+   <span class="n">highlightedKey</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">squareSetMethodDict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+   <span class="n">keyItem</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTableWidgetItem</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+   <span class="n">keyItem</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemFlag</span><span class="o">.</span><span class="n">NoItemFlags</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">keyItem</span><span class="p">)</span>
+   <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">chess</span><span class="o">.</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">chess</span><span class="o">.</span><span class="n">BLACK</span><span class="p">]):</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTableWidgetItem</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">method</span><span class="p">(</span><span class="n">color</span><span class="p">))))</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemFlag</span><span class="o">.</span><span class="n">ItemIsEnabled</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemFlag</span><span class="o">.</span><span class="n">ItemIsSelectable</span><span class="p">)</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">UserRole</span><span class="p">,</span> <span class="p">(</span><span class="n">highlightedKey</span><span class="p">,</span> <span class="n">method</span><span class="p">(</span><span class="n">color</span><span class="p">)))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span> <span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    
+ <span class="k">def</span> <span class="nf">on_currentChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span> <span class="p">:</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QModelIndex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
+   <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemFromIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+   <span class="bp">self</span><span class="o">.</span><span class="n">placementBoard</span><span class="o">.</span><span class="n">highlightSquareSet</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">UserRole</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MzClassApplication"><a class="viewcode-back" href="../analysePosition.html#analysePosition.MzClassApplication">[docs]</a><span class="k">class</span> <span class="nc">MzClassApplication</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="p">):</span>
+<div class="viewcode-block" id="MzClassApplication.__init__"><a class="viewcode-back" href="../analysePosition.html#analysePosition.MzClassApplication.__init__">[docs]</a> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">notifyFct</span> <span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="nb">print</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> 
+  <span class="nb">super</span><span class="p">(</span><span class="n">MzClassApplication</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">notifyFct</span> <span class="o">=</span> <span class="n">notifyFct</span></div>
+
+<div class="viewcode-block" id="MzClassApplication.notify"><a class="viewcode-back" href="../analysePosition.html#analysePosition.MzClassApplication.notify">[docs]</a> <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rec</span><span class="p">,</span> <span class="n">ev</span><span class="p">):</span>
+  <span class="n">rc</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MzClassApplication</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">ev</span><span class="p">)</span>
+  <span class="c1">#self.notifyFct(&#39;{} -&gt; Type(Event)= {}, handled = {}&#39;.format(rec, ev.type(),  rc))</span>
+  <span class="k">return</span> <span class="n">rc</span></div></div>
+
+<span class="k">def</span> <span class="nf">runAnalysePosition</span><span class="p">(</span><span class="n">notifyFct</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+ <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">))</span>
+ <span class="k">if</span> <span class="n">notifyFct</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+  <span class="n">qApp</span> <span class="o">=</span> <span class="n">MzClassApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+ <span class="k">else</span><span class="p">:</span>
+  <span class="n">qApp</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+ <span class="n">chessMainWindow</span> <span class="o">=</span> <span class="n">AnalysePositionClass</span><span class="p">()</span>
+ <span class="n">chessMainWindow</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+ <span class="n">chessMainWindow</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+ <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+  <span class="n">chessMainWindow</span><span class="o">.</span><span class="n">setFen</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+ <span class="n">qApp</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+ <span class="n">runAnalysePosition</span><span class="p">(</span><span class="nb">print</span><span class="p">)</span>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Reinhard März.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>eco &mdash; MzChess V1.0.5 documentation</title>
+  <title>eco &mdash; MzChess V2.3.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,9 +31,9 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -61,7 +63,7 @@
             
             
               <div class="version">
-                V1.0
+                V2.3
               </div>
             
           
@@ -86,11 +88,8 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
-</ul>
-
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
             
           
         </div>
@@ -179,7 +178,7 @@
  <span class="n">MOVES</span> <span class="o">=</span> <span class="mi">3</span></div>
 
 <div class="viewcode-block" id="ECODatabase"><a class="viewcode-back" href="../eco.html#eco.ECODatabase">[docs]</a><span class="k">class</span> <span class="nc">ECODatabase</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
- <span class="sd">&#39;&#39;&#39;A Wrapper class for Encyclopaedia of Chess Openings (ECO)</span>
+<span class="w"> </span><span class="sd">&#39;&#39;&#39;A Wrapper class for Encyclopaedia of Chess Openings (ECO)</span>
 
 <span class="sd">:param ecoDirectory: directory of tsv - files</span>
 <span class="sd">:param tsvPattern: a glob pattern describing the files to be loaded. ``None`` -&gt; nothing is loaded</span>
@@ -198,7 +197,7 @@
    <span class="c1"># print(&#39;{} lines read from file {}&#39;.format(len(self), os.path.basename(tsvFile)))</span>
 
 <div class="viewcode-block" id="ECODatabase.loadTSVFile"><a class="viewcode-back" href="../eco.html#eco.ECODatabase.loadTSVFile">[docs]</a> <span class="k">def</span> <span class="nf">loadTSVFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsvFile</span> <span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Adds a *tsvFile* to the database </span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Adds a *tsvFile* to the database </span>
 
 <span class="sd">:param tsvFile: tsv - file to be added</span>
 <span class="sd">  &#39;&#39;&#39;</span>
@@ -271,7 +270,7 @@
   <span class="k">return</span> <span class="mi">0</span>
   
 <div class="viewcode-block" id="ECODatabase.statistics"><a class="viewcode-back" href="../eco.html#eco.ECODatabase.statistics">[docs]</a> <span class="k">def</span> <span class="nf">statistics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span> <span class="p">:</span> <span class="n">TSVType</span> <span class="o">=</span> <span class="n">TSVType</span><span class="o">.</span><span class="n">ECO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]]:</span>
-  <span class="sd">&#39;&#39;&#39;Delivers statistical data. ``key`` one of the 4 columns of a TSV-file, i.e.</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Delivers statistical data. ``key`` one of the 4 columns of a TSV-file, i.e.</span>
 <span class="sd">  </span>
 <span class="sd">  * *ECO* : eco code</span>
 <span class="sd">  * *OPENING* : opening name</span>
@@ -345,7 +344,7 @@
    <span class="bp">self</span><span class="o">.</span><span class="n">_createVariation</span><span class="p">(</span><span class="n">newGameNode</span><span class="p">,</span> <span class="n">nPly</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">newIdList</span><span class="p">)</span>
   
 <div class="viewcode-block" id="ECODatabase.createGame"><a class="viewcode-back" href="../eco.html#eco.ECODatabase.createGame">[docs]</a> <span class="k">def</span> <span class="nf">createGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listOfFirstMoves</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">],</span> <span class="n">polyglotBook</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">polyglot</span><span class="o">.</span><span class="n">MemoryMappedReader</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">chess</span><span class="o">.</span><span class="n">pgn</span><span class="o">.</span><span class="n">Game</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Creates a opening game starting with ``listOfFirstMoves``. The opening variants are implemented as variants</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Creates a opening game starting with ``listOfFirstMoves``. The opening variants are implemented as variants</span>
 <span class="sd">    </span>
 <span class="sd">:param listOfFirstMoves: list of starting moves</span>
 <span class="sd">:param polyglotBook: if present, the moves are sorted with respect to frequency of use</span>
@@ -414,7 +413,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Reinhard März.
+        &#169; Copyright 2022, Reinhard März.
 
     </p>
   </div>

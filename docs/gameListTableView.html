@@ -1,39 +1,77 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Database Editor &mdash; MzChess V2.3.0 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+  <title>Database Editor &mdash; MzChess V2.3.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Score Chart" href="scoreplotgraphicsview.html" />
     <link rel="prev" title="Game Header Editor" href="gameHeaderView.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> MzChess
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 V2.3
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -41,27 +79,40 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="gui.html">GUI</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="gui.html">Chess GUI</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="chessMainWindow.html">Main Window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qboardview.html">Chess Board</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gameTreeView.html">Game Editor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gameTreeView.html#gametreeview.GameTreeView"><code class="docutils literal notranslate"><span class="pre">GameTreeView</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="gameHeaderView.html">Game Header Editor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gameHeaderView.html#gameheaderview.GameHeaderView"><code class="docutils literal notranslate"><span class="pre">GameHeaderView</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="gameHeaderView.html#gameheaderview.KeyType"><code class="docutils literal notranslate"><span class="pre">KeyType</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gameHeaderView.html#gameheaderview.GameHeaderView"><code class="docutils literal notranslate"><span class="pre">GameHeaderView</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Database Editor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#gamelisttableview.GameListTableModel"><code class="docutils literal notranslate"><span class="pre">GameListTableModel</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableModel.columnCount"><code class="docutils literal notranslate"><span class="pre">GameListTableModel.columnCount()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableModel.data"><code class="docutils literal notranslate"><span class="pre">GameListTableModel.data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableModel.flags"><code class="docutils literal notranslate"><span class="pre">GameListTableModel.flags()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableModel.headerData"><code class="docutils literal notranslate"><span class="pre">GameListTableModel.headerData()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableModel.__init__"><code class="docutils literal notranslate"><span class="pre">GameListTableModel.__init__()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableModel.rowCount"><code class="docutils literal notranslate"><span class="pre">GameListTableModel.rowCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableModel.columnCount"><code class="docutils literal notranslate"><span class="pre">GameListTableModel.columnCount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableModel.flags"><code class="docutils literal notranslate"><span class="pre">GameListTableModel.flags()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableModel.supportedDropActions"><code class="docutils literal notranslate"><span class="pre">GameListTableModel.supportedDropActions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableModel.data"><code class="docutils literal notranslate"><span class="pre">GameListTableModel.data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableModel.headerData"><code class="docutils literal notranslate"><span class="pre">GameListTableModel.headerData()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#gamelisttableview.GameListTableView"><code class="docutils literal notranslate"><span class="pre">GameListTableView</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableView.__init__"><code class="docutils literal notranslate"><span class="pre">GameListTableView.__init__()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableView.dropEvent"><code class="docutils literal notranslate"><span class="pre">GameListTableView.dropEvent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gamelisttableview.GameListTableView.resizeEvent"><code class="docutils literal notranslate"><span class="pre">GameListTableView.resizeEvent()</span></code></a></li>
 </ul>
@@ -69,38 +120,82 @@
 <li class="toctree-l2"><a class="reference internal" href="scoreplotgraphicsview.html">Score Chart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scoreplotgraphicsview.html#scoreplotgraphicsview.ScorePlot"><code class="docutils literal notranslate"><span class="pre">ScorePlot</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="configureEngine.html">UCI Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysePosition.html">Position-Analyser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildFen.html">FEN-Builder</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">MzChess</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="gui.html">GUI</a></li>
-      <li class="breadcrumb-item active">Database Editor</li>
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="gui.html">Chess GUI</a> &raquo;</li>
+        
+      <li>Database Editor</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="_sources/gameListTableView.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <span class="target" id="module-gamelisttableview"></span><section id="database-editor">
-<h1>Database Editor<a class="headerlink" href="#database-editor" title="Permalink to this heading"></a></h1>
+<h1>Database Editor<a class="headerlink" href="#database-editor" title="Permalink to this heading">¶</a></h1>
 <p>The <em>database</em> editor is based on Qt’s QTableView.</p>
 <p><a class="reference internal" href="_images/gameListTableView.png"><img alt="Game Editor" src="_images/gameListTableView.png" style="width: 800px;" /></a></p>
 <p>It allows for 3 types of actions:</p>
@@ -114,25 +209,40 @@
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="gamelisttableview.GameListTableModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gamelisttableview.</span></span><span class="sig-name descname"><span class="pre">GameListTableModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gameList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gameHeaderKeys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gamelisttableview.</span></span><span class="sig-name descname"><span class="pre">GameListTableModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gameList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gameHeaderKeys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py method">
-<dt class="sig sig-object py" id="gamelisttableview.GameListTableModel.columnCount">
-<span class="sig-name descname"><span class="pre">columnCount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QModelIndex</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">QModelIndex()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.columnCount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.columnCount" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="gamelisttableview.GameListTableModel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gameList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gameHeaderKeys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="gamelisttableview.GameListTableModel.data">
-<span class="sig-name descname"><span class="pre">data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QModelIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Qt.DisplayRole</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.data" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="gamelisttableview.GameListTableModel.rowCount">
+<span class="sig-name descname"><span class="pre">rowCount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QModelIndex</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">QModelIndex()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.rowCount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.rowCount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gamelisttableview.GameListTableModel.columnCount">
+<span class="sig-name descname"><span class="pre">columnCount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QModelIndex</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">QModelIndex()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.columnCount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.columnCount" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="gamelisttableview.GameListTableModel.flags">
-<span class="sig-name descname"><span class="pre">flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QModelIndex</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Qt.ItemFlag</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.flags" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QModelIndex</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Qt.ItemFlag</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.flags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gamelisttableview.GameListTableModel.supportedDropActions">
+<span class="sig-name descname"><span class="pre">supportedDropActions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Qt.DropAction</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.supportedDropActions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.supportedDropActions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gamelisttableview.GameListTableModel.data">
+<span class="sig-name descname"><span class="pre">data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QModelIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Qt.DisplayRole</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="gamelisttableview.GameListTableModel.headerData">
-<span class="sig-name descname"><span class="pre">headerData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Qt.Orientation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">Qt.DisplayRole</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.headerData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.headerData" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">headerData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Qt.Orientation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">Qt.DisplayRole</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.headerData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.headerData" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -145,29 +255,24 @@
 <span class="sig-name descname"><span class="pre">GameListTableModel.removeRows(self,</span> <span class="pre">int,</span> <span class="pre">int,</span> <span class="pre">parent:</span> <span class="pre">QModelIndex</span> <span class="pre">=</span> <span class="pre">QModelIndex())</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.removeRows"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="gamelisttableview.GameListTableModel.rowCount">
-<span class="sig-name descname"><span class="pre">rowCount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QModelIndex</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">QModelIndex()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.rowCount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.rowCount" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="gamelisttableview.GameListTableModel.supportedDropActions">
-<span class="sig-name descname"><span class="pre">supportedDropActions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Qt.DropAction</span></span></span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableModel.supportedDropActions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableModel.supportedDropActions" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="gamelisttableview.GameListTableView">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gamelisttableview.</span></span><span class="sig-name descname"><span class="pre">GameListTableView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableView" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gamelisttableview.</span></span><span class="sig-name descname"><span class="pre">GameListTableView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableView" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py method">
+<dt class="sig sig-object py" id="gamelisttableview.GameListTableView.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableView.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableView.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="gamelisttableview.GameListTableView.dropEvent">
-<span class="sig-name descname"><span class="pre">dropEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QDropEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableView.dropEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableView.dropEvent" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dropEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QDropEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableView.dropEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableView.dropEvent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="gamelisttableview.GameListTableView.resizeEvent">
-<span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QResizeEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableView.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableView.resizeEvent" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QResizeEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gamelisttableview.html#GameListTableView.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gamelisttableview.GameListTableView.resizeEvent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -175,33 +280,50 @@
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="gameHeaderView.html" class="btn btn-neutral float-left" title="Game Header Editor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="scoreplotgraphicsview.html" class="btn btn-neutral float-right" title="Score Chart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="gameHeaderView.html" class="btn btn-neutral float-left" title="Game Header Editor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Reinhard März.</p>
-  </div>
+    <p>
+        &#169; Copyright 2022, Reinhard März.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

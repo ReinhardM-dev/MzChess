@@ -1,35 +1,74 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>chessengine &mdash; MzChess V2.0.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+  <title>chessengine &mdash; MzChess V2.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-    <script src="../_static/js/theme.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../index.html" class="icon icon-home"> MzChess
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
-                V2.0
+                V2.3
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -37,36 +76,83 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../gui.html">GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
-</ul>
 
+          
         </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">MzChess</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
           <li><a href="index.html">Module code</a> &raquo;</li>
+        
       <li>chessengine</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for chessengine</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;A Qt-compatible interface similar to `chess.engine`_ </span>
 <span class="sd"> </span>
@@ -94,7 +180,7 @@
 <span class="n">PGNEval_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\[(%|</span><span class="si">%e</span><span class="s1">val)[ ]+([^\n\t \]]+)\]&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ChessEngine"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine">[docs]</a><span class="k">class</span> <span class="nc">ChessEngine</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
- <span class="sd">&#39;&#39;&#39;A Universal Chess Interface (`UCI`_) engine using (`QProcess`_)</span>
+<span class="w"> </span><span class="sd">&#39;&#39;&#39;A Universal Chess Interface (`UCI`_) engine using (`QProcess`_)</span>
 
 <span class="sd">:param engine2Option: a pair of a path to the executable and *dict* of the changed options</span>
 <span class="sd">:param limit: a limit definition for the engine (see `chess.engine.Limit`_)</span>
@@ -148,7 +234,7 @@
   <span class="bp">self</span><span class="o">.</span><span class="n">board</span> <span class="o">=</span> <span class="n">chess</span><span class="o">.</span><span class="n">Board</span><span class="p">()</span>
 
 <div class="viewcode-block" id="ChessEngine.kill"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.kill">[docs]</a> <span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beSilent</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Kills the process, engine cannot be used anymore</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Kills the process, engine cannot be used anymore</span>
 <span class="sd">  &#39;&#39;&#39;</span>
   <span class="k">if</span> <span class="s1">&#39;p&#39;</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
    <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
@@ -158,7 +244,7 @@
    <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="ChessEngine.setLog"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.setLog">[docs]</a> <span class="k">def</span> <span class="nf">setLog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Sets the log for engine&#39;s commands</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Sets the log for engine&#39;s commands</span>
 
 <span class="sd">:param log: log for the engine&#39;s commands, default = None  </span>
 <span class="sd">  &#39;&#39;&#39;</span>
@@ -171,7 +257,7 @@
    <span class="bp">self</span><span class="o">.</span><span class="n">notify</span> <span class="o">=</span> <span class="n">log</span></div>
 
 <div class="viewcode-block" id="ChessEngine.getScore"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.getScore">[docs]</a> <span class="k">def</span> <span class="nf">getScore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hintID</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-  <span class="sd">&#39;&#39;&#39;Delivers the score for a hint, if available</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Delivers the score for a hint, if available</span>
 
 <span class="sd">:param hintID: hint, i.e. alternative to be used (0 for best move)</span>
 <span class="sd">:returns: score in centipawns or ``None``</span>
@@ -242,7 +328,7 @@
   <span class="k">return</span> <span class="kc">True</span>
  
 <div class="viewcode-block" id="ChessEngine.isReady"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.isReady">[docs]</a> <span class="k">def</span> <span class="nf">isReady</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Checks whether the engine is able to receive commands</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Checks whether the engine is able to receive commands</span>
 
 <span class="sd">:returns: boolean indicating the response</span>
 <span class="sd">  &#39;&#39;&#39;</span>
@@ -409,7 +495,7 @@
  <span class="c1">#  Methods for use  --------------------------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="ChessEngine.uciNewGame"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.uciNewGame">[docs]</a> <span class="k">def</span> <span class="nf">uciNewGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fen</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">moves</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Wrapper for the UCI *ucinewgame* command</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Wrapper for the UCI *ucinewgame* command</span>
 
 <span class="sd">:param fen: starting position in Forsyth-Edwards-Notation (FEN)</span>
 <span class="sd">:param moves: list of moves to be applied</span>
@@ -434,7 +520,7 @@
   <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="ChessEngine.uciSetOption"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.uciSetOption">[docs]</a> <span class="k">def</span> <span class="nf">uciSetOption</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span> <span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span>  <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Wrapper for the UCI *setoption* command</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Wrapper for the UCI *setoption* command</span>
 
 <span class="sd">:param name: name of the option</span>
 <span class="sd">:param value: value, type depends on name</span>
@@ -477,7 +563,7 @@
   <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">readyok</span></div>
 
 <div class="viewcode-block" id="ChessEngine.uciGo"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.uciGo">[docs]</a> <span class="k">def</span> <span class="nf">uciGo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_moves</span> <span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">chess</span><span class="o">.</span><span class="n">Move</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ponder</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">infinite</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Wrapper for the UCI *go* command</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Wrapper for the UCI *go* command</span>
 
 <span class="sd">:param search_moves: list of moves to be searched</span>
 <span class="sd">:param ponder: suggest a response to the *best-move*</span>
@@ -528,7 +614,7 @@
   <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="ChessEngine.uciStop"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.uciStop">[docs]</a> <span class="k">def</span> <span class="nf">uciStop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Wrapper for the UCI *stop* command to stop an infinite *go*</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Wrapper for the UCI *stop* command to stop an infinite *go*</span>
 
 <span class="sd">:returns: boolean indicating the success</span>
 <span class="sd">  &#39;&#39;&#39;</span>
@@ -543,7 +629,7 @@
  <span class="c1">#  chess.engine like calls  --------------------------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="ChessEngine.startPlay"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.startPlay">[docs]</a> <span class="k">def</span> <span class="nf">startPlay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Emits *uciGO* in *play* mode, i.e.g</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Emits *uciGO* in *play* mode, i.e.g</span>
 <span class="sd">  </span>
 <span class="sd">  * *UCI_AnalyseMode = off*</span>
 <span class="sd">  * *MultiPV = 1*, i.e. no alternative move suggestions</span>
@@ -559,7 +645,7 @@
   <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">uciGo</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ChessEngine.startAnalysis"><a class="viewcode-back" href="../chessengine.html#chessengine.ChessEngine.startAnalysis">[docs]</a> <span class="k">def</span> <span class="nf">startAnalysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiPV</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-  <span class="sd">&#39;&#39;&#39;Emits *uciGO* in *analyse* mode, i.e.</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;Emits *uciGO* in *analyse* mode, i.e.</span>
 <span class="sd">  </span>
 <span class="sd">  * *UCI_AnalyseMode = off*</span>
 <span class="sd">  * *MultiPV =* ``multiPV``</span>
@@ -726,30 +812,46 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Reinhard März.</p>
-  </div>
+    <p>
+        &#169; Copyright 2022, Reinhard März.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

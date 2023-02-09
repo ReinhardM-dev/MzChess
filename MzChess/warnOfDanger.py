@@ -18,7 +18,7 @@ i.e. positive scores show an advantage of the attacker
   chess.QUEEN : 9, 
   chess.KING : 1000
  }
- fen = originalBoard.fen()
+ fen = originalBoard.fen(en_passant = 'fen')
  if originalBoard.is_game_over():
   return None
  if log is not None and depth > 0:

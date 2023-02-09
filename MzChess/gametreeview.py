@@ -84,11 +84,11 @@ class GameTreeView(QtWidgets.QTreeWidget):
                               '-+'   : 'decisive advantage for white',
                               '+--' : 'white should resign',
                               '-++' : 'black should resign' }
- cross16x16File = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pieces', 'cross16x16.ico')
- crossIcon = QtGui.QIcon(cross16x16File)
  
  def __init__(self, parent = None) -> None:
   super(GameTreeView, self).__init__(parent)
+  cross16x16File = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pieces', 'cross16x16.ico')
+  self.crossIcon = QtGui.QIcon(cross16x16File)
   self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
   self.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
   self.notifyGameNodeSelectedSignal = None

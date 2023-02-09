@@ -525,6 +525,20 @@ class Position(chess.Board):
   '''
   return 1./(1. + pow(10, -self.pawnBalance()/k))
 
+ def potentialEnPassantSquares(self, pieceColor : chess.Color) -> chess.SquareSet:
+  '''Detects potential en-passant configurations
+ 
+ :param pieceColor: Color of the piece
+ :returns: SquareSet
+  '''
+  if pieceColor == chess.WHITE:
+   return self.shift(self._bitboards[chess.WHITE][chess.PAWN] & chess.SquareSet(chess.BB_RANKS[3]) \
+         & (self.shift(self._bitboards[chess.BLACK][chess.PAWN], 1, 0) \
+           | self.shift(self._bitboards[chess.BLACK][chess.PAWN], -1, 0)), 0, -1)
+  return self.shift(self._bitboards[chess.BLACK][chess.PAWN] & chess.SquareSet(chess.BB_RANKS[4]) \
+        & (self.shift(self._bitboards[chess.WHITE][chess.PAWN], 1, 0) \
+          | self.shift(self._bitboards[chess.WHITE][chess.PAWN], -1, 0)), 0, 1)
+         
  def pinnedPieces(self, pieceColor : chess.Color) -> chess.SquareSet:
   '''Detects pinned pieces, i.e. pieces required at the current square to protect the king
  
@@ -888,6 +902,7 @@ if __name__ == "__main__":
  fen = '8/8/7P/P5Pp/1p3P1P/3P4/8/8 w - - 0 1'
  fen = 'rnb1kb1r/4pp1p/1p4p1/3PP3/2q2B2/2N2Q1P/PP3PP1/R3K2R b KQkq - 1 15'
  fen = 'rnb1kb1r/4pp1p/1p4p1/3PP3/2q2B2/1PN2Q1P/P4PP1/R3K2R b KQkq - 15 15'
+ fen = 'rnbqkbnr/1pppp1pp/8/pP6/4Pp2/8/P1PP1PPP/RNBQKBNR w KQkq - 1 1'
  board = Position(fen)
  print()
  cArea = board.area(17, 46)
@@ -907,6 +922,10 @@ if __name__ == "__main__":
  print(board.reachableSquares(board.turn))
  print('-')
  print(board.reachableSquares(not board.turn))
+ print('---')
+ print(board.potentialEnPassantSquares(board.turn))
+ print('-')
+ print(board.potentialEnPassantSquares(not board.turn))
  print('---')
  board.summary()
 

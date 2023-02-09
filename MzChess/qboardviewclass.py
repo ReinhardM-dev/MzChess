@@ -60,7 +60,7 @@ from specialDialogs import ButtonLine
 import warnOfDanger
 
 def showStatus(board):
- print('fen = {}'.format(board.fen()))
+ print('fen = {}'.format(board.fen(en_passant = 'fen')))
  for row in range(8):
   for col in range(8):
    chessSquare = chess.square(col, row)
@@ -139,7 +139,7 @@ class QBoardViewClass(QtWidgets.QGraphicsView):
   self.game.setWarnOfDanger(enable)
   
  def _fen(self) -> str:
-  return self.game.fen()
+  return self.game.fen(en_passant = 'fen')
  
  def set_fen(self, fen : str) -> None:
   '''Configures the *chessboard*
@@ -298,7 +298,7 @@ class Game(QtWidgets.QGraphicsScene):
     self.remove_warnOfDanger()
   
  def fen(self):
-  return self.gameNode.board().fen()
+  return self.gameNode.board().fen(en_passant = 'fen')
   
  def setGameNode(self, gameNode : bool) -> None:
   if gameNode is None:

@@ -1375,7 +1375,7 @@ class ChessMainWindow(QtWidgets.QMainWindow):
  @QtCore.pyqtSlot() 
  def on_actionCopyFEN_triggered(self):
   self.notify('Copying current position of game #{} to clipboard ...'.format(self.gameID))
-  fen = self.gameNode.board().fen()
+  fen = self.gameNode.board().fen(en_passant = 'fen')
   QtWidgets.QApplication.clipboard().setText(fen)
 
  @QtCore.pyqtSlot() 

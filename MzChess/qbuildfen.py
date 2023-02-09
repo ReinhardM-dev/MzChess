@@ -1,7 +1,30 @@
+'''
+|BuildFEN| 
+
+The FEN-Builder is an extra tool which can be started from the main window of the chess GUI.
+It allows to populate all items of the position by using the Forsyth-Edwards Notation (`FEN`_).
+It consists of 7 parts:
+
+    * *Board* displaying the current position
+    * *Pieces* displaying the pieces to be placed and the X piece for deletion
+    * *Next to Move* indicating the next player to move
+    * *Castling* indicating the rights to castle
+    * *En Passant* displaying the target square of an en passant move
+    * *Move* indicating the number of full-moves of the current game
+    * *Clock* indicating the number of half-moves since the last capture or pawn advance, see fifty-move rule (`FMR`_)
+    
+.. |BuildFEN| image:: buildFEN.png
+  :width: 800
+  :alt: Build FEN Window
+.. _FEN: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+.. _FMR: https://en.wikipedia.org/wiki/Fifty-move_rule
+'''
+
 from typing import Optional,  Callable,  List
 import sys, os, os.path
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from MzChess import Position
 
 try:
  from PyQt6 import QtWidgets, QtGui, QtCore
@@ -41,7 +64,7 @@ class BuildFenClass(QtWidgets.QMainWindow):
   sbText = self.statusBar().font()
   sbText.setPointSize(12)
 
-  self.board = chess.Board()
+  self.position = MzChess.Position()
 
   self.msgBox = QtWidgets.QMessageBox()
   self.msgBox.setIcon(QtWidgets.QMessageBox.Icon.Critical)
@@ -102,58 +125,37 @@ class BuildFenClass(QtWidgets.QMainWindow):
   self.castlingGroupBox.layout().addWidget(box)
   return box
 
- def _epList(self) -> None: 
-  if self.board.turn:
-   rank = 4
-   sgn = 1
-  else:
-   rank = 3
-   sgn = -1
-  square2PieceList = sorted(self.board.piece_map().items())
-  lastSquare = None
-  lastColor = None
-  sqList = list()
-  for square, piece in square2PieceList:
-   if piece.piece_type == chess.PAWN and chess.square_rank(square) == rank:
-    if lastSquare != square - 1 or piece.color == lastColor:
-     lastSquare = None
-    if lastSquare is None:
-     lastSquare = square
-     lastColor = piece.color
-     continue
-    if piece.color == self.board.turn:
-     target = chess.square_name(lastSquare+sgn*8)
-    else:
-     target = chess.square_name(square+sgn*8)
-    if target not in sqList:
-     sqList.append(target)
-  return sqList
- 
  def _resetFen(self) -> None:
   self.placementBoard.resetPosition()
-  if self.board.turn:
+  if self.position.turn:
    self.wRadioButton.click()
   else:
    self.bRadioButton.click()
-  validWK = self.board.kings & chess.BB_E1 > 0
-  self.wkCheckBox.setChecked(validWK and self.board.rooks & chess.BB_H1 > 0)
-  self.wqCheckBox.setChecked(validWK and self.board.rooks & chess.BB_A1 > 0)
-  validBK = self.board.kings & chess.BB_E8 > 0
-  self.bkCheckBox.setChecked(validBK and self.board.rooks & chess.BB_H8 > 0)
-  self.bqCheckBox.setChecked(validBK and self.board.rooks & chess.BB_A8 > 0)
+  validWK = self.position.kings & chess.BB_E1 > 0
+  self.wkCheckBox.setChecked(validWK and self.position.rooks & chess.BB_H1 > 0)
+  self.wqCheckBox.setChecked(validWK and self.position.rooks & chess.BB_A1 > 0)
+  validBK = self.position.kings & chess.BB_E8 > 0
+  self.bkCheckBox.setChecked(validBK and self.position.rooks & chess.BB_H8 > 0)
+  self.bqCheckBox.setChecked(validBK and self.position.rooks & chess.BB_A8 > 0)
+  self.moveSpinBox.setValue(self.position.halfmove_clock)
+  self.clockSpinBox.setValue(self.position.fullmove_number)
+  self.notify(self.position.fen())
+  epSquares = list(self.position.potentialEnPassantSquares(self.position.turn))
   self.enPassantListWidget.clear()
   self.enPassantListWidget.addItem('-')
-  for target in self._epList():
-   self.enPassantListWidget.addItem(target)
-  self.moveSpinBox.setValue(self.board.halfmove_clock)
-  self.clockSpinBox.setValue(self.board.fullmove_number)
-  self.notify(self.board.fen())
+  selIndex = 0
+  for index,  square in enumerate(epSquares):
+   self.enPassantListWidget.addItem(chess.square_name(square))
+   if square == self.position.ep_square:
+    selIndex = index + 1
+  self.enPassantListWidget.setCurrentRow(selIndex)
+  self.notify(self.position.fen())
 
  @QtCore.pyqtSlot()
  def on_actionCopy_triggered(self):
   try:
-   MzChess.checkFEN(self.board, allowIncompleteBoard = True)
-   fen = self.board.fen()
+   MzChess.checkFEN(self.position, allowIncompleteBoard = True)
+   fen = self.position.fen(en_passant = 'fen')
    QtWidgets.QApplication.clipboard().setText(fen)
   except ValueError as err:
    self.notifyError('Improper FEN {}:\n{}'.format(fen, str(err)))
@@ -164,36 +166,32 @@ class BuildFenClass(QtWidgets.QMainWindow):
   fen = QtWidgets.QApplication.clipboard().text()
   try:
    MzChess.checkFEN(fen, allowIncompleteBoard = True)
-   self.board.set_fen(fen)
+   self.position.set_fen(fen)
    self._resetFen()
   except ValueError as err:
    self.notifyError('Improper FEN {}:\n{}'.format(fen, str(err)))
    return
 
  @QtCore.pyqtSlot()
- def on_fenChanged(self):
-  self.notify(self.board.fen())
-   
- @QtCore.pyqtSlot()
  def on_actionResetBoard_triggered(self):
-  self.board.reset()
+  self.position.reset()
   self._resetFen()
   
  @QtCore.pyqtSlot()
  def on_actionClearBoard_triggered(self):
-  self.board.clear()
+  self.position.clear()
   self._resetFen()
   
  @QtCore.pyqtSlot()
  def on_wRadioButton_clicked(self):
-  if self.board.turn != chess.WHITE:
-   self.board.turn = chess.WHITE
+  if self.position.turn != chess.WHITE:
+   self.position.turn = chess.WHITE
    self._resetFen()
 
  @QtCore.pyqtSlot()
  def on_bRadioButton_clicked(self):
-  if self.board.turn != chess.BLACK:
-   self.board.turn = chess.BLACK
+  if self.position.turn != chess.BLACK:
+   self.position.turn = chess.BLACK
    self._resetFen()
   
  @QtCore.pyqtSlot(bool)
@@ -214,27 +212,25 @@ class BuildFenClass(QtWidgets.QMainWindow):
    castlingString += 'q'
   if len(castlingString) == 0:
    castlingString = '-'
-  self.board.set_castling_fen(castlingString)
-  self.notify(self.board.fen())
+  self.position.set_castling_fen(castlingString)
+  self.notify(self.position.fen(en_passant = 'fen'))
   
  @QtCore.pyqtSlot(QtWidgets.QListWidgetItem)
  def on_enPassantListWidget_itemClicked(self, enPassantItem):
-  enPassantSqSymbol = enPassantItem.text()
-  if enPassantSqSymbol != '-':
-   self.board.ep_square = chess.parse_square(enPassantItem.text())
-  else:
-   self.board.ep_square = None
-  self.notify(self.board.fen())
+  fenList = self.position.fen().split(' ')
+  fenList[3] = enPassantItem.text()
+  self.position.set_fen(' '.join(fenList))
+  self.notify(self.position.fen(en_passant = 'fen'))
 
  @QtCore.pyqtSlot(int)
  def on_moveSpinBox_valueChanged(self, moveNumber):
-  self.board.fullmove_number = moveNumber
-  self.notify(self.board.fen())
+  self.position.fullmove_number = moveNumber
+  self.notify(self.position.fen(en_passant = 'fen'))
   
  @QtCore.pyqtSlot(int)
  def on_clockSpinBox_valueChanged(self, halfmoveClock):
-  self.board.halfmove_clock = halfmoveClock
-  self.notify(self.board.fen())
+  self.position.halfmove_clock = halfmoveClock
+  self.notify(self.position.fen(en_passant = 'fen'))
 
  @QtCore.pyqtSlot()
  def on_actionAbout_triggered(self):
@@ -333,7 +329,7 @@ class PlacementBoard(ChessGroupBox):
    self._addButton(square)
   
  def resetPosition(self):
-  pieceDict = self.buildFenClass.board.piece_map()
+  pieceDict = self.buildFenClass.position.piece_map()
   for square, pushButton in enumerate(self.button2SquareList):
    if square in pieceDict:
     pushButton.setText(self.leipzigEncodeDict[pieceDict[square].symbol()])
@@ -373,7 +369,7 @@ class PlacementBoard(ChessGroupBox):
  def on_clicked(self):
   sendingButton = self.sender()
   square = self.button2SquareList.index(sendingButton)
-  pieceDict = self.buildFenClass.board.piece_map()
+  pieceDict = self.buildFenClass.position.piece_map()
   piece = self.buildFenClass.selectionBox.selectedPiece
   oldPiece = pieceDict.get(square, None)
   txt = ''
@@ -386,26 +382,26 @@ class PlacementBoard(ChessGroupBox):
   else:
    return
   try:
-   newBoard = chess.Board(self.buildFenClass.board.fen())
+   newBoard = MzChess.Position(self.buildFenClass.position.fen(en_passant = 'fen'))
    newBoard.set_piece_map(pieceDict)
    MzChess.checkFEN(newBoard, allowIncompleteBoard = True)
    sendingButton.setText(txt)
-   self.buildFenClass.board.set_piece_map(pieceDict)
-   self.buildFenClass.notify(self.buildFenClass.board.fen())
+   self.buildFenClass.position.set_piece_map(pieceDict)
+   self.buildFenClass._resetFen()
   except ValueError as err:
    self.buildFenClass.notifyError('Improper placement @ {}:\n{}'.format(chess.square_name(square), str(err)))
    return
    
-def showStatus(board):
- print('fen = {}'.format(board.fen()))
+def showStatus(position):
+ print('fen = {}'.format(position.fen(en_passant = 'fen')))
  for row in range(8):
   for col in range(8):
    chessSquare = chess.square(col, row)
-   piece = board.piece_at(chessSquare)
+   piece = position.piece_at(chessSquare)
    if piece is not None:
     print(' square = {}, name = {}, symbol = {}'.format(
      chessSquare, chess.square_name(chessSquare), piece.symbol()))
- for n, move in enumerate(board.move_stack):
+ for n, move in enumerate(position.move_stack):
   print('{}. {}'.format(n, move.uci()))
 
 class MzClassApplication(QtWidgets.QApplication):

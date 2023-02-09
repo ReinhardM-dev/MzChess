@@ -1,6 +1,44 @@
+'''
+Position-Analyser
+================================
+|PositionAnalyser| 
+
+The Position-Analyser is an extra tool which can be started from the main window of the chess GUI.
+It allows to analyse the position using some properties shown in the chess programming website (`CPE`_).
+It consists of the *Board* displaying the current position and the several properties of the position with the:
+
+    * *Attacked pieces* 
+    * *Attacking pieces*
+    * *Bad bishops*, i.e. bishops whose mobility is restricted by own pawns
+    * *Blocked pawns*, i.e. pawns blocked by a pawn of opposite color
+    * *Controlled central squares*, i.e. control over the center squares (E4, E5, D4, D5)
+    * *Fiancettoed bishops*, i.e. bishops on knight pawn squares
+    * *Hanging pieces*, i.e. pieces being undefended and attacked
+    * *Isolated pawns*, i.e. pawns without supporting pawns in the adjacent files
+    * *Passed pawns*, i.e. pawns which cannot be attacked by pawns of opposite color anymore
+    * *Pinned pieces*, i.e. pieces required at the current square to protect the king
+    * *Reachable Squares*, is an indicator of the piece mobility
+    * *Stacked pawns*, i.e. multiple pawns on a single file
+    * *Supported pawns*, i.e. pawns protected by pawns in the adjacent files
+    * *Trapped pieces*, i.e. pieces that cannot move anymore
+    * *Undefended pieces*, i.e. pieces which are not defended irrespective whether they are attacked
+    
+By selecting a color for a property, the corresponding pieces are highlighted on the board. The highlight color
+
+    * *green* for positive properties
+    * *yellow* for neutral properties
+    * *red* for negative properties
+    
+indicates the valuation of the position.
+    
+.. |PositionAnalyser| image:: positionAnalyser.png
+  :width: 800
+  :alt: Analyse Position Window
+.. _CPE: https://www.chessprogramming.org/Evaluation
+'''
+
 from typing import Optional,  Callable, Tuple,  List
 import sys, os, os.path
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
@@ -82,7 +120,7 @@ class AnalysePositionClass(QtWidgets.QMainWindow):
  @QtCore.pyqtSlot()
  def on_actionCopy_triggered(self):
   try:
-   fen = self.position.fen()
+   fen = self.position.fen(en_passant = 'fen')
    QtWidgets.QApplication.clipboard().setText(fen)
   except ValueError as err:
    self.notifyError('Improper FEN {}:\n{}'.format(fen, str(err)))
@@ -276,7 +314,7 @@ class PlacementBoard(ChessGroupBox):
   return super(PlacementBoard, self).eventFilter(pushButton, ev)
    
 def showStatus(board):
- print('fen = {}'.format(board.fen()))
+ print('fen = {}'.format(board.fen(en_passant = 'fen')))
  for row in range(8):
   for col in range(8):
    chessSquare = chess.square(col, row)
@@ -349,8 +387,6 @@ def runAnalysePosition(notifyFct : Optional[Callable[[str], None]] = None):
   chessMainWindow.setFen(sys.argv[1])
  qApp.exec()
 
-def _runFenBuilder():
- print('Hello, world')
-
 if __name__ == "__main__":
  runAnalysePosition(print)
+

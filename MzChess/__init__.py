@@ -34,10 +34,11 @@ Versions:
  2.3.0      undo/redo functions implemented
               bug fixes for annotation machinery
  2.4.0      position analyser implemented
+              documentation issue corrected
               bug fix in scoreplot 
 """
 __author__ = "Reinhard Maerz"
-__date__ = "2023-01-30"
+__date__ = "2023-02-09"
 __version__ = "2.3.1"
 
 __all__ = [
@@ -59,9 +60,9 @@ __all__ = [
  'ScorePlot', 
  'ButtonLine', 'ItemSelector', 'treeWidgetItemPos', 
  'QUCIEdit', 'UCIHighlighter', 
- 'warnOfDanger'
+ 'warnOfDanger', 
+ 'Position'
 ]
-
 
 import os.path, sys
 import chess
@@ -95,7 +96,7 @@ from .specialDialogs import ButtonLine, ItemSelector, treeWidgetItemPos
 from .uciedit import QUCIEdit, UCIHighlighter
 from .warnOfDanger import warnOfDanger
 from .position import Position
-from .analysePosition import AnalysePositionClass, PlacementBoard, runAnalysePosition
+# from .analysePosition import AnalysePositionClass, PlacementBoard, runAnalysePosition
 from .qbuildfen import BuildFenClass, SelectionBox, PlacementBoard, runFenBuilder 
 from .chessMainWindow import ChessMainWindow, runMzChess
 

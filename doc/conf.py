@@ -15,9 +15,7 @@ import os
 import importlib, importlib.metadata
 
 sys.path.insert(0, os.path.abspath('..'))
-# sys.path.insert(0, os.path.abspath('..'))
 
-# We must create the QtWidgets.QApplication here to avoid Sphinx 5.x issues with pixmaps
 try:
  from PyQt6 import QtWidgets
 except:
@@ -25,9 +23,6 @@ except:
   from PyQt5 import QtWidgets
  except:
   raise ModuleNotFoundError('Neither the required PyQt6.QtWidgets nor PyQt5.QtWidgets installed')
-QtWidgets.QApplication(sys.argv)
-# sys.path.insert(0, os.path.abspath('..'))
-# sys.setrecursionlimit(15000)
 
 # -- Project information -----------------------------------------------------
 

@@ -12,7 +12,10 @@
 #
 import sys
 import os
+import importlib, importlib.metadata
+
 sys.path.insert(0, os.path.abspath('..'))
+# sys.path.insert(0, os.path.abspath('..'))
 
 # We must create the QtWidgets.QApplication here to avoid Sphinx 5.x issues with pixmaps
 try:
@@ -23,8 +26,7 @@ except:
  except:
   raise ModuleNotFoundError('Neither the required PyQt6.QtWidgets nor PyQt5.QtWidgets installed')
 QtWidgets.QApplication(sys.argv)
-import MzChess
-
+# sys.path.insert(0, os.path.abspath('..'))
 # sys.setrecursionlimit(15000)
 
 # -- Project information -----------------------------------------------------
@@ -34,8 +36,10 @@ copyright = '2022, Reinhard März'
 author = 'Reinhard März'
 
 # The full version, including alpha/beta/rc tags
-release = 'V' + MzChess.__version__
-version = 'V' + '.'.join(MzChess.__version__.split('.')[:2])
+# The use of importlib.metadata is the only way compliant with sphinx
+__version__ = importlib.metadata.version('MzChess')
+release = 'V' + __version__
+version = 'V' + '.'.join(__version__.split('.')[:2])
 
 # -- General configuration ---------------------------------------------------
 master_doc = 'index'
@@ -51,9 +55,14 @@ extensions = [
     'sphinx.ext.intersphinx', 
     'sphinx.ext.githubpages',
 ]
-autosummary_generate = True
+autosummary_generate = False
 autodoc_typehints = 'signature'
 
+autodoc_default_options = {
+    'member-order': 'bysource',
+    'special-members': '__init__',
+    'exclude-members': '__weakref__'
+}
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -83,3 +92,6 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ['_static']
 html_static_path = []
+importlib.import_module('MzChess')
+# import MzChess
+print('conf.py left')

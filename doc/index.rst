@@ -34,7 +34,13 @@ So, if this directory is in your search *PATH*, you type simply
 
     mzChess
 
-to start the GUI. A little helper
+to start the chess GUI. An extra tool
+::
+
+   analysePosition
+   
+allows to evaluate the position using the Forsyth-Edwards Notation (`FEN`_)
+and principles described in the chess programming website (`CPE`_). A little helper
 
 ::
 
@@ -53,13 +59,16 @@ to get symbolic links to the tools *mzChess* and *fenBuild* on the desktop
 (*<python>* is the python interpreter used for installation).
 Under Windows, the *postInstall* function must be executed as administrator.
 
-Contents
------------
-
 .. toctree::
   :maxdepth: 2
 
   gui
+  analysePosition
+  buildFen
+
+..
+  analysePosition
+  buildFen
   utilities
 
 Indices and tables
@@ -73,4 +82,5 @@ Indices and tables
 .. _Linux Package Manager: https://en.wikipedia.org/wiki/List_of_software_package_management_systems
 .. _Homebrew: https://docs.brew.sh/
 .. _manylinux: https://github.com/pypa/manylinux
+.. _CPE: https://www.chessprogramming.org/Evaluation
 .. _FEN: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation

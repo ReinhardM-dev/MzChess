@@ -1,4 +1,4 @@
-GUI
+Chess GUI
 =======
 
 .. toctree::
@@ -11,3 +11,4 @@ GUI
    gameListTableView
    scoreplotgraphicsview
    configureEngine
+   

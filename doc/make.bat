@@ -1,4 +1,4 @@
-rem @ECHO OFF
+@ECHO OFF
 
 REM Command file for Sphinx documentation
 
@@ -6,7 +6,7 @@ if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=sphinx-build
 )
 set BUILDDIR=..\doc_build
-set ALLSPHINXOPTS=-d %BUILDDIR%/doctrees %SPHINXOPTS% .
+set ALLSPHINXOPTS=-P -a -E -d %BUILDDIR%/doctrees %SPHINXOPTS% .
 set I18NSPHINXOPTS=%SPHINXOPTS% .
 if NOT "%PAPER%" == "" (
 	set ALLSPHINXOPTS=-D latex_paper_size=%PAPER% %ALLSPHINXOPTS%
@@ -47,6 +47,9 @@ if "%1" == "clean" (
 	goto end
 )
 
+if "%2" == "-v" (
+ set ALLSPHINXOPTS=-v -v %ALLSPHINXOPTS%
+)
 
 %SPHINXBUILD% 2> nul
 if errorlevel 9009 (

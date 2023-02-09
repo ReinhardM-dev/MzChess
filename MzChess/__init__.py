@@ -39,7 +39,7 @@ Versions:
 """
 __author__ = "Reinhard Maerz"
 __date__ = "2023-02-09"
-__version__ = "2.3.1"
+__version__ = "2.4.0"
 
 __all__ = [
  'AboutDialog', 
